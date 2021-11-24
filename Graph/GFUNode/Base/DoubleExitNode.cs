@@ -13,9 +13,8 @@ using GalForUnity.Attributes;
 using GalForUnity.Model;
 
 namespace GalForUnity.Graph.GFUNode.Base{
-    public class DoubleExitNode : EnterNode
-    {
-        [NodeRename(nameof(Exit)+"1", typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
+    public class DoubleExitNode : EnterNode{
+        [NodeRename(nameof(Exit) + "1", typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit;
 
         [NodeRename(nameof(Exit2), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]

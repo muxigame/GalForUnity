@@ -16,7 +16,6 @@ using GalForUnity.Graph.Data;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.System;
 using GalForUnity.System.Event;
-using MUX.Mono;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -119,7 +118,7 @@ namespace GalForUnity.Graph{
                 nodeObj.OnExecuted = Execute;
                 GameSystem.Data.CurrentRoleModel.roleData = nodeObj.Execute(GameSystem.Data.CurrentRoleModel.roleData);
             } else{
-                RunOnMono.LateUpdate(Int32.MaxValue, () => {
+                GfuRunOnMono.LateUpdate(Int32.MaxValue, () => {
                     GraphData.isPlay = isPlay = false;
                     EventCenter.GetInstance().OnGraphExecutedEvent(this);
                 });
@@ -141,7 +140,7 @@ namespace GalForUnity.Graph{
         /// <exception cref="NullReferenceException">未找到下一个node是触发空指针异常</exception>
         public bool Next(int index){
             if (HasNext){
-                RunOnMono.FixedUpdate(delegate{
+                GfuRunOnMono.FixedUpdate(delegate{
                     var gfuNode = _currentNode.Next(index);
                     _currentNode = gfuNode;
                     if (gfuNode==null) throw new NullReferenceException($"There is no default node to connect port {index} next");

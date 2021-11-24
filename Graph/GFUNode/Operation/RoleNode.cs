@@ -8,6 +8,7 @@
 //        Created by 半世癫(Roc) at 2021-01-28 16:56:49
 //
 //======================================================================
+
 using System;
 using System.Collections.Generic;
 using GalForUnity.Attributes;
@@ -24,24 +25,27 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.GFUNode.Operation{
-    [NodeRename("Operation/"+nameof(RoleNode),"角色节点，能够修改角色的状态")]
+    [NodeRename("Operation/" + nameof(RoleNode), "角色节点，能够修改角色的状态")]
     [Serializable]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
     public class RoleNode : GfuOperationNode{
         public RoleModel RoleModel;
-        [NodeRename(nameof(TransformNode),typeof(Transform),NodeDirection.Input,NodeCapacity.Single)]
+
+        [NodeRename(nameof(TransformNode), typeof(Transform), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Enter;
-        [NodeRename(nameof(Animation),typeof(Animation),NodeDirection.Input,NodeCapacity.Single)]
+
+        [NodeRename(nameof(Animation), typeof(Animation), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Animation;
-        [NodeRename(nameof(Opacity),typeof(float),NodeDirection.Input,NodeCapacity.Single)]
-        [DefaultValue(1)]
+
+        [NodeRename(nameof(Opacity), typeof(float), NodeDirection.Input, NodeCapacity.Single)] [DefaultValue(1)]
         public GfuPort Opacity;
-        [NodeRename(nameof(Color),typeof(Color),NodeDirection.Input,NodeCapacity.Single)]
-        [DefaultValue(1,1,1,1)]
+
+        [NodeRename(nameof(Color), typeof(Color), NodeDirection.Input, NodeCapacity.Single)] [DefaultValue(1, 1, 1, 1)]
         public GfuPort Color;
-        [NodeRename(nameof(Operation),typeof(GfuOperation),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(Operation), typeof(GfuOperation), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Exit;
-        
+
         public enum RoleOperationType{
             None,
             ToStage,
@@ -53,16 +57,12 @@ namespace GalForUnity.Graph.GFUNode.Operation{
         public RoleNode(){
             GfuOperation = new RoleOperation(RoleModel);
             GfuOperation.OnInit += (x) => {
-                x.ContainerData = new List<Graph.Operation.Data>{
-                    new Graph.Operation.Data(typeof(RoleModel),RoleModel),
-                    new Graph.Operation.Data(typeof(RoleOperationType),roleOperationType),
+                x.ContainerData = new List<Graph.Operation.Data> {
+                    new Graph.Operation.Data(typeof(RoleModel), RoleModel), new Graph.Operation.Data(typeof(RoleOperationType), roleOperationType),
                 };
                 if (RoleModel){
-                    x.InputData =new List<Graph.Operation.Data>{
-                        new Graph.Operation.Data(RoleModel.transform),
-                        new Graph.Operation.Data(typeof(Animation)),
-                        new Graph.Operation.Data(typeof(float)),
-                        new Graph.Operation.Data(typeof(Color))
+                    x.InputData = new List<Graph.Operation.Data> {
+                        new Graph.Operation.Data(RoleModel.transform), new Graph.Operation.Data(typeof(Animation)), new Graph.Operation.Data(typeof(float)), new Graph.Operation.Data(typeof(Color))
                     };
                 }
             };
@@ -72,15 +72,14 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             base.Init(otherNodeData);
             InitDefaultValuePort(otherNodeData);
 #if UNITY_EDITOR
-            ObjectField objectField = new ObjectField(){
+            ObjectField objectField = new ObjectField() {
                 label = GfuLanguage.Parse(nameof(RoleModel)),
                 objectType = typeof(RoleModel),
                 tooltip = "要操作的角色",
                 value = RoleModel,
                 labelElement = {
                     style = {
-                        minWidth = 0,
-                        unityTextAlign = TextAnchor.MiddleLeft
+                        minWidth = 0, unityTextAlign = TextAnchor.MiddleLeft
                     }
                 }
             };
@@ -88,25 +87,23 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 RoleModel = evt.newValue as RoleModel;
                 GfuOperation.ContainerData[0] = evt.newValue;
             });
-            EnumField enumField = new EnumField(roleOperationType){
+            EnumField enumField = new EnumField(roleOperationType) {
                 label = GfuLanguage.Parse(nameof(RoleOperationType)),
                 value = roleOperationType,
                 tooltip = "角色该登场还是下场或者不执行相关操作",
                 labelElement = {
                     style = {
-                        minWidth = 0,
-                        unityTextAlign = TextAnchor.MiddleLeft
+                        minWidth = 0, unityTextAlign = TextAnchor.MiddleLeft
                     }
                 }
             };
-            enumField.RegisterValueChangedCallback(evt => {
-                GfuOperation.ContainerData[1].value = roleOperationType = (RoleOperationType) evt.newValue;
-            });
+            enumField.RegisterValueChangedCallback(evt => { GfuOperation.ContainerData[1].value = roleOperationType = (RoleOperationType) evt.newValue; });
             mainContainer.Add(objectField);
             mainContainer.Add(enumField);
             style.width = 200;
 #endif
         }
+
         // public override object GetDefaultValue(int portIndex){
         //     var gfuPort = (GfuPort)inputContainer[portIndex];
         //     return gfuPort.GetDefaultValue();

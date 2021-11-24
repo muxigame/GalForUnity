@@ -13,12 +13,10 @@ using GalForUnity.Attributes;
 using GalForUnity.Model;
 
 namespace GalForUnity.Graph.GFUNode.Base{
-    public class EnterNode : GfuNode
-    {
+    public class EnterNode : GfuNode{
 #if UNITY_EDITOR
-        [NodeRename(nameof(Enter),typeof(RoleData),NodeDirection.Input,NodeCapacity.Multi)]
+        [NodeRename(nameof(Enter), typeof(RoleData), NodeDirection.Input, NodeCapacity.Multi)]
         public GfuPort Enter;
 #endif
-        
     }
 }

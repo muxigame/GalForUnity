@@ -13,8 +13,7 @@ using UnityEngine;
 
 namespace GalForUnity.Graph.Data.Property{
     [CreateAssetMenu(fileName = "NewPlotFlowGraph.asset", menuName = "GalForUnity/PlotFlowGraph", order = 1)]
-    public class PlotFlowGraphData : GraphData
-    {
+    public class PlotFlowGraphData : GraphData{
         public PlotFlowGraphData(){ }
     }
 }

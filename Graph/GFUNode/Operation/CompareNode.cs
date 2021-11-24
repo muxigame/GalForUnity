@@ -22,40 +22,45 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.GFUNode.Operation{
-    [NodeRename("Operation/"+nameof(CompareNode),"布尔节点，能进行逻辑判断")]
+    [NodeRename("Operation/" + nameof(CompareNode), "布尔节点，能进行逻辑判断")]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
-    public class CompareNode:GfuOperationNode{
-        [NodeRename(nameof(Value1),typeof(object),NodeDirection.Input,NodeCapacity.Single)]
+    public class CompareNode : GfuOperationNode{
+        [NodeRename(nameof(Value1), typeof(object), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Value1;
-        [NodeRename(nameof(Value2),typeof(object),NodeDirection.Input,NodeCapacity.Single)]
+
+        [NodeRename(nameof(Value2), typeof(object), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Value2;
-        [NodeRename(nameof(Boolean),typeof(bool),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(Boolean), typeof(bool), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Boolean;
 
         /// <summary>
         /// Container 0
         /// </summary>
         public Enum CompareType = ObjectCompareType.Equal;
+
         /// <summary>
         /// Container 1
         /// </summary>
         public string Type;
+
         /// <summary>
         /// Container 2
         /// </summary>
         public string assembly;
-        
+
 #if UNITY_EDITOR
         /// <summary>
         /// No Container
         /// </summary>
         private EnumField objType;
+
         /// <summary>
         /// No Container
         /// </summary>
         private EnumField valType;
 #endif
-        
+
         // public ValueCompareType CompareType = (int)ValueCompareType.Equal;
 
         public override void Init(NodeData otherNodeData){
@@ -66,8 +71,9 @@ namespace GalForUnity.Graph.GFUNode.Operation{
 #if UNITY_EDITOR
                     = Value1.portType = Value2.portType
 #endif
-                    = Assembly.Load(assembly).GetType(Type);
+                        = Assembly.Load(assembly).GetType(Type);
             }
+
             InitDefaultValuePort<CompareOperation>(otherNodeData);
             GfuOperation.OnPostInput += (x) => {
                 x.InputData[0].type = type;
@@ -75,14 +81,10 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 x.ContainerData[0].value = CompareType;
             };
 #if UNITY_EDITOR
-            valType= new EnumField(ValueCompareType.Equal);
-            objType= new EnumField(CompareType);
-            objType.RegisterValueChangedCallback(evt => {
-                CompareType = (ObjectCompareType)Enum.Parse(typeof(ObjectCompareType), evt.newValue.ToString());
-            });
-            valType.RegisterValueChangedCallback(evt => {
-                CompareType = (ValueCompareType)Enum.Parse(typeof(ValueCompareType), evt.newValue.ToString());
-            });
+            valType = new EnumField(ValueCompareType.Equal);
+            objType = new EnumField(CompareType);
+            objType.RegisterValueChangedCallback(evt => { CompareType = (ObjectCompareType) Enum.Parse(typeof(ObjectCompareType), evt.newValue.ToString()); });
+            valType.RegisterValueChangedCallback(evt => { CompareType = (ValueCompareType) Enum.Parse(typeof(ValueCompareType), evt.newValue.ToString()); });
             Value1.OnConnected += (x) => {
                 if (Value2.portType == typeof(object)){
                     Value1.portType = Value2.portType = x.portType;
@@ -122,8 +124,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 }
 
                 mainContainer.Add(valType);
-            }
-            else{
+            } else{
                 if (mainContainer.Contains(valType)){
                     mainContainer.Remove(valType);
                 }
@@ -132,8 +133,8 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             }
         }
 #endif
-        
     }
+
     public enum ValueCompareType{
         Equal,
         NotEqual,
@@ -142,9 +143,11 @@ namespace GalForUnity.Graph.GFUNode.Operation{
         Greater,
         GreaterOrEqual
     }
-    public enum ObjectCompareType:byte{
+
+    public enum ObjectCompareType : byte{
         Equal,
         NotEqual
     }
+
     // op_Addition
 }

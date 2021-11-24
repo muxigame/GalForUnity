@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.GFUNode.Operation;
+using GalForUnity.System;
 using GalForUnity.System.Event;
 using MUX.Mono;
 #if UNITY_EDITOR
@@ -123,7 +124,7 @@ namespace GalForUnity.Graph.Operation{
             EditorApplication.playModeStateChanged += (x) => {
                 if (x == PlayModeStateChange.ExitingPlayMode){
                     IsOver = true;
-                    RunOnMono.Clear(MethodType.Update);
+                    GfuRunOnMono.Clear(GfuMethodType.Update);
                 }
             };
 #endif
@@ -179,9 +180,9 @@ namespace GalForUnity.Graph.Operation{
             await Task.Run(delegate{
                 bool isFirst = true;
                 while (!IsOver){
-                    if (RunOnMono.IsLateUpdate&&!IsExecute){
+                    if (GfuRunOnMono.IsLateUpdate&&!IsExecute){
                         IsExecute = true;
-                        RunOnMono.Update(Priority,delegate{
+                        GfuRunOnMono.Update(Priority,delegate{
                             if(!IsOver&&!isFirst) Update(gfuOperationData);
                             if (!IsOver && isFirst){
                                 isFirst = false;
@@ -251,7 +252,7 @@ namespace GalForUnity.Graph.Operation{
         public virtual void Executed(){
             // ReSharper disable once DelegateSubtraction
             EventCenter.GetInstance().OnNodeExecutedEvent-=RegisterExecuted;
-            RunOnMono.LateUpdate(Priority, delegate{
+            GfuRunOnMono.LateUpdate(Priority, delegate{
                 if(!IsOver) OperationOver();
                 // InputData.Clear();//这个行代码会导致节点执行完成之后InputData数据丢失，这会导致上层API选择性执行节点无法执行已经执行过的节点时，无法访问节点数据。
                 // OutPutData.Clear();//这个行代码会导致节点执行完成之后InputData数据丢失，这会导致上层API选择性执行节点无法执行已经执行过的节点时，无法访问节点数据。

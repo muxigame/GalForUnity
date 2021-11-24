@@ -15,27 +15,23 @@ using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Data;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.Operation;
-using GalForUnity.Model;
-#if UNITY_EDITOR
-using UnityEditor.Experimental.GraphView;
-#endif
-
 using UnityEngine;
 
 namespace GalForUnity.Graph.GFUNode.Operation{
-    [NodeRename("Operation/"+nameof(TransformNode),"变换操作节点，能够修改Transform")]
+    [NodeRename("Operation/" + nameof(TransformNode), "变换操作节点，能够修改Transform")]
     [Serializable]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
     public class TransformNode : GfuOperationNode{
-        
-        [NodeRename(nameof(Position),typeof(Vector3),NodeDirection.Input,NodeCapacity.Single)]
+        [NodeRename(nameof(Position), typeof(Vector3), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Position;
-        [NodeRename(nameof(Rotation),typeof(Vector4),NodeDirection.Input,NodeCapacity.Single)]
+
+        [NodeRename(nameof(Rotation), typeof(Vector4), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Rotation;
-        [NodeRename(nameof(Scale),typeof(Vector3),NodeDirection.Input,NodeCapacity.Single)]
-        [DefaultValue(1,1,1)]
+
+        [NodeRename(nameof(Scale), typeof(Vector3), NodeDirection.Input, NodeCapacity.Single)] [DefaultValue(1, 1, 1)]
         public GfuPort Scale;
-        [NodeRename(nameof(TransformOperation),typeof(Transform),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(TransformOperation), typeof(Transform), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Exit;
 
         // public TransformNode(){
@@ -50,7 +46,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             base.Init(otherNodeData);
             InitDefaultValuePort<TransformOperation>(otherNodeData);
         }
-        
+
 
         // public override object GetDefaultValue(int portIndex){
         //     var gfuPort = (GfuPort)inputContainer[portIndex];

@@ -9,7 +9,6 @@
 //
 //======================================================================
 
-using System;
 using GalForUnity.Attributes;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Data;
@@ -17,18 +16,21 @@ using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.Operation;
 
 namespace GalForUnity.Graph.GFUNode.Operation{
-    [NodeRename("Operation/"+nameof(TimeNode),"时间节点，提供Unity系统的时间信息")]
+    [NodeRename("Operation/" + nameof(TimeNode), "时间节点，提供Unity系统的时间信息")]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
     public class TimeNode : GfuOperationNode{
-        
-        [NodeRename(nameof(Time),typeof(float),NodeDirection.Output,NodeCapacity.Multi)]
+        [NodeRename(nameof(Time), typeof(float), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Time;
-        [NodeRename(nameof(SineTime),typeof(float),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(SineTime), typeof(float), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort SineTime;
-        [NodeRename(nameof(CosineTime),typeof(float),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(CosineTime), typeof(float), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort CosineTime;
-        [NodeRename(nameof(DeltaTime),typeof(float),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(DeltaTime), typeof(float), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort DeltaTime;
+
         [NodeRename(nameof(SmoothDeltaTime), typeof(float), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort SmoothDeltaTime;
 

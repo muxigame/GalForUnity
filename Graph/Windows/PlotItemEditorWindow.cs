@@ -31,7 +31,7 @@ namespace GalForUnity.Graph.Windows{
             GraphView = new PlotItemGraph(this, path);
             rootVisualElement.Add(GraphView);
             AddButton(GraphView);
-            titleContent=new GUIContent(GfuLanguage.GfuLanguageInstance.PLOTITEMEDITORWINDOW.Value);
+            titleContent = new GUIContent(GfuLanguage.GfuLanguageInstance.PLOTITEMEDITORWINDOW.Value);
             // EditorWindow.FocusWindowIfItsOpen(GetType());
         }
 
@@ -52,6 +52,7 @@ namespace GalForUnity.Graph.Windows{
         }
 
         public void OnPlayModeChanged(PlayModeStateChange playModeStateChange){
+            if (onSceneChanged) return;
             if (playModeStateChange == PlayModeStateChange.ExitingPlayMode){
                 EditorApplication.delayCall += () => {
                     GraphView?.Clear();
@@ -70,11 +71,11 @@ namespace GalForUnity.Graph.Windows{
         }
 
         private void OnEnable(){
-            EditorApplication.delayCall+=(()=>{
+            EditorApplication.delayCall += (() => {
                 if (onSceneChanged) return;
                 GraphView?.Clear();
                 Init(GraphView?.path ?? path);
-            }); 
+            });
         }
 #endif
     }

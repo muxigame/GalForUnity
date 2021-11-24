@@ -10,8 +10,6 @@
 //======================================================================
 
 
-using MUX.Mono;
-using UnityEngine.UIElements;
 #if UNITY_EDITOR
 using GalForUnity.System;
 using UnityEditor;
@@ -19,26 +17,25 @@ using UnityEngine;
 #endif
 
 namespace GalForUnity.Graph.Windows{
-    
-    public class PlotFlowEditorWindow:GfuEditorWindow{
-        
+    public class PlotFlowEditorWindow : GfuEditorWindow{
 #if UNITY_EDITOR
         public override void Init(string path){
             base.Init(path);
             GameSystem.GraphData.currentGfuPlotFlowEditorWindow = this;
-            GraphView = new PlotFlowGraph(this,path);
+            GraphView = new PlotFlowGraph(this, path);
             rootVisualElement.Add(GraphView);
             AddButton(GraphView);
-            
-            titleContent=new GUIContent(GfuLanguage.GfuLanguageInstance.PLOTFLOWEDITORWINDOW.Value);
+
+            titleContent = new GUIContent(GfuLanguage.GfuLanguageInstance.PLOTFLOWEDITORWINDOW.Value);
             // EditorWindow.FocusWindowIfItsOpen(GetType());
-            
         }
+
         private void OnDidOpenScene(){
             GraphView?.Clear();
             onSceneChanged = true;
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
         }
+
         private void OnDisable(){
             // GraphView?.Clear();
             // GraphView = null;
@@ -47,7 +44,9 @@ namespace GalForUnity.Graph.Windows{
         PlotFlowEditorWindow(){
             EditorApplication.playModeStateChanged += OnPlayModeChanged;
         }
+
         public void OnPlayModeChanged(PlayModeStateChange playModeStateChange){
+            if (onSceneChanged) return;
             if (playModeStateChange == PlayModeStateChange.ExitingPlayMode){
                 EditorApplication.delayCall += () => {
                     GraphView?.Clear();
@@ -55,20 +54,20 @@ namespace GalForUnity.Graph.Windows{
                 };
             }
         }
+
         [MenuItem("GalForUnity/PlotFlow")]
-        public static void Open()
-        {
+        public static void Open(){
             PlotFlowEditorWindow window = GameSystem.GraphData.currentGfuPlotFlowEditorWindow = GetWindow<PlotFlowEditorWindow>(
                 ObjectNames.NicifyVariableName(nameof(PlotFlowEditorWindow)));
             window.Init(null);
         }
 
         private void OnEnable(){
-            EditorApplication.delayCall+=(()=>{
+            EditorApplication.delayCall += (() => {
                 if (onSceneChanged) return;
                 GraphView?.Clear();
                 Init(GraphView?.path ?? path);
-            }); 
+            });
         }
 #endif
     }

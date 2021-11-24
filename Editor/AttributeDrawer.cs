@@ -36,7 +36,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(PlotFlowController))]
 		public class PlotFlowControllerEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
-				DrawButton<PlotFlowController>("初始化Hierarchy中所有剧情",(x)=>{
+				DrawButton<PlotFlowController>(GfuLanguage.GfuLanguageInstance.INITIALIZEALLPLOTMODEL.Value,(x)=>{
 					x.InitialPlowFlowController();
 				});
 			}
@@ -44,7 +44,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(SceneController))]
 		public class SceneControllerEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
-				DrawButton<SceneController>("添加Hierarchy中所有场景",(x)=>{			
+				DrawButton<SceneController>(GfuLanguage.GfuLanguageInstance.ADDALLSCENEMODEL.Value,(x)=>{			
 					x.InitialSceneController();
 				});
 			}
@@ -52,7 +52,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(ShowPlotView))]
 		public class ShowPlotViewEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
-				DrawButton<ShowPlotView>("初始化游戏视图系统",(x)=>{
+				DrawButton<ShowPlotView>(GfuLanguage.GfuLanguageInstance.INITIALIZEGAMEVIEW.Value,(x)=>{
 					x.InitialView();
 				});
 			}
@@ -60,7 +60,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(RoleController))]
 		public class RoleControllerEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
-				DrawButton<RoleController>("初始化Hierarchy中所有角色",(x)=>{
+				DrawButton<RoleController>(GfuLanguage.GfuLanguageInstance.INITIALIZEHIERARCHY.Value,(x)=>{
 					x.InitialRoleController();
 				});
 			}
@@ -68,8 +68,10 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(GameSystem))]
 		public class GameSystemEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
-				DrawButton<GameSystem>("初始化游戏系统",(x)=>{	
-					if (EditorUtility.DisplayDialog("提示","需要为您初始化其他依赖项吗","是滴","谢谢，我手动操作")){
+				DrawButton<GameSystem>(GfuLanguage.GfuLanguageInstance.INITIALIZETHEGAMESYSTEM.Value,(x)=>{	
+					if (EditorUtility.DisplayDialog(GfuLanguage.GfuLanguageInstance.HINT.Value,
+						GfuLanguage.GfuLanguageInstance.INITIALIZEAOTHER.Value,GfuLanguage.GfuLanguageInstance.YES.Value,
+						GfuLanguage.GfuLanguageInstance.NO.Value)){
 						x.InitialGameSystem(true);
 					}
 					x.InitialGameSystem(false);

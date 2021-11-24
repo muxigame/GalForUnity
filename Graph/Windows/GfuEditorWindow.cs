@@ -36,6 +36,7 @@ namespace GalForUnity.Graph.Windows{
             GraphView?.Clear();
             rootVisualElement?.Clear();
             autoRepaintOnSceneChange = false;
+            onSceneChanged = false;
         }
         
 

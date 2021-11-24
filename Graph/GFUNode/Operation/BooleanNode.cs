@@ -18,64 +18,65 @@ using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.Operation;
 
 namespace GalForUnity.Graph.GFUNode.Operation{
-    [NodeRename("Operation/"+nameof(BooleanNode),"布尔节点，能进行逻辑判断")]
+    [NodeRename("Operation/" + nameof(BooleanNode), "布尔节点，能进行逻辑判断")]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
-    public class BooleanNode:GfuOperationNode{
-        
-        [NodeRename(nameof(True),typeof(object),NodeDirection.Input,NodeCapacity.Single)]
+    public class BooleanNode : GfuOperationNode{
+        [NodeRename(nameof(True), typeof(object), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort True;
-        [NodeRename(nameof(False),typeof(object),NodeDirection.Input,NodeCapacity.Single)]
+
+        [NodeRename(nameof(False), typeof(object), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort False;
-        [NodeRename(nameof(Boolean),typeof(bool),NodeDirection.Input,NodeCapacity.Single)]
-        [DefaultValue(false)]
+
+        [NodeRename(nameof(Boolean), typeof(bool), NodeDirection.Input, NodeCapacity.Single)] [DefaultValue(false)]
         public GfuPort Boolean;
-        [NodeRename(nameof(Value),typeof(object),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(Value), typeof(object), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Value;
 
         public string Type;
         public string assembly;
-        
+
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
             InitDefaultValuePort<BooleanOperation>(otherNodeData);
-            
+
 #if UNITY_EDITOR
             True.OnConnected += (x) => {
                 if (True.portType == typeof(object)){
-                    False.portType = Value.portType = True.portType=x.portType;
+                    False.portType = Value.portType = True.portType = x.portType;
                     assembly = Assembly.GetAssembly(x.portType).FullName;
                     Type = x.portType.ToString();
                 }
             };
             False.OnConnected += (x) => {
                 if (False.portType == typeof(object)){
-                    True.portType = Value.portType = False.portType=x.portType;
+                    True.portType = Value.portType = False.portType = x.portType;
                     assembly = Assembly.GetAssembly(x.portType).FullName;
                     Type = x.portType.ToString();
                 }
             };
             Value.OnConnected += (x) => {
                 if (Value.portType == typeof(object)){
-                    True.portType = Value.portType = False.portType=x.portType;
+                    True.portType = Value.portType = False.portType = x.portType;
                     assembly = Assembly.GetAssembly(x.portType).FullName;
                     Type = x.portType.ToString();
                 }
             };
             True.OnDisConnected += () => {
-                if (!False.connected&&!Value.connected){
-                    False.portType = Value.portType = True.portType=typeof(object);
+                if (!False.connected && !Value.connected){
+                    False.portType = Value.portType = True.portType = typeof(object);
                     assembly = Type = "";
                 }
             };
             False.OnDisConnected += () => {
-                if (!True.connected&&!Value.connected){
-                    True.portType = Value.portType = False.portType=typeof(object);
+                if (!True.connected && !Value.connected){
+                    True.portType = Value.portType = False.portType = typeof(object);
                     assembly = Type = "";
                 }
             };
             Value.OnDisConnected += () => {
-                if (!True.connected&&!False.connected){
-                    True.portType = Value.portType = False.portType=typeof(object);
+                if (!True.connected && !False.connected){
+                    True.portType = Value.portType = False.portType = typeof(object);
                     assembly = Type = "";
                 }
             };
@@ -83,6 +84,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             if (!string.IsNullOrEmpty(Type) && !string.IsNullOrEmpty(assembly)){
                 type = False.portType = Value.portType = True.portType = Assembly.Load(assembly).GetType(Type);
             }
+
             GfuOperation.OnPostInput += (x) => {
                 // Debug.Log(type);
                 x.InputData[0].type = type;

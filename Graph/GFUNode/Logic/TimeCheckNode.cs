@@ -19,36 +19,32 @@ using GalForUnity.System;
 #if UNITY_EDITOR
 using UnityEditor.UIElements;
 #endif
-
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.GFUNode.Logic{
-    [NodeRename("Logic/"+nameof(TimeCheckNode))]
-    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph|NodeAttributeTargets.ItemGraph)]
+    [NodeRename("Logic/" + nameof(TimeCheckNode))]
+    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph | NodeAttributeTargets.ItemGraph)]
     [Serializable]
     public sealed class TimeCheckNode : EnterNode{
-        
-
-        [NodeRename("Satisfy"+nameof(Exit),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+        [NodeRename("Satisfy" + nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit;
-        [NodeRename(nameof(DissatisfyExit),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+
+        [NodeRename(nameof(DissatisfyExit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort DissatisfyExit;
 
-        
-        public GameTime GameTime = new GameTime(2021,1,1);
-        public GameTime GameTime2 = new GameTime(2021,1,1);
-        
+
+        public GameTime GameTime = new GameTime(2021, 1, 1);
+        public GameTime GameTime2 = new GameTime(2021, 1, 1);
+
         public enum TimeCheckType{
-            [Rename("之前")]
-            Before,
-            [Rename("之后")]
-            After,
-            [Rename("之间")]
-            Between
+            [Rename("之前")] Before,
+            [Rename("之后")] After,
+            [Rename("之间")] Between
         }
 
         public TimeCheckType timeCheckType;
+
         public override RoleData Execute(RoleData roleData){
             switch (timeCheckType){
                 case TimeCheckType.Before:
@@ -70,7 +66,7 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                         else
                             Executed(1);
                         break;
-                    } else if(GameTime > GameTime2){
+                    } else if (GameTime > GameTime2){
                         if (GameTime2 >= GameSystem.Data.CurrentTime && GameSystem.Data.CurrentTime <= GameTime)
                             Executed();
                         else
@@ -84,9 +80,10 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                         break;
                     }
             }
+
             return roleData;
         }
-        
+
 #if UNITY_EDITOR
         private EnumField condition;
         private Vector3IntField _vector3IntField;
@@ -101,7 +98,7 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                     minWidth = 0,
                 },
                 labelElement = {
-                    style= {
+                    style = {
                         minWidth = 0,
                         // fontSize = 12,
                         unityTextAlign = TextAnchor.MiddleLeft
@@ -109,12 +106,13 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                 },
             };
             _vector3IntField2 = new Vector3IntField() {
-                label = GfuLanguage.GfuLanguageInstance.TIME.Value, value = GameTime2,
+                label = GfuLanguage.GfuLanguageInstance.TIME.Value,
+                value = GameTime2,
                 style = {
                     minWidth = 0,
                 },
                 labelElement = {
-                    style= {
+                    style = {
                         minWidth = 0,
                         // fontSize = 12,
                         unityTextAlign = TextAnchor.MiddleLeft
@@ -126,6 +124,7 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                 if (vector3Int != x.newValue){
                     _vector3IntField.value = vector3Int;
                 }
+
                 GameTime = vector3Int;
             });
             _vector3IntField2.RegisterValueChangedCallback((x) => {
@@ -133,11 +132,14 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                 if (vector3Int != x.newValue){
                     _vector3IntField2.value = vector3Int;
                 }
+
                 GameTime2 = vector3Int;
             });
             condition = new EnumField() {
                 label = GfuLanguage.Parse(nameof(condition)),
-                style = { marginTop = 5},
+                style = {
+                    marginTop = 5
+                },
                 labelElement = {
                     style = {
                         minWidth = 0,
@@ -154,13 +156,15 @@ namespace GalForUnity.Graph.GFUNode.Logic{
             mainContainer.Add(condition);
             mainContainer.Add(_vector3IntField);
             foreach (var visualElement in _vector3IntField.ElementAt(1).Children()){
-                ((IntegerField) visualElement).label=(visualElement as IntegerField)?.label == "X"?GfuLanguage.GfuLanguageInstance.YEAR.Value:(visualElement as IntegerField)?.label =="Y"?GfuLanguage.GfuLanguageInstance.MONTH.Value:GfuLanguage.GfuLanguageInstance.DAY.Value;
+                ((IntegerField) visualElement).label = (visualElement as IntegerField)?.label == "X" ? GfuLanguage.GfuLanguageInstance.YEAR.Value : (visualElement as IntegerField)?.label == "Y" ? GfuLanguage.GfuLanguageInstance.MONTH.Value : GfuLanguage.GfuLanguageInstance.DAY.Value;
                 ((IntegerField) visualElement).labelElement.style.minWidth = 0;
             }
+
             foreach (var visualElement in _vector3IntField2.ElementAt(1).Children()){
-                ((IntegerField) visualElement).label=(visualElement as IntegerField)?.label == "X"?GfuLanguage.GfuLanguageInstance.YEAR.Value:(visualElement as IntegerField)?.label =="Y"?GfuLanguage.GfuLanguageInstance.MONTH.Value:GfuLanguage.GfuLanguageInstance.DAY.Value;
+                ((IntegerField) visualElement).label = (visualElement as IntegerField)?.label == "X" ? GfuLanguage.GfuLanguageInstance.YEAR.Value : (visualElement as IntegerField)?.label == "Y" ? GfuLanguage.GfuLanguageInstance.MONTH.Value : GfuLanguage.GfuLanguageInstance.DAY.Value;
                 ((IntegerField) visualElement).labelElement.style.minWidth = 0;
             }
+
             // ObjectField.ElementAt(1).ElementAt(2).style.marginRight = 38;
             EnumCheck();
         }
@@ -194,7 +198,5 @@ namespace GalForUnity.Graph.GFUNode.Logic{
             }
         }
 #endif
-        
     }
-    
 }

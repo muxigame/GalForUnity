@@ -8,6 +8,7 @@
 //        Created by 半世癫(Roc) at 2021-01-29
 //
 //======================================================================
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,20 +20,21 @@ using UnityEngine.UIElements;
 namespace GalForUnity.Graph.GFUNode.Base{
     public class GfuInputView : GfuPort{
         // public class Factory : UxmlFactory<GfuInputView> {}
-        
+
 #if UNITY_EDITOR
         public Edge edge;
         public GfuPort port;
         public VisualElement portContainer;
         public VisualElement fieldContainer;
 #endif
-        
+
         private object _value;
+
         public object Value{
             set{
                 Type = value?.GetType();
 #if UNITY_EDITOR
-                fieldContainer?[0]?.GetType().GetProperty("value")?.SetValue(fieldContainer?[0],value);
+                fieldContainer?[0]?.GetType().GetProperty("value")?.SetValue(fieldContainer?[0], value);
 #endif
                 _value = value;
             }
@@ -40,12 +42,12 @@ namespace GalForUnity.Graph.GFUNode.Base{
         }
 
         public Type Type;
-        
+
 #if UNITY_EDITOR
         public override void OnStartEdgeDragging(){ highlight = false; }
         public override void OnStopEdgeDragging(){ highlight = false; }
 #endif
-        
+
 #if UNITY_EDITOR
         protected GfuInputView(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type) :
             base(portOrientation, portDirection, portCapacity, type){
@@ -66,7 +68,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
         public GfuInputView(){
         }
 #endif
-        
+
 #if UNITY_EDITOR
         /// <summary>
         /// 这段对于事件系统的响应，响应了当节点被删除时，同时删除虚连接的子Edge
@@ -77,11 +79,12 @@ namespace GalForUnity.Graph.GFUNode.Base{
             if (evt.eventTypeId == 3){
                 edge.parent.Remove(edge);
             }
+
             edge.visible = portContainer.visible = port.visible;
             base.ExecuteDefaultAction(evt);
         }
 #endif
-        
+
 
         /// <summary>
         /// 使端口默认值视图连接端口，并返回视图
@@ -93,7 +96,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
             port.InputView = this;
             this.port = port;
             portType = port.portType;
-            edge = new Edge{
+            edge = new Edge {
                 // title="edge",
                 output = this,
                 input = port,
@@ -114,15 +117,13 @@ namespace GalForUnity.Graph.GFUNode.Base{
                     port.portCapLit = false;
                 }
             }));
-            port.RegisterCallback<DetachFromPanelEvent>(evt => {
-               edge.RemoveFromHierarchy();
-            });
+            port.RegisterCallback<DetachFromPanelEvent>(evt => { edge.RemoveFromHierarchy(); });
             //初始化容器结构并返回portContainer
-            portContainer = new VisualElement(){
+            portContainer = new VisualElement() {
                 name = "portContainer",
                 focusable = false,
                 pickingMode = PickingMode.Ignore,
-                    style= {
+                style = {
                     backgroundColor = new Color(0.25f, 0.25f, 0.25f, 0.8f),
                     borderBottomLeftRadius = 2,
                     borderBottomRightRadius = 2,
@@ -135,8 +136,8 @@ namespace GalForUnity.Graph.GFUNode.Base{
                     alignItems = Align.Center
                 }
             };
-            portContainer.Add(fieldContainer=new VisualElement(){
-                style= {
+            portContainer.Add(fieldContainer = new VisualElement() {
+                style = {
                     paddingLeft = 10
                 }
             });
@@ -145,6 +146,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 edge.style.opacity = 0;
                 SetEnabled(false);
             }
+
             portContainer.Add(this);
             highlight = false;
             portCapLit = true;
@@ -152,29 +154,24 @@ namespace GalForUnity.Graph.GFUNode.Base{
 #else
             return null;
 #endif
-            
         }
-        
 
-        
 
         public static GfuInputView Create(object port){
 #if UNITY_EDITOR
             GfuInputViewListener connectorListener = new GfuInputViewListener();
-            GfuInputView ele = new GfuInputView(((GfuPort)port).orientation, Direction.Output, Capacity.Single, ((GfuPort)port).portType){
+            GfuInputView ele = new GfuInputView(((GfuPort) port).orientation, Direction.Output, Capacity.Single, ((GfuPort) port).portType) {
                 m_EdgeConnector = (EdgeConnector) new EdgeConnector<Edge>((IEdgeConnectorListener) connectorListener)
             };
             ele.AddManipulator((IManipulator) ele.m_EdgeConnector);
             return ele;
-            
+
 #else
             return new GfuInputView(port);
 #endif
-            
         }
-  
 
-        
+
 #if UNITY_EDITOR
         private class GfuInputViewListener : IEdgeConnectorListener{
             private GraphViewChange m_GraphViewChange;
@@ -191,18 +188,15 @@ namespace GalForUnity.Graph.GFUNode.Base{
             public void OnDrop(UnityEditor.Experimental.GraphView.GraphView graphView, Edge edge){ }
         }
 #endif
-        public void SetDefaultValue<T>(BaseField<T> baseField,T value){
-            baseField.value = value;
-        }
-        
+        public void SetDefaultValue<T>(BaseField<T> baseField, T value){ baseField.value = value; }
+
 #if UNITY_EDITOR
         /// <summary>
         /// EditorMethod 设置默认值端口的表情
         /// </summary>
         /// <param name="label"></param>
-        public override void SetDefaultLabel(string label){
-            portName = label;
-        }
+        public override void SetDefaultLabel(string label){ portName = label; }
+
         /// <summary>
         /// EditorMethod 设置默认值端口的值
         /// </summary>
@@ -210,8 +204,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
         /// <typeparam name="T"></typeparam>
         /// <exception cref="NullReferenceException"></exception>
         public override void SetDefaultValue<T>(T value){
-            if (fieldContainer[0] is BaseField<T> baseField) 
-                baseField.value=value;
+            if (fieldContainer[0] is BaseField<T> baseField) baseField.value = value;
             throw new NullReferenceException($"BaseField<{typeof(T)}> don't exit!");
         }
 
@@ -225,15 +218,10 @@ namespace GalForUnity.Graph.GFUNode.Base{
             if (fieldContainer[0] is BaseField<T> baseField) return baseField.value;
             throw new NullReferenceException($"BaseField<{typeof(T)}> don't exit!");
         }
-        
-#endif
-        
-        public override object GetDefaultValue(){
-            return Value;
-        }
-        public override void SetDefaultValue(object value){
-            Value = value;
-        }
-    }
 
+#endif
+
+        public override object GetDefaultValue(){ return Value; }
+        public override void SetDefaultValue(object value){ Value = value; }
+    }
 }

@@ -12,15 +12,16 @@
 using System.Collections.Generic;
 using GalForUnity.Attributes;
 using GalForUnity.Model;
+using GalForUnity.System;
 using MUX.Support;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace GalForUnity.Controller{
-    public class OptionController : InstanceManagerForMono<OptionController>{
+    public class OptionController : GfuInstanceManagerForMono<OptionController>{
         [Rename(nameof(optionsPool))]
-        public ObjectPool optionsPool;
+        public GfuObjectPool optionsPool;
         [Rename(nameof(autoSize))]
         public bool autoSize = false;
         [Rename(nameof(optionSpace))]
@@ -39,7 +40,7 @@ namespace GalForUnity.Controller{
         }
 
         public void InitialView(){
-            if (optionsPool == null) optionsPool = gameObject.AddComponent<ObjectPool>();
+            if (optionsPool == null) optionsPool = gameObject.AddComponent<GfuObjectPool>();
             if (optionsPool.obj == null) optionsPool.obj = Resources.Load<GameObject>("GfuDemoOptionView");
             if (!gameObject.TryGetComponent(out RectTransform rectTransform)){
                 rectTransform = gameObject.AddComponent<RectTransform>();

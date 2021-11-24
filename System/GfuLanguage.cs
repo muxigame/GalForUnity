@@ -126,8 +126,8 @@ namespace GalForUnity.System{
             English,
             [Rename(nameof(Chinese))]
             Chinese,
-            [Rename(nameof(Japanese))]
-            Japanese,
+            // [Rename(nameof(Japanese))]
+            // Japanese,
         }
         
         public readonly LanguageItem LANGUAGE = new LanguageItem("Language","语言");     
@@ -268,6 +268,7 @@ namespace GalForUnity.System{
         public readonly LanguageItem BACKGROUNDVIEW = new LanguageItem("Background View","背景视图容器");
         public readonly LanguageItem AUDIOSOURCE = new LanguageItem("Audio Source","音源");
         public readonly LanguageItem PARENTCANVAS = new LanguageItem("Parent Canvas","父画布");
+        public readonly LanguageItem BACKGROUNDDISTANCE = new LanguageItem("Background Distance","背景距离");
         public readonly LanguageItem INTERVALTIME = new LanguageItem("Interval Time","间隔时间");
         public readonly LanguageItem RENDERINGMODE = new LanguageItem("Rendering Mode","渲染模式");
         public readonly LanguageItem TILED = new LanguageItem("Tiled","平铺");
@@ -318,8 +319,11 @@ namespace GalForUnity.System{
         public readonly LanguageItem ADD = new LanguageItem("Add","添加");
         public readonly LanguageItem EXECUTE = new LanguageItem("Execute","执行");
         public readonly LanguageItem SAVE = new LanguageItem("Sace","保存");
+        public readonly LanguageItem HINT = new LanguageItem("hint","提示");
         public readonly LanguageItem TO = new LanguageItem("To","到");
         public readonly LanguageItem X = new LanguageItem("X","X");
+        public readonly LanguageItem YES = new LanguageItem("Yes","是滴");
+        public readonly LanguageItem NO = new LanguageItem("No,Thinks","不了，谢谢");
         public readonly LanguageItem Y = new LanguageItem("Y","Y");
         public readonly LanguageItem Z = new LanguageItem("Z","Z");
         public readonly LanguageItem W = new LanguageItem("W","W");
@@ -329,6 +333,12 @@ namespace GalForUnity.System{
         public readonly LanguageItem REPEATABILITY = new LanguageItem("Repeatability","可重复");
         public readonly LanguageItem ISLOOPING = new LanguageItem("Is Looping","是否循环");
         public readonly LanguageItem ISAUTOHIGHLIGHT = new LanguageItem("Is Auto High Light","是否自动高光");
+        public readonly LanguageItem INITIALIZETHEGAMESYSTEM = new LanguageItem("Initialize the game system","初始化游戏系统");
+        public readonly LanguageItem INITIALIZEHIERARCHY = new LanguageItem("Initialize all role model","初始化Hierarchy中所有角色");
+        public readonly LanguageItem INITIALIZEGAMEVIEW = new LanguageItem("Initialize the game view system","初始化游戏视图系统");
+        public readonly LanguageItem ADDALLSCENEMODEL = new LanguageItem("Add all SceneModel","添加Hierarchy中所有场景");
+        public readonly LanguageItem INITIALIZEALLPLOTMODEL = new LanguageItem("Initialize all PlotModel","初始化Hierarchy中所有剧情");
+        public readonly LanguageItem INITIALIZEAOTHER = new LanguageItem("Do I need to initialize additional dependencies for you?","需要为您初始化其他依赖项吗");
     }
     public class LanguageItem{
         public LanguageItem(Dictionary<string,string> value){
@@ -348,7 +358,7 @@ namespace GalForUnity.System{
                 switch (GameSystem.StaticData.Language){
                     case GfuLanguage.LanguageEnum.Chinese: return Chinese;
                     case GfuLanguage.LanguageEnum.English: return English;
-                    case GfuLanguage.LanguageEnum.Japanese: return Japanese;
+                    // case GfuLanguage.LanguageEnum.Japanese: return Japanese;
                 }
                 return English;
             }

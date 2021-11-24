@@ -17,7 +17,6 @@ using GalForUnity.InstanceID;
 using GalForUnity.Model;
 using GalForUnity.Model.Scene;
 using GalForUnity.View;
-using MUX.Mono;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -31,7 +30,7 @@ namespace GalForUnity.System{
 	// [RequireComponent(typeof(GraphSystem))]
 	// [RequireComponent(typeof(GfuInstance))]
 	[ExecuteAlways]
-	public class GameSystem : MUX.Support.InstanceManagerForMono<GameSystem>{
+	public class GameSystem : GfuInstanceManagerForMono<GameSystem>{
 		// ReSharper disable all MemberCanBePrivate.Global
 		private static SystemData _systemData;
 		private static GraphSystem.GraphSystemData _graphSystem;
@@ -131,17 +130,17 @@ namespace GalForUnity.System{
 			StaticData = Data = systemData;
 			InitialGameSystem(true);
 			CheckWindow();
+		}
+
+		private void Start(){
 			if (
 #if UNITY_EDITOR
-				EditorApplication.isPlaying&&
+				EditorApplication.isPlaying &&
 #endif
-			    true){
+				true){
 				if(systemData?.CurrentSceneModel) systemData.SceneController.GoToScene(systemData.CurrentSceneModel);
 				
 			}
-
-			
-
 		}
 
 		private static void CheckWindow(){
@@ -161,8 +160,8 @@ namespace GalForUnity.System{
 			systemData.PlotFlowController = InitialSystemComponent<PlotFlowController>();
 			systemData.ShowPlotView = InitialSystemComponent<ShowPlotView>();
 			systemData.OptionController = InitialSystemComponent<OptionController>();
-			if (FindObjectOfType<RunOnMono>() == null) gameObject.AddComponent<RunOnMono>();
-			systemData.currentMonoProxy = gameObject.GetComponent<RunOnMono>();
+			if (FindObjectOfType<GfuRunOnMono>() == null) gameObject.AddComponent<GfuRunOnMono>();
+			systemData.currentMonoProxy = gameObject.GetComponent<GfuRunOnMono>();
 			if(gameObject.GetComponent<GraphSystem>()==null) graphSystem = gameObject.AddComponent<GraphSystem>();
 			if (!currentInstanceIDStorage){
 				var findObjectsOfInstanceIDStorage = Resources.FindObjectsOfTypeAll<InstanceIDStorage>();
@@ -275,7 +274,7 @@ namespace GalForUnity.System{
 			
 			[Rename(nameof(currentMonoProxy))]
 			[SerializeField]
-			public RunOnMono currentMonoProxy;
+			public GfuRunOnMono currentMonoProxy;
 			
 		}
 	}

@@ -14,23 +14,20 @@ using GalForUnity.Graph.Attributes;
 using GalForUnity.Model;
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
+
 #endif
 
 
 namespace GalForUnity.Graph.GFUNode.Base{
     [NodeRename(nameof(MainNode))]
-    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph|NodeAttributeTargets.ItemGraph)]
-    public class MainNode : GfuNode {
-        [NodeRename(nameof(Exit),typeof(RoleData),NodeDirection.Output,NodeCapacity.Multi)]
+    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph | NodeAttributeTargets.ItemGraph)]
+    public class MainNode : GfuNode{
+        [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Exit;
 #if UNITY_EDITOR
-        public MainNode(){
-            capabilities -= Capabilities.Deletable;
-        }
+        public MainNode(){ capabilities -= Capabilities.Deletable; }
 #endif
 
-        public override RoleData Execute(RoleData roleData){
-            return base.Execute(roleData);
-        }
+        public override RoleData Execute(RoleData roleData){ return base.Execute(roleData); }
     }
 }

@@ -20,32 +20,31 @@ using GalForUnity.System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
+
 // #if UNITY_EDITOR
 //
 // #endif
 
 namespace GalForUnity.Graph.GFUNode.Base{
     public class BaseFieldNode : EnterNode{
-        
-        [NonSerialized]
-        private readonly Dictionary<string, NodeFieldTypeAttribute> _nodeFieldTypeAttributes;
+        [NonSerialized] private readonly Dictionary<string, NodeFieldTypeAttribute> _nodeFieldTypeAttributes;
 
         /// <summary>
         /// 将所有的NodeFieldTypeAttribute放入字典当中
         /// </summary>
         protected BaseFieldNode(){
-            _nodeFieldTypeAttributes=new Dictionary<string, NodeFieldTypeAttribute>();
+            _nodeFieldTypeAttributes = new Dictionary<string, NodeFieldTypeAttribute>();
             foreach (var fieldInfo in GetType().GetFields()){
-                if (IsSubClassOf(fieldInfo,typeof(VisualElement))){
-                    _nodeFieldTypeAttributes.Add(fieldInfo.Name,fieldInfo.GetCustomAttribute<NodeFieldTypeAttribute>());
+                if (IsSubClassOf(fieldInfo, typeof(VisualElement))){
+                    _nodeFieldTypeAttributes.Add(fieldInfo.Name, fieldInfo.GetCustomAttribute<NodeFieldTypeAttribute>());
                 }
             }
         }
 
-        
+
 #if UNITY_EDITOR
-        
-  
+
+
 #endif
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
@@ -59,31 +58,33 @@ namespace GalForUnity.Graph.GFUNode.Base{
         /// <param name="fieldName">字段名，可以是UIElement或者是普通字段</param>
         /// <param name="func">初始化方法</param>
         /// <typeparam name="T">初始化方法需要返回一个UIElement</typeparam>
-        protected virtual T InitObject<T>(string fieldName, Func<NodeFieldTypeAttribute,T> func) where T : VisualElement{
+        protected virtual T InitObject<T>(string fieldName, Func<NodeFieldTypeAttribute, T> func) where T : VisualElement{
 #if UNITY_EDITOR
             NodeFieldTypeAttribute customAttribute = new NodeFieldTypeAttribute();
             T typElement;
             // NodeRenameAttribute nodeRename = new NodeRenameAttribute();
             var field = GetType().GetField(fieldName);
-            if (_nodeFieldTypeAttributes.ContainsKey(fieldName)){//如果NodeFieldType对象是一个VisualElement的话，反射该字段赋值，否在则是一个字段，去反射字段的属性获得名称值，并用用户的方法来初始化字段
+            if (_nodeFieldTypeAttributes.ContainsKey(fieldName)){ //如果NodeFieldType对象是一个VisualElement的话，反射该字段赋值，否在则是一个字段，去反射字段的属性获得名称值，并用用户的方法来初始化字段
                 var fieldInfo = field;
                 // customAttribute.Name = GfuLanguage.Parse(fieldInfo.GetCustomAttribute<NodeFieldTypeAttribute>().Name);
                 customAttribute = _nodeFieldTypeAttributes[fieldName];
                 typElement = func(customAttribute);
                 fieldInfo.SetValue(this, typElement);
-                mainContainer.Add((VisualElement)fieldInfo.GetValue(this));
+                mainContainer.Add((VisualElement) fieldInfo.GetValue(this));
             } else{
-                if (field.GetCustomAttribute<RenameAttribute>()!=null){
+                if (field.GetCustomAttribute<RenameAttribute>() != null){
                     customAttribute.Name = field.GetCustomAttribute<RenameAttribute>().LanguageItem.Value;
                     typElement = func(customAttribute);
-                }else if (field.GetCustomAttribute<NodeFieldTypeAttribute>() != null){
+                } else if (field.GetCustomAttribute<NodeFieldTypeAttribute>() != null){
                     customAttribute.Name = field.GetCustomAttribute<NodeFieldTypeAttribute>().Name;
                     typElement = func(customAttribute);
                 } else{
                     typElement = null;
                 }
+
                 mainContainer.Add(typElement);
             }
+
             return typElement;
 #else
             return null;
@@ -117,6 +118,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                     }
                 }
             }
+
             foreach (var bindableElement in bindableElements2){
                 var fields = this.GetType().GetFields();
                 var type = bindableElement.value != null ? bindableElement.value.GetType() : null;
@@ -128,6 +130,5 @@ namespace GalForUnity.Graph.GFUNode.Base{
             }
 #endif
         }
-
     }
 }

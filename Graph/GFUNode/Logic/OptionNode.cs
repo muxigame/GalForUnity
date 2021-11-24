@@ -23,22 +23,26 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.GFUNode.Logic{
-    [NodeRename("Logic/" +nameof(OptionNode),"通过进度条来控制对应剧情的概率")]
+    [NodeRename("Logic/" + nameof(OptionNode), "通过进度条来控制对应剧情的概率")]
     [Serializable]
-    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph |NodeAttributeTargets.ItemGraph)]
+    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph | NodeAttributeTargets.ItemGraph)]
     public class OptionNode : BaseFieldNode{
-        [NodeRename(nameof(Exit1),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+        [NodeRename(nameof(Exit1), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit1;
-        [NodeRename(nameof(Exit2),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+
+        [NodeRename(nameof(Exit2), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit2;
-        [NodeRename(nameof(Exit3),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+
+        [NodeRename(nameof(Exit3), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit3;
-        [NodeRename(nameof(Exit4),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+
+        [NodeRename(nameof(Exit4), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit4;
-        [NodeRename(nameof(Exit5),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+
+        [NodeRename(nameof(Exit5), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit5;
 
-        public List<string> optionsName=new List<string>();
+        public List<string> optionsName = new List<string>();
         public int currentIndex = 2;
         private List<FieldInfo> _outputPorts;
 
@@ -48,15 +52,12 @@ namespace GalForUnity.Graph.GFUNode.Logic{
             private readonly OptionNode _optionNode;
             private TextField _textField;
 
-            public TextFieldWithIndex(OptionNode optionNode){
-                this._optionNode = optionNode;
-            }
+            public TextFieldWithIndex(OptionNode optionNode){ this._optionNode = optionNode; }
 
             public TextField Create(){
-                
-                _textField=new TextField() {
-                    label = GfuLanguage.Parse("Option") +(index +1),
-                    value = _optionNode.optionsName.Count >index?_optionNode.optionsName[index]:"",
+                _textField = new TextField() {
+                    label = GfuLanguage.Parse("Option") + (index + 1),
+                    value = _optionNode.optionsName.Count > index ? _optionNode.optionsName[index] : "",
                     labelElement = {
                         style = {
                             minWidth = 0
@@ -71,16 +72,17 @@ namespace GalForUnity.Graph.GFUNode.Logic{
             public TextField this[int index] => _textFields[index];
             public int index;
 
-            public int GetIndex(TextField textField){
-                return _textFields.IndexOf(textField);
-            }
+            public int GetIndex(TextField textField){ return _textFields.IndexOf(textField); }
+
             public TextField Remove(){
-                TextField visualElement =_textFields[--index];
+                TextField visualElement = _textFields[--index];
                 _textFields.RemoveAt(index);
                 return visualElement;
             }
+
             public int Count => _textFields.Count;
         }
+
         public TextFieldWithIndex textFieldWithIndex;
         public VisualElement buttongroup;
 #endif
@@ -88,7 +90,7 @@ namespace GalForUnity.Graph.GFUNode.Logic{
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
 #if UNITY_EDITOR
-            textFieldWithIndex=new TextFieldWithIndex(this);
+            textFieldWithIndex = new TextFieldWithIndex(this);
             _outputPorts = GfuOutputPortFieldInfos();
             if (currentIndex == 0){
                 for (var i = 0; i < _outputPorts.Count; i++){
@@ -99,16 +101,18 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                     }
                 }
             }
+
             while (outputContainer.childCount > currentIndex){
-                outputContainer.RemoveAt(outputContainer.childCount -1);
+                outputContainer.RemoveAt(outputContainer.childCount - 1);
             }
+
             AutoTextField();
-            buttongroup=new VisualElement() {
-                style= {
+            buttongroup = new VisualElement() {
+                style = {
                     flexDirection = FlexDirection.Row
                 }
             };
-            
+
             Button button = new Button() {
                 text = GfuLanguage.Parse("Add"),
                 style = {
@@ -116,12 +120,13 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                 }
             };
             button.clickable.clicked += () => {
-                foreach (var outputPort in _outputPorts){
-                }
+                foreach (var outputPort in _outputPorts){ }
+
                 if (currentIndex >= _outputPorts.Count){
                     UnityEditor.EditorUtility.DisplayDialog("提示", "不可再多啦，选项框都要溢出屏幕啦（如需更多端口访问官网查看魔改教程）", "确认");
                     return;
                 }
+
                 AddTextField();
                 outputContainer.Add(_outputPorts[currentIndex++].GetValue(this) as VisualElement);
             };
@@ -136,6 +141,7 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                     UnityEditor.EditorUtility.DisplayDialog("提示", "至少需要有一个剧情出口呦", "确认");
                     return;
                 }
+
                 RemoveTextField();
                 outputContainer.RemoveAt(--currentIndex);
             };
@@ -152,13 +158,13 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                 while (optionsName.Count - 1 < optionIndex){
                     optionsName.Add("");
                 }
+
                 optionsName[optionIndex] = evt.newValue;
             });
-            mainContainer.Insert(mainContainer.IndexOf(buttongroup),textField);
+            mainContainer.Insert(mainContainer.IndexOf(buttongroup), textField);
         }
-        private void RemoveTextField(){
-            mainContainer.Remove(textFieldWithIndex.Remove());
-        }
+
+        private void RemoveTextField(){ mainContainer.Remove(textFieldWithIndex.Remove()); }
         private void AutoTextField(){
             while (textFieldWithIndex.Count < currentIndex){
                 var textField = textFieldWithIndex.Create();
@@ -167,6 +173,7 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                     while (optionsName.Count - 1 < optionIndex){
                         optionsName.Add("");
                     }
+
                     optionsName[optionIndex] = evt.newValue;
                 });
                 mainContainer.Add(textField);

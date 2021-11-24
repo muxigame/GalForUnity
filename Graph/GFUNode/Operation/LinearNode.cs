@@ -8,6 +8,7 @@
 //        Created by 半世癫(Roc) at 2021-02-24 13:57:29
 //
 //======================================================================
+
 using System;
 using GalForUnity.Attributes;
 using GalForUnity.Graph.Attributes;
@@ -21,7 +22,6 @@ namespace GalForUnity.Graph.GFUNode.Operation{
     [Serializable]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
     public class LinearNode : GfuOperationNode{
-        
         [NodeRename(nameof(From), typeof(float), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort From;
 
@@ -38,6 +38,5 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             base.Init(otherNodeData);
             InitDefaultValuePort<LinearOperation>(otherNodeData);
         }
-
     }
 }

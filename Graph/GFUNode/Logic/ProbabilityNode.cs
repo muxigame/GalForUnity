@@ -24,23 +24,19 @@ using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace GalForUnity.Graph.GFUNode.Logic{
-    [NodeRename("Logic/"+nameof(ProbabilityNode),"通过进度条来控制对应剧情的概率")]
+    [NodeRename("Logic/" + nameof(ProbabilityNode), "通过进度条来控制对应剧情的概率")]
     [Serializable]
-    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph|NodeAttributeTargets.ItemGraph)]
+    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph | NodeAttributeTargets.ItemGraph)]
     public class ProbabilityNode : DoubleExitNode{
-
         public float probability = 100;
-        
+
 #if UNITY_EDITOR
         public BaseSlider<float> Slider;
         public FloatField ExitOneProbability;
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
-            Slider=new Slider() {
-                value = probability,
-                highValue = 100,
-                lowValue = 0,
-                tooltip = "当概率满时必定走分支一，当概率为零是必定走分支二，否则走一个对应概率的随机端口",
+            Slider = new Slider() {
+                value = probability, highValue = 100, lowValue = 0, tooltip = "当概率满时必定走分支一，当概率为零是必定走分支二，否则走一个对应概率的随机端口",
             };
             ExitOneProbability = new FloatField() {
                 label = GfuLanguage.Parse(nameof(ExitOneProbability)),
@@ -49,21 +45,19 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                 style = { },
                 labelElement = {
                     style = {
-                        minWidth = 0,
-                        fontSize = 12,
-                        unityTextAlign = TextAnchor.MiddleLeft
+                        minWidth = 0, fontSize = 12, unityTextAlign = TextAnchor.MiddleLeft
                     }
                 },
             };
             Slider.RegisterValueChangedCallback((x) => {
                 if (probability != x.newValue){
-                    probability=ExitOneProbability.value = x.newValue;
+                    probability = ExitOneProbability.value = x.newValue;
                 }
             });
             Slider.SetValueWithoutNotify(probability);
             ExitOneProbability.RegisterValueChangedCallback((x) => {
                 if (probability != x.newValue){
-                    probability =Slider.value= x.newValue;
+                    probability = Slider.value = x.newValue;
                 }
             });
             mainContainer.Add(Slider);
@@ -80,15 +74,13 @@ namespace GalForUnity.Graph.GFUNode.Logic{
             if (value <= probability){
                 return base.Execute(roleData);
             }
-            return Executed(1,roleData);
+
+            return Executed(1, roleData);
         }
 
-        
+
 #if UNITY_EDITOR
-        public override void Save(){
-            probability = ExitOneProbability.value;
-        }
+        public override void Save(){ probability = ExitOneProbability.value; }
 #endif
-
     }
 }

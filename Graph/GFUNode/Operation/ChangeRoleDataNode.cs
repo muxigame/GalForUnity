@@ -24,59 +24,60 @@ using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace GalForUnity.Graph.GFUNode.Operation{
-    [NodeRename("Operation/"+nameof(ChangeRoleDataNode))]
-    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph|NodeAttributeTargets.ItemGraph)]
+    [NodeRename("Operation/" + nameof(ChangeRoleDataNode))]
+    [NodeAttributeUsage(NodeAttributeTargets.FlowGraph | NodeAttributeTargets.ItemGraph)]
     public class ChangeRoleDataNode : BaseFieldNode{
-        
-        [NodeRename(nameof(Exit),typeof(RoleData),NodeDirection.Output,NodeCapacity.Single)]
+        [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit;
-        
+
         public enum ChangeType{
             Equal,
             Add,
             Subtract,
         }
-        
-        
+
+
         public ChangeType operationType;
 
-        
+
         public RoleData objectReference;
-        
+
         public override RoleData Execute(RoleData roleData){
             // Debug.Log(objectReference);
             // Debug.Log(operationType);
             if (objectReference){
                 switch (operationType){
                     case ChangeType.Add:
-                        return Executed(0,roleData.Parse(roleData + (RoleData) objectReference));
+                        return Executed(0, roleData.Parse(roleData + (RoleData) objectReference));
                     case ChangeType.Subtract:
-                        return Executed(0,roleData.Parse(roleData - (RoleData) objectReference));
+                        return Executed(0, roleData.Parse(roleData - (RoleData) objectReference));
                     case ChangeType.Equal:
-                        return Executed(0,(RoleData)objectReference);
+                        return Executed(0, (RoleData) objectReference);
                 }
             }
+
             return Executed(0, roleData);
         }
-        
+
 #if UNITY_EDITOR
-        [NodeFieldType(typeof(RoleData),nameof(RoleData))]
+        [NodeFieldType(typeof(RoleData), nameof(RoleData))]
         public ObjectField ObjectField;
-        [NodeFieldType(typeof(ChangeType),nameof(operationType))]
+
+        [NodeFieldType(typeof(ChangeType), nameof(operationType))]
         public EnumField enumField;
 
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
             InitObject(nameof(enumField), (customAttribute) => {
-                enumField = new EnumField(){
+                enumField = new EnumField() {
                     value = operationType,
                     label = GfuLanguage.Parse(customAttribute.Name),
-                    style = {marginTop = 5},
+                    style = {
+                        marginTop = 5
+                    },
                     labelElement = {
                         style = {
-                            minWidth = 0,
-                            fontSize = 12,
-                            unityTextAlign = TextAnchor.MiddleLeft
+                            minWidth = 0, fontSize = 12, unityTextAlign = TextAnchor.MiddleLeft
                         }
                     }
                 };
@@ -89,14 +90,12 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 label = GfuLanguage.Parse(customAttribute.Name),
                 labelElement = {
                     style = {
-                        minWidth = 0,
-                        fontSize = 12,
-                        unityTextAlign = TextAnchor.MiddleLeft
+                        minWidth = 0, fontSize = 12, unityTextAlign = TextAnchor.MiddleLeft
                     }
                 }
             });
-            RegisterValueChangedCallback<BaseField<Enum>,Enum>(this);
-            RegisterValueChangedCallback<BaseField<Object>,Object>(this);
+            RegisterValueChangedCallback<BaseField<Enum>, Enum>(this);
+            RegisterValueChangedCallback<BaseField<Object>, Object>(this);
         }
 
         protected override void OnValueChangedCallback<T, T2>(T field, ChangeEvent<T2> changeEvent){

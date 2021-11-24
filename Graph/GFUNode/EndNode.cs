@@ -14,18 +14,20 @@ using GalForUnity.Attributes;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.System.Event;
-using UnityEngine;
 
 namespace GalForUnity.Graph.GFUNode{
-    [NodeRename("Node/" +nameof(EndNode),"剧情项编辑节点")]
+    [NodeRename("Node/" + nameof(EndNode), "剧情项编辑节点")]
     [Serializable]
-    [NodeAttributeUsage(NodeAttributeTargets.ItemGraph|NodeAttributeTargets.FlowGraph)]
+    [NodeAttributeUsage(NodeAttributeTargets.ItemGraph | NodeAttributeTargets.FlowGraph)]
     public class EndNode : EnterNode{
         public override void Executed(int index){
             var invocationList = EventCenter.GetInstance().OnNodeExecutedEvent.GetInvocationList();
             for (var i = invocationList.Length - 1; i >= 0; i--){
-                invocationList[i].Method.Invoke(invocationList[i].Target,new object[]{this});
+                invocationList[i].Method.Invoke(invocationList[i].Target, new object[] {
+                    this
+                });
             }
+
             OnExecuted?.Invoke(null);
         }
     }

@@ -12,12 +12,12 @@
 using System.Reflection;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Data;
+#if UNITY_EDITOR
 using UnityEditor.UIElements;
+#endif
 using UnityEngine;
 using UnityEngine.UIElements;
-#if UNITY_EDITOR
 
-#endif
 
 namespace GalForUnity.Graph.GFUNode.Base{
     /// <summary>
@@ -25,12 +25,11 @@ namespace GalForUnity.Graph.GFUNode.Base{
     /// </summary>
     /// <typeparam name="T">对顶对象可以接受的值</typeparam>
     public class ObjectFieldNode<T> : EnterNode where T : Object{
-
         public T objectReference;
-        
+
 #if UNITY_EDITOR
         public ObjectField ObjectField;
-        
+
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
             InitObject(objectReference);
@@ -44,23 +43,21 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 value = obj,
                 objectType = typeof(T),
                 label = customAttribute.Name,
-                style = { 
+                style = {
                     minWidth = 0,
                 },
                 labelElement = {
                     style = {
                         // flexBasis = 0, minWidth = customAttribute.Name.Length * 13, width = customAttribute.Name.Length * 13, fontSize = 12,unityTextAlign = TextAnchor.MiddleLeft
-                        minWidth = 0,
-                        unityTextAlign = TextAnchor.MiddleLeft,
+                        minWidth = 0, unityTextAlign = TextAnchor.MiddleLeft,
                     }
                 }
             };
-            ObjectField.RegisterValueChangedCallback((evt) => {
-                objectReference = (T) evt.newValue;
-            });
+            ObjectField.RegisterValueChangedCallback((evt) => { objectReference = (T) evt.newValue; });
             mainContainer.Add(ObjectField);
         }
-        protected virtual void InitObject<T2>(out ObjectField objectField,T2 obj)where T2 : Object {
+
+        protected virtual void InitObject<T2>(out ObjectField objectField, T2 obj) where T2 : Object{
             obj = obj ? obj : default;
             NodeFieldTypeAttribute customAttribute = (NodeFieldTypeAttribute) GetType().GetCustomAttribute(typeof(NodeFieldTypeAttribute));
             if (customAttribute == null) customAttribute = new NodeFieldTypeAttribute();
@@ -68,32 +65,28 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 value = obj,
                 objectType = typeof(T2),
                 label = customAttribute.Name,
-                style = { 
+                style = {
                     minWidth = 0,
                 },
                 labelElement = {
                     style = {
-                        minWidth = 0,
-                        unityTextAlign = TextAnchor.MiddleLeft,
+                        minWidth = 0, unityTextAlign = TextAnchor.MiddleLeft,
                     }
                 }
             };
-            objectField.RegisterValueChangedCallback((evt) => {
-                obj = (T2) evt.newValue;
-            });
+            objectField.RegisterValueChangedCallback((evt) => { obj = (T2) evt.newValue; });
             mainContainer.Add(objectField);
         }
+
         protected virtual void RegisterValueChangedCallback(ObjectFieldNode<T> objectFieldNode){
             foreach (var objectField in objectFieldNode.GetFieldsName<ObjectField>()){
-                objectField.Key.RegisterValueChangedCallback((changeEvent)=> {
-                    OnValueChangedCallback(objectField.Key, changeEvent);
-                });
+                objectField.Key.RegisterValueChangedCallback((changeEvent) => { OnValueChangedCallback(objectField.Key, changeEvent); });
             }
         }
 
 
-        protected virtual void OnValueChangedCallback(ObjectField objectField,ChangeEvent<Object> changeEvent){ }
-        
+        protected virtual void OnValueChangedCallback(ObjectField objectField, ChangeEvent<Object> changeEvent){ }
+
 
         public override void Save(){
             var bindableElements = GetFields<ObjectField>();
@@ -102,12 +95,11 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 var type = bindableElement?.value != null ? bindableElement.value.GetType() : null;
                 foreach (var fieldInfo in fields){
                     if (fieldInfo.FieldType == type){
-                        fieldInfo.SetValue(this,bindableElement.value);
+                        fieldInfo.SetValue(this, bindableElement.value);
                     }
                 }
             }
         }
 #endif
-
     }
 }

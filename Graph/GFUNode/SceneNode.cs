@@ -18,17 +18,18 @@ using GalForUnity.Model.Scene;
 using GalForUnity.System;
 
 namespace GalForUnity.Graph.GFUNode{
-    [NodeRename("Node/" +nameof(SceneNode),"场景节点")]
+    [NodeRename("Node/" + nameof(SceneNode), "场景节点")]
     [NodeFieldType("Scene")]
     [Serializable]
-    [NodeAttributeUsage(NodeAttributeTargets.ItemGraph|NodeAttributeTargets.FlowGraph)]
-    public class SceneNode :ObjectFieldNode<SceneModel>{
+    [NodeAttributeUsage(NodeAttributeTargets.ItemGraph | NodeAttributeTargets.FlowGraph)]
+    public class SceneNode : ObjectFieldNode<SceneModel>{
         [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit;
 
         public override RoleData Execute(RoleData roleData){
-            if(objectReference) GameSystem.Data.SceneController.GoToScene(objectReference);
-            return base.Execute(roleData);;
+            if (objectReference) GameSystem.Data.SceneController.GoToScene(objectReference);
+            return base.Execute(roleData);
+            ;
         }
     }
 }

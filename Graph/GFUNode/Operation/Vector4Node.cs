@@ -33,8 +33,8 @@ namespace GalForUnity.Graph.GFUNode.Operation{
 
         [NodeRename("W", typeof(float), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort W;
-        
-        [NodeRename(nameof(Vector4),typeof(Vector4),NodeDirection.Output,NodeCapacity.Multi)]
+
+        [NodeRename(nameof(Vector4), typeof(Vector4), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Exit;
 
         public Vector4Node(){
@@ -51,7 +51,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             base.Init(otherNodeData);
             InitDefaultValuePort<Vector4Operation>(otherNodeData);
         }
-        
+
         // public override object GetDefaultValue(int portIndex){
         //     var gfuPort = (GfuPort)inputContainer[portIndex];
         //     return gfuPort.GetDefaultValue();

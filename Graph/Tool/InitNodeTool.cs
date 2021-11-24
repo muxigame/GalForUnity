@@ -53,13 +53,15 @@ namespace GalForUnity.Graph.Tool{
 
                         // Debug.Log(keyValuePair.type);
                         var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(keyValuePair.instanceID, fieldType);
-                        if (gfuInstance==null){
+                        if (gfuInstance == null){
                             Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
                         }
+
                         propertyInfo.SetValue(gfuInputView, gfuInstance);
                         return;
                     }
                 }
+
                 //Debug.LogError(nodeData.jsonField);
                 if (nodeData.jsonField != null){
                     foreach (var keyValuePair in nodeData.jsonField){
@@ -93,6 +95,7 @@ namespace GalForUnity.Graph.Tool{
 
             //#endif
         }
+
         /// <summary>
         /// 通过反射来为对象赋值，
         /// 当对象为预制体：
@@ -113,22 +116,25 @@ namespace GalForUnity.Graph.Tool{
                 // 继承自IEnumerable类
                 // 拥有Add 获得 EnQueue方法
                 // 仅限一维
-                if (nodeData.listField != null&&nodeData.listField.Count>0){
+                if (nodeData.listField != null && nodeData.listField.Count > 0){
                     foreach (var listData in nodeData.listField){
                         if (listData.jsonField != null && listData.jsonField.Count > 0){
-                            SetListValue(listData, obj,listData.jsonField);
+                            SetListValue(listData, obj, listData.jsonField);
                         }
+
                         if (listData.idField != null && listData.idField.Count > 0){
-                            SetListValue(listData, obj,listData.idField);
+                            SetListValue(listData, obj, listData.idField);
                         }
                     }
                 }
+
                 // 尝试为含有UnityID的字段赋值
                 if (nodeData.idField != null){
                     foreach (var keyValuePair in nodeData.idField){
-                        SetIDValue(keyValuePair,obj);
+                        SetIDValue(keyValuePair, obj);
                     }
                 }
+
                 //尝试为可序列化字段赋值
                 if (nodeData.jsonField != null){
                     foreach (var keyValuePair in nodeData.jsonField){
@@ -137,8 +143,10 @@ namespace GalForUnity.Graph.Tool{
                             if (field is FieldInfo fieldInfo){
                                 fieldInfo.SetValue(obj, keyValuePair.scriptableObject);
                             } else if (field is PropertyInfo propertyInfo) propertyInfo.SetValue(obj, keyValuePair.scriptableObject);
+
                             continue;
                         }
+
                         Type fieldType = null;
                         if (!string.IsNullOrEmpty(keyValuePair.type)){
                             fieldType = Type.GetType(keyValuePair.type);
@@ -168,62 +176,82 @@ namespace GalForUnity.Graph.Tool{
                 if (fieldType == null) return null;
                 return !fieldType.IsPrimitive && fieldType != typeof(string) ? JsonUtility.FromJson(nodeFieldInfo.data, fieldType) : Convert.ChangeType(nodeFieldInfo.data, fieldType);
             }
+
             if (!string.IsNullOrEmpty(nodeFieldInfo.assembly) || fieldType == null){
                 if (Assembly.GetExecutingAssembly().FullName != nodeFieldInfo.assembly) fieldType = Assembly.Load(nodeFieldInfo.assembly).GetType(nodeFieldInfo.type);
             }
+
             var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(nodeFieldInfo.instanceID, fieldType);
-            if (gfuInstance ==null){
+            if (gfuInstance == null){
                 Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
             }
+
             return gfuInstance;
         }
 
-        private static void SetIDValue(NodeData.NodeFieldInfo keyValuePair,object obj){
+        private static void SetIDValue(NodeData.NodeFieldInfo keyValuePair, object obj){
             object field = obj.GetType().GetField(keyValuePair.name) ?? (object) obj.GetType().GetProperty(keyValuePair.name);
             if (keyValuePair.scriptableObject){
                 if (field is FieldInfo fieldInfo){
                     fieldInfo.SetValue(obj, keyValuePair.scriptableObject);
                 } else if (field is PropertyInfo propertyInfo) propertyInfo.SetValue(obj, keyValuePair.scriptableObject);
+
                 return;
             }
+
             Type fieldType = Type.GetType(keyValuePair.type);
             if (string.IsNullOrEmpty(keyValuePair.assembly) || fieldType == null){
                 if (Assembly.GetExecutingAssembly().FullName != keyValuePair.assembly) fieldType = Assembly.Load(keyValuePair.assembly).GetType(keyValuePair.type);
             }
+
             var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(keyValuePair.instanceID, fieldType);
-            if (gfuInstance ==null){
+            if (gfuInstance == null){
                 Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
             }
+
             if (field is FieldInfo fieldInfo2)
                 fieldInfo2.SetValue(obj, gfuInstance);
             else if (field is PropertyInfo propertyInfo) propertyInfo.SetValue(obj, gfuInstance);
         }
-        private static void SetListValue(NodeData.ListData listData,object obj,List<NodeData.NodeFieldInfo> nodeFieldInfos){
+
+        private static void SetListValue(NodeData.ListData listData, object obj, List<NodeData.NodeFieldInfo> nodeFieldInfos){
             var listObj = Activator.CreateInstance(Type.GetType(listData.type) ?? typeof(List<object>));
-            var cacheList=new ArrayList();
+            var cacheList = new ArrayList();
             var listType = listObj.GetType();
             foreach (var nodeFieldInfo in nodeFieldInfos){
                 var value = GetValue(nodeFieldInfo);
                 if (value == null){
-                    Debug.LogError(GfuLanguage.ParseLog(GfuLanguage.ParseLog("Failed to get a value")+nodeFieldInfo));
+                    Debug.LogError(GfuLanguage.ParseLog(GfuLanguage.ParseLog("Failed to get a value") + nodeFieldInfo));
                     continue;
                 }
+
                 cacheList.Add(value);
                 if (listType.GetMethod("Add") != null){
-                    listType.GetMethod("Add")?.Invoke(listObj, new[] {value});
-                } else if(listType.GetMethod("Enqueue") != null){
-                    listType.GetMethod("Enqueue")?.Invoke(listObj, new[] {value});
+                    listType.GetMethod("Add")?.Invoke(listObj, new[] {
+                        value
+                    });
+                } else if (listType.GetMethod("Enqueue") != null){
+                    listType.GetMethod("Enqueue")?.Invoke(listObj, new[] {
+                        value
+                    });
                 }
             }
+
             if (listObj is Array){
                 listObj = cacheList.ToArray();
             }
+
             var field = obj.GetType().GetField(listData.name) ?? (object) obj.GetType().GetProperty(listData.name);
             if (field == null){
-                Debug.LogError(GfuLanguage.ParseLog(GfuLanguage.ParseLog("Failed to get a value") +listData.name));
+                Debug.LogError(GfuLanguage.ParseLog(GfuLanguage.ParseLog("Failed to get a value") + listData.name));
                 return;
             }
-            field.GetType().GetMethod("SetValue", new[] {typeof(object),typeof(object) })?.Invoke(field, new[] {obj,listObj});
+
+            field.GetType().GetMethod("SetValue", new[] {
+                typeof(object), typeof(object)
+            })?.Invoke(field, new[] {
+                obj, listObj
+            });
         }
     }
 }

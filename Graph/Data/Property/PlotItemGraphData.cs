@@ -13,8 +13,7 @@ using UnityEngine;
 
 namespace GalForUnity.Graph.Data.Property{
     [CreateAssetMenu(fileName = "NewPlotItemGraph.asset", menuName = "GalForUnity/PlotItemGraph", order = 2)]
-    public class PlotItemGraphData : GraphData
-    {
+    public class PlotItemGraphData : GraphData{
         public PlotItemGraphData(){ }
     }
 }

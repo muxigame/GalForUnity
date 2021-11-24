@@ -26,7 +26,7 @@ namespace GalForUnity.View{
     /// 剧情视图类，负责将剧情的内容展示出来
     /// </summary>
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-    public class ShowPlotView : InstanceManagerForMono<OptionController>{
+    public class ShowPlotView : GfuInstanceManagerForMono<OptionController>{
         [FormerlySerializedAs("OptionController")]
         [Rename(nameof(optionController))]
         [Tooltip("控制游戏中选项的选项控制器")]
@@ -39,8 +39,10 @@ namespace GalForUnity.View{
         [Rename(nameof(speakView))]
         [Tooltip("请放置Text或其子类，如果为空，自动创建默认视图")]
         public Text speakView;
-        [FormerlySerializedAs("BackgroundView")]
-        [Rename(nameof(backgroundView))]
+        [Rename(nameof(backgroundDistance))]
+        [Tooltip("指示背景图片距离主相机的距离")]
+        public float backgroundDistance=100;
+        [FormerlySerializedAs("BackgroundView")] [Rename(nameof(backgroundView))]
         [Tooltip("请放置Image或其子类，如果为空，自动创建默认视图")]
         public SpriteRenderer backgroundView;
         [FormerlySerializedAs("AudioSource")]
@@ -138,6 +140,9 @@ namespace GalForUnity.View{
                 backGroundObj.name = "Background";
             }
 
+            backgroundView.transform.forward = Camera.main.transform.forward;
+            backgroundView.transform.position = Camera.main.transform.position + Camera.main.transform.forward * backgroundDistance;
+            
             var optionController = InitialSystemComponent<OptionController>();
             optionController.transform.SetParent(parentCanvas.transform);
             if (FindObjectOfType<EventSystem>() == null){

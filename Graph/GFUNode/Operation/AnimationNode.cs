@@ -9,30 +9,30 @@
 //
 //======================================================================
 
-using System;
 using GalForUnity.Attributes;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Data;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.Operation;
 using GalForUnity.System;
+#if UNITY_EDITOR
 using UnityEditor.UIElements;
+#endif
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 
 namespace GalForUnity.Graph.GFUNode.Operation{
-    [NodeRename("Operation/"+nameof(AnimationNode),"动画节点保存着动画剪辑")]
+    [NodeRename("Operation/" + nameof(AnimationNode), "动画节点保存着动画剪辑")]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
-    public class AnimationNode:GfuOperationNode{
-        
-        [NodeRename(nameof(Animation),typeof(Animation),NodeDirection.Output,NodeCapacity.Multi)]
+    public class AnimationNode : GfuOperationNode{
+        [NodeRename(nameof(Animation), typeof(Animation), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Exit;
 
         public Animation Animation;
         public AnimationClip AnimationClip;
-        
+
 
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
@@ -42,16 +42,15 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 x.ContainerData[0].value = Animation;
                 x.ContainerData[1].value = AnimationClip;
             };
-            
+
 #if UNITY_EDITOR
-            ObjectField objectField=new ObjectField(){
+            ObjectField objectField = new ObjectField() {
                 label = GfuLanguage.Parse(nameof(Animation)),
                 objectType = typeof(Animation),
-                value = AnimationClip?(Object) AnimationClip:Animation,
+                value = AnimationClip ? (Object) AnimationClip : Animation,
                 labelElement = {
                     style = {
-                        minWidth = 0,
-                        unityTextAlign = TextAnchor.MiddleLeft
+                        minWidth = 0, unityTextAlign = TextAnchor.MiddleLeft
                     }
                 }
             };
@@ -59,7 +58,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 if (evt.newValue is AnimationClip animationClip){
                     AnimationClip = animationClip;
                     Animation = null;
-                }else{
+                } else{
                     AnimationClip = null;
                     Animation = (Animation) evt.newValue;
                 }

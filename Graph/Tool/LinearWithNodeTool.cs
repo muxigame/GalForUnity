@@ -13,14 +13,8 @@ using GalForUnity.System.Event;
 using UnityEngine;
 
 namespace GalForUnity.Graph.Tool{
-    public class LinearWithNodeTool : MonoBehaviour
-    {
-        static LinearWithNodeTool(){
-            EventCenter.GetInstance().OnPlotItemExecutedEvent+=PlotItemExecuted;
-        }
-        public static void PlotItemExecuted(){
-        }
-        
-        
+    public class LinearWithNodeTool : MonoBehaviour{
+        static LinearWithNodeTool(){ EventCenter.GetInstance().OnPlotItemExecutedEvent += PlotItemExecuted; }
+        public static void PlotItemExecuted(){ }
     }
 }

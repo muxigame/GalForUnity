@@ -22,27 +22,26 @@ namespace GalForUnity.Graph.Data{
     /// 连接数据，连接保存着连接两端节点的引用
     /// </summary>
     [Serializable]
-    public class ConnectData {
+    public class ConnectData{
         /// <summary>
         /// 该链接连接的被输入节点
         /// </summary>
-        [FormerlySerializedAs("_input")] 
-        public NodeData Input;
+        [FormerlySerializedAs("_input")] public NodeData Input;
+
         /// <summary>
         /// 该链接连接的输出节点
         /// </summary>
-        [FormerlySerializedAs("_output")] 
-        public NodeData Output;
+        [FormerlySerializedAs("_output")] public NodeData Output;
+
         /// <summary>
         /// 相对于该链接被输入节点的端口号
         /// </summary>
-        [FormerlySerializedAs("input_index")]
-        public int inputIndex;
+        [FormerlySerializedAs("input_index")] public int inputIndex;
+
         /// <summary>
         /// 相对于该链接输出节点的端口号
         /// </summary>
-        [FormerlySerializedAs("output_index")]
-        public int outputIndex;
+        [FormerlySerializedAs("output_index")] public int outputIndex;
 
 
         /// <summary>

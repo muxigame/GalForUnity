@@ -11,7 +11,6 @@
 
 using System;
 using System.Collections.Generic;
-using GalForUnity.Graph.GFUNode;
 using GalForUnity.Graph.GFUNode.Base;
 #if UNITY_EDITOR
 using GalForUnity.System;
@@ -26,13 +25,12 @@ namespace GalForUnity.Graph.Data{
     /// 图的数据，保存着所有节点及其连接信息，这个类在UNITY_EDITOR环境下，负责给节点系统提供底层数据
     /// </summary>
     [Serializable]
-    public class GraphData : ScriptableObject {
+    public class GraphData : ScriptableObject{
         public List<NodeData> Nodes;
         public float scale;
-        public long instanceID=0;
-        public bool isPlay=false;
-        [NonSerialized]
-        private Dictionary<GfuNode,NodeData> _dictionary=new Dictionary<GfuNode, NodeData>();
+        public long instanceID = 0;
+        public bool isPlay = false;
+        [NonSerialized] private Dictionary<GfuNode, NodeData> _dictionary = new Dictionary<GfuNode, NodeData>();
 #if UNITY_EDITOR
         /// <summary>
         /// EditorMethod
@@ -42,10 +40,10 @@ namespace GalForUnity.Graph.Data{
         /// <param name="graphScale"></param>
         /// <param name="instanceID"></param>
         /// <returns></returns>
-        public virtual GraphData Parse(List<Node> nodes,float graphScale,long instanceID){
+        public virtual GraphData Parse(List<Node> nodes, float graphScale, long instanceID){
             try{
                 this.scale = graphScale;
-                this.instanceID = instanceID==0?BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0):instanceID;
+                this.instanceID = instanceID == 0 ? BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0) : instanceID;
                 Nodes = new List<NodeData>();
                 _dictionary = new Dictionary<GfuNode, NodeData>();
                 if (nodes == null || nodes.Count == 0) return this;
@@ -55,34 +53,38 @@ namespace GalForUnity.Graph.Data{
                         try{
                             gfuNode.Save();
                         } catch (Exception e){
-                            Debug.LogError( GfuLanguage.ParseLog("The node failed to save itself, which means the data may not have been saved")+e);
+                            Debug.LogError(GfuLanguage.ParseLog("The node failed to save itself, which means the data may not have been saved") + e);
                         }
+
                         try{
                             nodeData.Parse(gfuNode); //解析节点该方法会将保存于VisualElement的输出转移到节点当中
                         } catch (Exception e){
-                            Debug.LogError(GfuLanguage.ParseLog("The node failed to be resolved, which means there may be an unsupported type in the node")+e);
+                            Debug.LogError(GfuLanguage.ParseLog("The node failed to be resolved, which means there may be an unsupported type in the node") + e);
                         }
+
                         nodeData.GraphData = this;
-                        _dictionary.Add(gfuNode,nodeData);
+                        _dictionary.Add(gfuNode, nodeData);
                         Nodes.Add(nodeData); //将数据在字典和列表中暂存一份提供引用
                     } else{
                         Debug.LogError(GfuLanguage.ParseLog("This is not a GfuNode object"));
                     }
                 }
+
                 for (var i = 0; i < nodes.Count; i++){
                     NodeData nodeData = Nodes[i];
                     if (nodes[i] is GfuNode gfuNode){
                         var ports = gfuNode.Ports();
                         nodeData.type = gfuNode.GetType().FullName;
-                        nodeData.OutputPort=new List<PortData>();
-                        nodeData.InputPort=new List<PortData>();
+                        nodeData.OutputPort = new List<PortData>();
+                        nodeData.InputPort = new List<PortData>();
                         for (var i1 = 0; i1 < ports.Count; i1++){ //遍历端口
                             PortData portData = new PortData();
                             try{
                                 portData = portData.Parse(ports[i1], _dictionary);
                             } catch (Exception e){
-                                Debug.LogError(GfuLanguage.ParseLog("Resolving the port failed, which means that there may be an unsupported type in the default data for the port")+e);
+                                Debug.LogError(GfuLanguage.ParseLog("Resolving the port failed, which means that there may be an unsupported type in the default data for the port") + e);
                             }
+
                             if (ports[i1].direction == Direction.Output){
                                 nodeData.OutputPort.Add(portData); //将端口上的链接赋予引用
                             } else if (ports[i1].direction == Direction.Input){
@@ -94,9 +96,10 @@ namespace GalForUnity.Graph.Data{
                     }
                 }
             } catch (Exception e){
-                Debug.LogError(GfuLanguage.ParseLog("There is an exception when saving the file, please contact the developer as soon as possible to avoid loss")+e);
+                Debug.LogError(GfuLanguage.ParseLog("There is an exception when saving the file, please contact the developer as soon as possible to avoid loss") + e);
                 throw;
             }
+
             return this;
         }
 
@@ -106,10 +109,11 @@ namespace GalForUnity.Graph.Data{
                 Nodes[i].Save(path);
             }
         }
+
         public virtual void Delete(string path){
             if (Nodes != null){
                 for (var i = 0; i < Nodes.Count; i++){
-                    if(Nodes[i]==null) continue;
+                    if (Nodes[i] == null) continue;
                     AssetDatabase.RemoveObjectFromAsset(Nodes[i]);
                 }
             }

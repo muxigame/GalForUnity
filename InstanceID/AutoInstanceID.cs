@@ -33,21 +33,25 @@ namespace GalForUnity.InstanceID{
                         Debug.LogError(GfuLanguage.ParseLog("This Resource object is not saved in the Resource directory and may not be loaded in the game:") +path);
                     gfuInstance.Init();
                     gfuInstance.SafeInstanceID();
-                    var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
-                    if (gfuInstance&&currentInstanceIDStorage) currentInstanceIDStorage.Add(gfuInstance.instanceID, path);
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+                    var currentInstanceIDStorage = GameSystem.GetInstance()?.currentInstanceIDStorage;
+                    if (gfuInstance && currentInstanceIDStorage != null){
+                        currentInstanceIDStorage.Add(gfuInstance.instanceID, path);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
+                    }
+
                 };
             }
         }
 
         private static AssetDeleteResult OnWillDeleteAsset(string assetPath, RemoveAssetOptions options){
             // var loadAssetAtPath = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-            var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
-            if (currentInstanceIDStorage) currentInstanceIDStorage.Remove(assetPath);
-            // var gfuInstance = loadAssetAtPath.GetComponent<GfuInstance>();
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            var currentInstanceIDStorage = GameSystem.GetInstance()?.currentInstanceIDStorage;
+            if (currentInstanceIDStorage != null){
+                currentInstanceIDStorage.Remove(assetPath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
             return 0;
         }
 
@@ -58,10 +62,12 @@ namespace GalForUnity.InstanceID{
             var gfuInstance = loadAssetAtPath.GetComponent<GfuInstance>();
             if(gfuInstance&&!destinationPath.Contains("Resource"))
                 Debug.LogError(GfuLanguage.ParseLog("This Resource object is not saved in the Resource directory and may not be loaded in the game:") +destinationPath);
-            var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
-            if (gfuInstance&&currentInstanceIDStorage) currentInstanceIDStorage.Move(sourcePath,destinationPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            var currentInstanceIDStorage = GameSystem.GetInstance()?.currentInstanceIDStorage;
+            if (gfuInstance && currentInstanceIDStorage != null){
+                currentInstanceIDStorage.Move(sourcePath,destinationPath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
             return 0;
         }
     }
