@@ -1,8 +1,8 @@
 # GalForUnity
 一个为Unity开发的文字游戏开发插件，他同时支持Live2D
-如果有任何疑问请访问官网http://muxigame.uicp.net 反馈
+如果有任何疑问请访问官网 https://muxigame.com 或者 http://muxigame.uicp.net 反馈
 
-插件教程http://muxigame.uicp.net/pc/docs/galforunity/index.html
+插件教程https://muxigame.com/docs/galforunity/index.html 或者 http://muxigame.uicp.net/docs/galforunity/index.html
 # 简介
 
 > **$\textcolor{RedOrange}{Gal For Unity}$**是一款为Unity打造的文字游戏制作插件，插件集成**Live2D**，提供简单易上手的操作可视化操作制作文字游戏，插件采用中文视图显示，便于新手入门操作。
