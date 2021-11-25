@@ -106,6 +106,7 @@ namespace GalForUnity.Graph.Data{
         public virtual void Save(string path){
             for (var i = 0; i < Nodes.Count; i++){
                 AssetDatabase.AddObjectToAsset(Nodes[i], path);
+                AssetDatabase.SetMainObject(this,path);
                 Nodes[i].Save(path);
             }
         }

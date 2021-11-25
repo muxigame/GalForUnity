@@ -89,11 +89,11 @@ namespace GalForUnity.Graph.Data{
 
         // public List<Node> Nodes;
         public void Save(string path){
+            name = nameof(NodeData);
             for (var i = 0; i < InputPort.Count; i++){
                 // AssetDatabase.AddObjectToAsset(Input[i], path);
                 InputPort[i].Save(path);
             }
-
             for (var i = 0; i < OutputPort.Count; i++){
                 // AssetDatabase.AddObjectToAsset(Output[i], path);
                 OutputPort[i].Save(path);
