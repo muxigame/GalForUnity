@@ -1,0 +1,358 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2766819442379238057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c216d6b166193fd4392adbbf9ac7aa63, type: 3}
+  m_Name: NodeData
+  m_EditorClassIdentifier: 
+  GraphData: {fileID: 11400000}
+  type: GalForUnity.Graph.GFUNode.Base.MainNode
+  vector4: {x: 323.2, y: 156.8, z: 85.599976, w: 76.8}
+  InputPort: []
+  OutputPort:
+  - connections:
+    - Input: {fileID: -2293423380211522321}
+      Output: {fileID: -2766819442379238057}
+      inputIndex: 1
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  instanceID: 5091049793631907579
+  JsonInfos: []
+  IdInfos: []
+  listInfos: []
+--- !u!114 &-2293423380211522321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c216d6b166193fd4392adbbf9ac7aa63, type: 3}
+  m_Name: NodeData
+  m_EditorClassIdentifier: 
+  GraphData: {fileID: 11400000}
+  type: GalForUnity.Graph.GFUNode.Plot.PlotItemNode
+  vector4: {x: 457.6, y: 218.4, z: 163.99997, w: 199.20001}
+  InputPort:
+  - connections:
+    - Input: {fileID: -2293423380211522321}
+      Output: {fileID: 5865307781377276914}
+      inputIndex: 0
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Graph.Operation.GfuOperation]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  - connections:
+    - Input: {fileID: -2293423380211522321}
+      Output: {fileID: -2766819442379238057}
+      inputIndex: 1
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  OutputPort:
+  - connections:
+    - Input: {fileID: 964662636061459326}
+      Output: {fileID: -2293423380211522321}
+      inputIndex: 0
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  instanceID: 5216194075588472850
+  JsonInfos:
+  - name: name
+    data: "\u88F4\u6587\u519B"
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.String
+    scriptableObject: {fileID: 0}
+  - name: speak
+    data: "\u6D4B\u8BD5\u5207\u6362\u573A\u666F"
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.String
+    scriptableObject: {fileID: 0}
+  - name: isCanJump
+    data: True
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.Boolean
+    scriptableObject: {fileID: 0}
+  - name: isAutoHighLight
+    data: True
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.Boolean
+    scriptableObject: {fileID: 0}
+  IdInfos: []
+  listInfos: []
+--- !u!114 &-639424930578278927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c216d6b166193fd4392adbbf9ac7aa63, type: 3}
+  m_Name: NodeData
+  m_EditorClassIdentifier: 
+  GraphData: {fileID: 11400000}
+  type: GalForUnity.Graph.GFUNode.Plot.PlotItemNode
+  vector4: {x: 870.4, y: 331.2, z: 167.19995, w: 199.20001}
+  InputPort:
+  - connections: []
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Graph.Operation.GfuOperation]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  - connections:
+    - Input: {fileID: -639424930578278927}
+      Output: {fileID: 964662636061459326}
+      inputIndex: 1
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  OutputPort:
+  - connections:
+    - Input: {fileID: 5274806405091854322}
+      Output: {fileID: -639424930578278927}
+      inputIndex: 0
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  instanceID: 5380929915656542390
+  JsonInfos:
+  - name: name
+    data: "\u7CFB\u7EDF"
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.String
+    scriptableObject: {fileID: 0}
+  - name: speak
+    data: "\u5207\u6362\u573A\u666F\u6210\u529F\u3002\u6B27\u8036\uFF01"
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.String
+    scriptableObject: {fileID: 0}
+  - name: isCanJump
+    data: True
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.Boolean
+    scriptableObject: {fileID: 0}
+  - name: isAutoHighLight
+    data: True
+    instanceID: 0
+    assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    type: System.Boolean
+    scriptableObject: {fileID: 0}
+  IdInfos: []
+  listInfos: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbd7eaa5f23505f42a9fa998f46af8ca, type: 3}
+  m_Name: DemoTest
+  m_EditorClassIdentifier: 
+  Nodes:
+  - {fileID: -2766819442379238057}
+  - {fileID: -2293423380211522321}
+  - {fileID: 964662636061459326}
+  - {fileID: -639424930578278927}
+  - {fileID: 5274806405091854322}
+  - {fileID: 5865307781377276914}
+  scale: 1
+  instanceID: 5555554518905427170
+  isPlay: 1
+--- !u!114 &964662636061459326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c216d6b166193fd4392adbbf9ac7aa63, type: 3}
+  m_Name: NodeData
+  m_EditorClassIdentifier: 
+  GraphData: {fileID: 11400000}
+  type: GalForUnity.Graph.GFUNode.SceneNode
+  vector4: {x: 646.4, y: 312.8, z: 200.79999, w: 96.80002}
+  InputPort:
+  - connections:
+    - Input: {fileID: 964662636061459326}
+      Output: {fileID: -2293423380211522321}
+      inputIndex: 0
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  OutputPort:
+  - connections:
+    - Input: {fileID: -639424930578278927}
+      Output: {fileID: 964662636061459326}
+      inputIndex: 1
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  instanceID: 5452438979736778934
+  JsonInfos: []
+  IdInfos:
+  - name: objectReference
+    data: 
+    instanceID: 5748038330536252128
+    assembly: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    type: GalForUnity.Model.Scene.SceneModel
+    scriptableObject: {fileID: 0}
+  listInfos: []
+--- !u!114 &5274806405091854322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c216d6b166193fd4392adbbf9ac7aa63, type: 3}
+  m_Name: NodeData
+  m_EditorClassIdentifier: 
+  GraphData: {fileID: 11400000}
+  type: GalForUnity.Graph.GFUNode.EndNode
+  vector4: {x: 1095.2, y: 325.6, z: 123.20007, w: 76.79999}
+  InputPort:
+  - connections:
+    - Input: {fileID: 5274806405091854322}
+      Output: {fileID: -639424930578278927}
+      inputIndex: 0
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Model.RoleData]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  OutputPort: []
+  instanceID: 5581843354731494065
+  JsonInfos: []
+  IdInfos: []
+  listInfos: []
+--- !u!114 &5865307781377276914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c216d6b166193fd4392adbbf9ac7aa63, type: 3}
+  m_Name: NodeData
+  m_EditorClassIdentifier: 
+  GraphData: {fileID: 11400000}
+  type: GalForUnity.Graph.GFUNode.Operation.RoleNode
+  vector4: {x: 199.2, y: 259.2, z: 200.00002, w: 188.79999}
+  InputPort:
+  - connections: []
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[UnityEngine.Transform]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  - connections: []
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[UnityEngine.AnimationClip]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  - connections: []
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[System.Single]
+    instanceID: 0
+    JsInfos:
+    - name: value
+      data: 1
+      instanceID: 0
+      assembly: mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+      type: System.Single
+      scriptableObject: {fileID: 0}
+    IdInfos: []
+    ListJsonInfos: []
+  - connections: []
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[UnityEngine.Color]
+    instanceID: 0
+    JsInfos:
+    - name: value
+      data: '{"r":1.0,"g":1.0,"b":1.0,"a":1.0}'
+      instanceID: 0
+      assembly: UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      type: UnityEngine.Color
+      scriptableObject: {fileID: 0}
+    IdInfos: []
+    ListJsonInfos: []
+  OutputPort:
+  - connections:
+    - Input: {fileID: -2293423380211522321}
+      Output: {fileID: 5865307781377276914}
+      inputIndex: 0
+      outputIndex: 0
+    sourceType: UnityEditor.Experimental.GraphView.PortSource`1[GalForUnity.Graph.Operation.GfuOperation]
+    instanceID: 0
+    JsInfos: []
+    IdInfos: []
+    ListJsonInfos: []
+  instanceID: 5325554107127957161
+  JsonInfos:
+  - name: roleOperationType
+    data: '{"value__":1}'
+    instanceID: 0
+    assembly: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    type: GalForUnity.Graph.GFUNode.Operation.RoleNode+RoleOperationType
+    scriptableObject: {fileID: 0}
+  IdInfos:
+  - name: RoleModel
+    data: 
+    instanceID: 5727735130624910633
+    assembly: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    type: GalForUnity.Model.RoleModel
+    scriptableObject: {fileID: 0}
+  listInfos: []

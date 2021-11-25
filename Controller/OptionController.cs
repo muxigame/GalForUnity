@@ -41,7 +41,7 @@ namespace GalForUnity.Controller{
 
         public void InitialView(){
             if (optionsPool == null) optionsPool = gameObject.AddComponent<GfuObjectPool>();
-            if (optionsPool.obj == null) optionsPool.obj = Resources.Load<GameObject>("GfuDemoOptionView");
+            if (optionsPool.obj == null) optionsPool.obj = Resources.Load<GameObject>("Prefabs/GfuDemoOptionView");
             if (!gameObject.TryGetComponent(out RectTransform rectTransform)){
                 rectTransform = gameObject.AddComponent<RectTransform>();
             }

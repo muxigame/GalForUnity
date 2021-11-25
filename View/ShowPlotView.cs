@@ -102,17 +102,18 @@ namespace GalForUnity.View{
                 parentCanvas.gameObject.AddComponent<GraphicRaycaster>();
                 parentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             }
+            parentCanvas.name = "GalForUnityCanvas";
             if (nameView == null || speakView == null){
-                GameObject load = Resources.Load("DemoSpeak") as GameObject;
+                GameObject load = Resources.Load("Prefabs/DemoSpeak") as GameObject;
                 if (parentCanvas != null){
                     load = Instantiate(load, parentCanvas.transform, true);
-                    load.name = "GalForUnityCanvas";
+                    load.name = "DemoSpeak";
                 } else{
                     var rectTransformComponent = parentCanvas.GetComponent<RectTransform>();
                     rectTransformComponent.position = new Vector2(Screen.width / 2f, Screen.height / 2f);
                     rectTransformComponent.sizeDelta = new Vector2(Screen.width, Screen.height);
                     load = Instantiate(load, parentCanvas.transform, true);
-                    load.name = "GalForUnityCanvas";
+                    load.name = "DemoSpeak";
                 }
                 if (!(load is null)){
                     var rectTransform = load.GetComponent<RectTransform>();
