@@ -34,7 +34,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
         [NodeRename(nameof(TransformNode), typeof(Transform), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Enter;
 
-        [NodeRename(nameof(Animation), typeof(Animation), NodeDirection.Input, NodeCapacity.Single)]
+        [NodeRename(nameof(Animation), typeof(AnimationClip), NodeDirection.Input, NodeCapacity.Single)]
         public GfuPort Animation;
 
         [NodeRename(nameof(Opacity), typeof(float), NodeDirection.Input, NodeCapacity.Single)] [DefaultValue(1)]
@@ -62,7 +62,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 };
                 if (RoleModel){
                     x.InputData = new List<Graph.Operation.Data> {
-                        new Graph.Operation.Data(RoleModel.transform), new Graph.Operation.Data(typeof(Animation)), new Graph.Operation.Data(typeof(float)), new Graph.Operation.Data(typeof(Color))
+                        new Graph.Operation.Data(RoleModel.transform), new Graph.Operation.Data(typeof(AnimationClip)), new Graph.Operation.Data(typeof(float)), new Graph.Operation.Data(typeof(Color))
                     };
                 }
             };

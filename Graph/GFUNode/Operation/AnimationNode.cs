@@ -27,7 +27,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
     [NodeRename("Operation/" + nameof(AnimationNode), "动画节点保存着动画剪辑")]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
     public class AnimationNode : GfuOperationNode{
-        [NodeRename(nameof(Animation), typeof(Animation), NodeDirection.Output, NodeCapacity.Multi)]
+        [NodeRename(nameof(Animation), typeof(AnimationClip), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Exit;
 
         public Animation Animation;
@@ -46,7 +46,8 @@ namespace GalForUnity.Graph.GFUNode.Operation{
 #if UNITY_EDITOR
             ObjectField objectField = new ObjectField() {
                 label = GfuLanguage.Parse(nameof(Animation)),
-                objectType = typeof(Animation),
+                objectType = typeof(AnimationClip),
+                allowSceneObjects = true,
                 value = AnimationClip ? (Object) AnimationClip : Animation,
                 labelElement = {
                     style = {

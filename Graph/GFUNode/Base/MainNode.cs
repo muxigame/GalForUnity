@@ -22,7 +22,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
     [NodeRename(nameof(MainNode))]
     [NodeAttributeUsage(NodeAttributeTargets.FlowGraph | NodeAttributeTargets.ItemGraph)]
     public class MainNode : GfuNode{
-        [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Multi)]
+        [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit;
 #if UNITY_EDITOR
         public MainNode(){ capabilities -= Capabilities.Deletable; }

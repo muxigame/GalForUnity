@@ -104,19 +104,20 @@ namespace GalForUnity.View{
             }
             if (nameView == null || speakView == null){
                 GameObject load = Resources.Load("DemoSpeak") as GameObject;
-                if (!(load is null)){
-                    var rectTransform = load.GetComponent<RectTransform>();
-                    rectTransform.offsetMax = new Vector2(Screen.width, Screen.height);
-                    rectTransform.offsetMin = new Vector2(0, 0);
-                }
                 if (parentCanvas != null){
                     load = Instantiate(load, parentCanvas.transform, true);
+                    load.name = "GalForUnityCanvas";
                 } else{
                     var rectTransformComponent = parentCanvas.GetComponent<RectTransform>();
                     rectTransformComponent.position = new Vector2(Screen.width / 2f, Screen.height / 2f);
                     rectTransformComponent.sizeDelta = new Vector2(Screen.width, Screen.height);
                     load = Instantiate(load, parentCanvas.transform, true);
-                    parentCanvas.name = "GalForUnityCanvas";
+                    load.name = "GalForUnityCanvas";
+                }
+                if (!(load is null)){
+                    var rectTransform = load.GetComponent<RectTransform>();
+                    rectTransform.offsetMax = new Vector2(0, 0);
+                    rectTransform.offsetMin = new Vector2(0, 0);
                 }
                 if (load != null&&!nameView){
                     nameView = load.transform.GetChild(0).Find("Name").GetComponent<Text>();

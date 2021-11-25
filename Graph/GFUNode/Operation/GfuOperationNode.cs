@@ -212,6 +212,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             } else if (gfuInputView.portType.IsSubclassOf(typeof(Object)) || gfuInputView.portType == typeof(Object)){
                 gfuInputView.fieldContainer.Add(visualElement = new ObjectField() {
                     objectType = gfuInputView.portType,
+                    allowSceneObjects = true,
                     style = {
                         width = 130
                     }

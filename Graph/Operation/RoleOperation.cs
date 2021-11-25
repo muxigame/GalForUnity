@@ -28,7 +28,7 @@ namespace GalForUnity.Graph.Operation{
                 );
             Input = new GfuOperationData(
                 new Data(typeof(Transform),roleModel != null ? roleModel.transform : null),
-                new Data(typeof(Animation),null),
+                new Data(typeof(AnimationClip),null),
                 new Data(typeof(float),0),
                 new Data(typeof(Color),0)
             );
