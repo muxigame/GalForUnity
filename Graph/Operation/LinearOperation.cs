@@ -24,7 +24,7 @@ namespace GalForUnity.Graph.Operation{
         public override void Start(GfuOperationData gfuOperationData){
             
             foreach (var data in OutPutData){
-                if (data.type == typeof(float)){
+                if (data.Type == typeof(float)){
                     float from = (float) InputData[0].value;
                     float to = (float) InputData[1].value;
                     data.value = from;
@@ -41,7 +41,7 @@ namespace GalForUnity.Graph.Operation{
         private float startTime;
         public override void Update(GfuOperationData gfuOperationData){
             foreach (var data in OutPutData){
-                if (data.type == typeof(float)){
+                if (data.Type == typeof(float)){
                     float from = (float) InputData[0].value;
                     float to = (float) InputData[1].value;
                     float time = (float) InputData[2].value;
@@ -59,7 +59,7 @@ namespace GalForUnity.Graph.Operation{
         }
         public override void OperationOver(){
             foreach (var data in OutPutData){
-                if (data.type == typeof(float)){
+                if (data.Type == typeof(float)){
                     data.value = (float)InputData[1].value;
                 }else{
                     Debug.LogError("一个不合理的输出类型，原因可能是连接了不同类型的接口");

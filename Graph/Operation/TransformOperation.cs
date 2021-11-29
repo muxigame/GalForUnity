@@ -30,7 +30,7 @@ namespace GalForUnity.Graph.Operation{
                     // Debug.Log(InputData[2].value);
                     outputData.localScale = InputData[2].value as Vector3? ?? (Vector4)InputData[2].value;
                 }
-                else if (data.type==typeof(Vector3)||data.type==typeof(Quaternion)){
+                else if (data.Type==typeof(Vector3)||data.Type==typeof(Quaternion)){
                     data.value = InputData[data.Index].value;
                 }
             }
@@ -45,7 +45,7 @@ namespace GalForUnity.Graph.Operation{
                     outputData.eulerAngles = InputData[1].value as Vector3? ?? (Vector4)InputData[1].value;//从输入端口二获得欧拉角
                     outputData.localScale = InputData[2].value as Vector3? ?? (Vector4) InputData[2].value;//从输入端口三获得scale
                 }
-                else if (data.type==typeof(Vector3)||data.type==typeof(Quaternion)){
+                else if (data.Type==typeof(Vector3)||data.Type==typeof(Quaternion)){
                     data.value = InputData[data.Index].value;
                 }
             }

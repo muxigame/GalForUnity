@@ -18,6 +18,8 @@ using GalForUnity.Graph.Data;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.Operation;
 using GalForUnity.Graph.Tool;
+using GalForUnity.System;
+using UnityEditor;
 #if UNITY_EDITOR
 using UnityEditor.UIElements;
 using UnityEditor.Experimental.GraphView;
@@ -34,6 +36,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
         [NonSerialized] public GfuOperation GfuOperation;
         [NonSerialized] public VisualElement PortDefaultValueContainer;
         [NonSerialized] public List<GfuInputView> GfuInputViews;
+        public bool storageExpanded=true;
 
         public Type ContainerType(int i){ return ContainerType()[i]; }
 
@@ -67,23 +70,25 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                     marginTop = 5,
                     paddingTop = 4,
                     paddingBottom = 4,
-                    // backgroundColor = new Color(0.25f, 0.25f, 0.25f, 0.19f),
                     position = Position.Absolute,
                     top = 36
                 }
             };
-            RegisterCallback<GeometryChangedEvent>((evt => { PortDefaultValueContainer.style.marginLeft = -PortDefaultValueContainer.layout.width; }));
-            // PortDefaultValueContainer.pickingMode = PickingMode.Ignore;
-            // PortDefaultValueContainer.focusable = false;
-            // PortDefaultValueContainer.
+            RegisterCallback<GeometryChangedEvent>((evt => {
+                PortDefaultValueContainer.style.marginLeft = -PortDefaultValueContainer.layout.width;
+            }));
+            PortDefaultValueContainer.generateVisualContent += (x) => {
+                if(Mathf.Abs((PortDefaultValueContainer.style.marginLeft.value.value+PortDefaultValueContainer.layout.width))<1) return;
+                PortDefaultValueContainer.style.marginLeft = -PortDefaultValueContainer.contentContainer.layout.width;
+            };
 #endif
         }
+        
 #if UNITY_EDITOR
         protected override void ExecuteDefaultAction(EventBase evt){
             if (evt.target == PortDefaultValueContainer && evt.eventTypeId != 10){
                 evt.StopImmediatePropagation();
             }
-
             base.ExecuteDefaultAction(evt);
         }
 #endif
@@ -91,27 +96,33 @@ namespace GalForUnity.Graph.GFUNode.Operation{
         public void InitDefaultValuePort<T>(NodeData nodeData) where T : GfuOperation, new(){
             Type[] types = new Type[InputPortCount];
             for (var i = 0; i < types.Length; i++){
-                types[i] = InputPortType(i);
+                if (nodeData&&nodeData.InputPort.Count==InputPortCount) types[i] = nodeData.InputPortType(i);
+                else types[i] = InputPortType(i);
             }
-
             GfuOperation = new T() {
                 Input = GfuOperationData.CreateInstance(types), Container = GfuOperationData.CreateInstance(ContainerType())
             };
             InitDefaultValuePort(nodeData);
         }
-
+        
         /// <summary>
         /// 初始化默认值视图，传入节点数据则从节点数据解析，null则自动创建
         /// </summary>
         /// <param name="nodeData"></param>
         public void InitDefaultValuePort(NodeData nodeData){
+            
 #if UNITY_EDITOR
+            if(PortDefaultValueContainer != null && PortDefaultValueContainer.childCount >0) PortDefaultValueContainer.Clear();
+            if(GfuInputViews != null && GfuInputViews.Count >0) GfuInputViews.Clear();
             for (var i = 0; i < GfuOperation.Input.Data.Count; i++){
                 var port = inputContainer[i] as GfuPort;
                 if (port != null){
-                    // Debug.Log(GfuOperation.Input.Data[i]);
-                    port.portType = GfuOperation.Input.Data[i].type;
-                    // Debug.Log(port.portType);
+                    if (nodeData){
+                        var inputPortType = nodeData.InputPortType(i);
+                        if (inputPortType != null) port.portType = inputPortType;//优先将接口类型解析为保存的类型
+                    }
+                    if(port.portType==null)//如果解析不出来会赋值默认的类型
+                        port.portType = GfuOperation.Input.Data[i].Type;
                 }
             }
 #endif
@@ -161,10 +172,39 @@ namespace GalForUnity.Graph.GFUNode.Operation{
 #endif
             }
 #if UNITY_EDITOR
-            this.Add(PortDefaultValueContainer);
+            Add(PortDefaultValueContainer);
+            CheckToggleCollapse();
 #endif
         }
 #if UNITY_EDITOR
+        protected override void ToggleCollapse(){
+            base.ToggleCollapse();
+            storageExpanded = expanded;
+            CheckToggleCollapse();
+        }
+
+        /// <summary>
+        /// 检查storageExpanded是否允许展开默认值输入字段
+        /// </summary>
+        private void CheckToggleCollapse(){
+            expanded = storageExpanded;
+            if (storageExpanded){
+                PortDefaultValueContainer.SetEnabled(true);
+                PortDefaultValueContainer.style.opacity = 1;
+                for (int i = 0; i < PortDefaultValueContainer.childCount; i++){
+                    var gfuInputView = (GfuInputView) PortDefaultValueContainer[i][1];
+                    gfuInputView.edge.style.opacity = gfuInputView.port.connected?0:1;
+                }
+            } else{
+                PortDefaultValueContainer.SetEnabled(false);
+                PortDefaultValueContainer.style.opacity = 0;
+                for (int i = 0; i < PortDefaultValueContainer.childCount; i++){
+                    var gfuInputView = (GfuInputView) PortDefaultValueContainer[i][1];
+                    gfuInputView.edge.style.opacity = 0;
+                }
+            }
+        }
+
         /// <summary>
         /// Editor Method
         /// 该算法将默认值视图显示到gfuInputView当中，显示的视图取决于默认视图的端口类型
@@ -175,42 +215,43 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             gfuInputView.portName = "";
             if (gfuInputView?.fieldContainer == null || gfuInputView.portType == null) return;
             VisualElement visualElement = null;
+            var fieldContainer = gfuInputView.fieldContainer;
             if (gfuInputView.portType == typeof(float)){
-                gfuInputView.fieldContainer.Add(visualElement = new FloatField());
+                fieldContainer.Add(visualElement = new FloatField());
                 visualElement.style.width = 50;
             } else if (gfuInputView.portType == typeof(int)){
-                gfuInputView.fieldContainer.Add(visualElement = new IntegerField());
+                fieldContainer.Add(visualElement = new IntegerField());
                 visualElement.style.width = 50;
             } else if (gfuInputView.portType == typeof(Vector2)){
-                gfuInputView.fieldContainer.Add(visualElement = new Vector2Field());
+                fieldContainer.Add(visualElement = new Vector2Field());
                 visualElement.style.width = 50 * 2;
                 visualElement[0][0][0].style.marginLeft = 3;
             } else if (gfuInputView.portType == typeof(Vector2Int)){
-                gfuInputView.fieldContainer.Add(visualElement = new Vector2IntField());
+                fieldContainer.Add(visualElement = new Vector2IntField());
                 visualElement.style.width = 50 * 2;
                 visualElement[0][0][0].style.marginLeft = 3;
             } else if (gfuInputView.portType == typeof(Vector3)){
-                gfuInputView.fieldContainer.Add(visualElement = new Vector3Field());
+                fieldContainer.Add(visualElement = new Vector3Field());
                 visualElement.style.width = 50 * 3;
                 visualElement[0][0][0].style.marginLeft = 3;
             } else if (gfuInputView.portType == typeof(Vector3Int)){
-                gfuInputView.fieldContainer.Add(visualElement = new Vector3IntField());
+                fieldContainer.Add(visualElement = new Vector3IntField());
                 visualElement.style.width = 50 * 3;
                 visualElement[0][0][0].style.marginLeft = 3;
             } else if (gfuInputView.portType == typeof(Vector4) || gfuInputView.portType == typeof(Quaternion)){
-                gfuInputView.fieldContainer.Add(visualElement = new Vector4Field());
+                fieldContainer.Add(visualElement = new Vector4Field());
                 visualElement.style.width = 50 * 4;
                 visualElement[0][0][0].style.marginLeft = 3;
             } else if (gfuInputView.portType == typeof(Color)){
-                gfuInputView.fieldContainer.Add(visualElement = new ColorField() {
+                fieldContainer.Add(visualElement = new ColorField() {
                     style = {
                         width = 100
                     }
                 });
             } else if (gfuInputView.portType == typeof(bool)){
-                gfuInputView.fieldContainer.Add(visualElement = new Toggle());
+                fieldContainer.Add(visualElement = new Toggle());
             } else if (gfuInputView.portType.IsSubclassOf(typeof(Object)) || gfuInputView.portType == typeof(Object)){
-                gfuInputView.fieldContainer.Add(visualElement = new ObjectField() {
+                fieldContainer.Add(visualElement = new ObjectField() {
                     objectType = gfuInputView.portType,
                     allowSceneObjects = true,
                     style = {
@@ -228,7 +269,6 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 visualElement.SetEnabled(true);
                 var action = new Action<ChangeEvent<object>>((evt => {
                     gfuInputView.Value = evt.newValue; //这个方法并没有在实质性的发挥作用，因为获取目标值的功能以及被GetDefaultValue()方法替代，
-                    // Debug.Log("testins");
                 }));
                 visualElement.GetType().GetMethod("RegisterValueChangedCallback")?.Invoke(visualElement, new object[] {
                     action
@@ -291,18 +331,56 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             for (int i = 0; i < GfuInputViews.Count; i++){
                 datas.Add(new Graph.Operation.Data(GetDefaultValue(i)));
             }
-
             return datas;
         }
 
-        // public override void OnSelected(){
-        //     base.OnSelected();
-        //     foreach (var port in GetInput()){
-        //         Debug.Log(port.portType);
-        //     }
-        //     foreach (var port in GetOutPut()){
-        //         Debug.Log(port.portType);
-        //     }
-        // }
+        public void PortTypeSync(List<GfuPort> gfuPorts, Type defaultType){
+#if UNITY_EDITOR
+            foreach (var gfuPort in gfuPorts){
+                gfuPort.OnConnected += (x) => {
+                    var trueForAll = gfuPorts.TrueForAll((element) => gfuPort == element || !element.connected);
+                    foreach (var port in gfuPorts){
+                        if (x.portType != defaultType && trueForAll){
+                            port.portType = x.portType;
+                            if (port.InputView?.portType != null){
+                                AutoType(port);
+                            }
+                        }
+                    }
+                };
+            }
+            foreach (var gfuPort in gfuPorts){
+                gfuPort.OnDisConnected += () => {
+                    var trueForAll = gfuPorts.TrueForAll((element) => gfuPort == element || !element.connected);
+                    foreach (var port in gfuPorts){
+                        if (trueForAll){
+                            port.portType = defaultType;
+                            AutoType(port);
+                        }
+                    }
+                };
+            }
+            foreach (var gfuPort in GetGfuOutPut()){
+                gfuPort.portType = defaultType;
+            }
+#endif
+        }
+
+        public void AutoType(GfuPort gfuPort){
+#if UNITY_EDITOR
+            if(gfuPort?.InputView?.edge == null) return;
+            gfuPort.InputView.edge.RemoveFromHierarchy();
+            var indexOf = PortDefaultValueContainer.IndexOf(gfuPort.InputView.portContainer);
+            gfuPort.InputView.Clear();
+            var gfuInputView = GfuInputView.Create(gfuPort);
+            gfuInputView.portType=gfuPort.portType;
+            PortDefaultValueContainer.RemoveAt(indexOf);
+            GfuInputViews.RemoveAt(indexOf);
+            PortDefaultValueContainer.Insert(indexOf,gfuInputView.Connect(gfuPort));
+            GfuInputViews.Insert(indexOf,gfuInputView);
+            AutoValueField(gfuInputView);
+            gfuPort.InputView = gfuInputView;
+#endif
+        }
     }
 }

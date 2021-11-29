@@ -23,6 +23,7 @@ using UnityEngine;
 namespace GalForUnity.Graph.Data{
     /// <summary>
     /// 图的数据，保存着所有节点及其连接信息，这个类在UNITY_EDITOR环境下，负责给节点系统提供底层数据
+    /// 关于数据保存的方法，如果有更好的建议欢迎通过https://github.com/muxigame/GalForUnity提交。
     /// </summary>
     [Serializable]
     public class GraphData : ScriptableObject{

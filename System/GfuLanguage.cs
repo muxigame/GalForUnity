@@ -67,6 +67,9 @@ namespace GalForUnity.System{
             {"The current connection has no input node",
                 new LanguageItem("The current connection has no input node",
                     "当前连接没有输入节点")},
+            {"In addition to the abnormal 0",
+                new LanguageItem("In addition to the abnormal 0",
+                    "除0异常")},
         };
 
         public static string ParseLog(string name){
@@ -288,6 +291,10 @@ namespace GalForUnity.System{
         public readonly LanguageItem ANIMATIONCLIP = new LanguageItem("Animation Clip","动画剪辑");
         public readonly LanguageItem ROLENODE = new LanguageItem("Role Node","角色节点");
         public readonly LanguageItem OPTIONNODE = new LanguageItem("Option Node","选项节点");
+        public readonly LanguageItem ADDNODE = new LanguageItem("Add Node","相加节点");
+        public readonly LanguageItem SUBTRACTNODE = new LanguageItem("Subtract Node","相减节点");
+        public readonly LanguageItem DIVISIONNODE = new LanguageItem("Division Node","相除节点");
+        public readonly LanguageItem MULTIPLYNODE = new LanguageItem("Multiply Node","相乘节点");
         public readonly LanguageItem ANIMATIONNODE = new LanguageItem("Animation Node","动画节点");
         public readonly LanguageItem ROLEOPERATIONTYPE = new LanguageItem("Role Operation Type","登场下场操作");
         public readonly LanguageItem LINEARNODE = new LanguageItem("Linear Operation Node","线性操作节点");
@@ -320,6 +327,7 @@ namespace GalForUnity.System{
         public readonly LanguageItem EXECUTE = new LanguageItem("Execute","执行");
         public readonly LanguageItem SAVE = new LanguageItem("Sace","保存");
         public readonly LanguageItem HINT = new LanguageItem("hint","提示");
+        public readonly LanguageItem MATH = new LanguageItem("Math","数学");
         public readonly LanguageItem TO = new LanguageItem("To","到");
         public readonly LanguageItem X = new LanguageItem("X","X");
         public readonly LanguageItem YES = new LanguageItem("Yes","是滴");

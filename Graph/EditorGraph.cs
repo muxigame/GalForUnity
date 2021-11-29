@@ -285,6 +285,7 @@ namespace GalForUnity.Graph{
         public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter){
             var compatiblePorts = new List<Port>();
             foreach (var port in ports.ToList()){
+                if(!port.enabledSelf) continue;
                 if (startAnchor.node      == port.node      ||
                     startAnchor.direction == port.direction ||
                     port is GfuInputView                    ||

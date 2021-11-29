@@ -24,11 +24,11 @@ namespace GalForUnity.Graph.Operation{
 
         public void Operation(){
             foreach (var data in OutPutData){
-                if (data.type == typeof(float)){
+                if (data.Type == typeof(float)){
                     data.value=InputData[0].value;
                 }else{
                     data.value = new Vector4(
-                        (float) InputData[0].value,
+                        (float)InputData[0].value,
                         (float)InputData[1].value,
                         (float)InputData[2].value,
                         (float)InputData[3].value

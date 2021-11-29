@@ -84,14 +84,17 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             if (!string.IsNullOrEmpty(Type) && !string.IsNullOrEmpty(assembly)){
                 type = False.portType = Value.portType = True.portType = Assembly.Load(assembly).GetType(Type);
             }
-
-            GfuOperation.OnPostInput += (x) => {
-                // Debug.Log(type);
-                x.InputData[0].type = type;
-                x.InputData[1].type = type;
-                x.OutPutData[0].type = type;
-            };
+#else
+            Type type = default;
+            if (!string.IsNullOrEmpty(Type) && !string.IsNullOrEmpty(assembly)){
+                type =  Assembly.Load(assembly).GetType(Type);
+            }
 #endif
+            GfuOperation.OnPostInput += (x) => {
+                x.InputData[0].Type = type;
+                x.InputData[1].Type = type;
+                x.OutPutData[0].Type = type;
+            };
         }
     }
 }

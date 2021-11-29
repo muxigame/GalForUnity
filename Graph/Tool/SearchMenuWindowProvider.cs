@@ -56,17 +56,16 @@ namespace GalForUnity.Graph.Tool{
                         var strings = nodeRenameAttribute.name.Split('/');
                         for (var i = 0; i < strings.Length - 1; i++){
                             if (entries.TrueForAll((x) => x.name != GfuLanguage.Parse(strings[i]))){
-                                entries.Add(new SearchTreeGroupEntry(new GUIContent(GfuLanguage.Parse(strings[i]))) {
+                                entries.Add(new SearchTreeGroupEntry(new GUIContent(GfuLanguage.Parse(strings[i]).Trim())) {
                                     level = i + 1,
                                 });
                             }
                         }
-
-                        entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(strings[strings.Length - 1]))) {
+                        entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(strings[strings.Length - 1]).Trim())) {
                             level = strings.Length, userData = childType
                         });
                     } else{
-                        entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(nodeRenameAttribute.name))) {
+                        entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(nodeRenameAttribute.name).Trim())) {
                             level = 1, userData = childType
                         });
                     }

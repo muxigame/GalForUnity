@@ -114,6 +114,7 @@ namespace GalForUnity.Graph.GFUNode.Plot{
             IsCanJump.RegisterValueChangedCallback((delegate(ChangeEvent<bool> evt){ isCanJump = evt.newValue; }));
             IsAutoHighLight.RegisterValueChangedCallback((delegate(ChangeEvent<bool> evt){ isAutoHighLight = evt.newValue; }));
             Script.RegisterValueChangedCallback((delegate(ChangeEvent<Object> evt){ this.Script = (PlotScript) evt.newValue; }));
+            RefreshExpandedState();
 #endif
         }
 

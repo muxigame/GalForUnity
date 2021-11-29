@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
@@ -58,8 +59,8 @@ namespace GalForUnity.Graph.GFUNode.Base{
             RegisterCallback<GeometryChangedEvent>((evt => {
                 // portContainer.style.alignSelf = Align.FlexEnd;//取消该段注释能使端口默认值字段自适应宽度，而非对其
             }));
-            SetEnabled(false);
         }
+        
 #else
         public GfuInputView(object value){
             Value = value;
@@ -69,21 +70,22 @@ namespace GalForUnity.Graph.GFUNode.Base{
         }
 #endif
 
-#if UNITY_EDITOR
-        /// <summary>
-        /// 这段对于事件系统的响应，响应了当节点被删除时，同时删除虚连接的子Edge
-        /// 同时响应了当节点收拢时的预览视图消失的功能
-        /// </summary>
-        /// <param name="evt"></param>
-        protected override void ExecuteDefaultAction(EventBase evt){
-            if (evt.eventTypeId == 3){
-                edge.parent.Remove(edge);
-            }
-
-            edge.visible = portContainer.visible = port.visible;
-            base.ExecuteDefaultAction(evt);
-        }
-#endif
+// #if UNITY_EDITOR
+//         /// <summary>
+//         /// 这段对于事件系统的响应，响应了当节点被删除时，同时删除虚连接的子Edge
+//         /// 同时响应了当节点收拢时的预览视图消失的功能
+//         /// </summary>
+//         /// <param name="evt"></param>
+//         protected override void ExecuteDefaultAction(EventBase evt){
+//             if (evt.eventTypeId == 3){
+//                 edge.parent.Remove(edge);
+//             }
+//
+//             Debug.Log(evt.eventTypeId);
+//             edge.visible = portContainer.visible = port.visible;
+//             base.ExecuteDefaultAction(evt);
+//         }
+// #endif
 
 
         /// <summary>
@@ -102,10 +104,10 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 input = port,
                 pickingMode = PickingMode.Ignore,
                 focusable = false,
-                capabilities = Capabilities.Deletable,
+                // capabilities = Capabilities.Deletable,
             };
             Add(edge);
-            //修正原先port即被绑定的port出现显示异常的问题
+            //修正原先port即被绑定的port出现显示鼠标进入端口小圆点不显示异常的问题
             //TODO 可以适当查明原因，并用更好的方式修复
             port.RegisterCallback<MouseEnterEvent>((evt => {
                 if (!port.HitTest(evt.mousePosition)){
@@ -117,7 +119,9 @@ namespace GalForUnity.Graph.GFUNode.Base{
                     port.portCapLit = false;
                 }
             }));
-            port.RegisterCallback<DetachFromPanelEvent>(evt => { edge.RemoveFromHierarchy(); });
+            port.node.RegisterCallback<DetachFromPanelEvent>(evt => {
+                edge.RemoveFromHierarchy();//TODO 从层级面板删除Edge
+            });
             //初始化容器结构并返回portContainer
             portContainer = new VisualElement() {
                 name = "portContainer",
@@ -141,12 +145,8 @@ namespace GalForUnity.Graph.GFUNode.Base{
                     paddingLeft = 10
                 }
             });
-            if (port.connected){
-                portContainer.style.opacity = 0f;
-                edge.style.opacity = 0;
-                SetEnabled(false);
-            }
-
+            RefreshEdgeVisible();
+            SetEnabled(false);
             portContainer.Add(this);
             highlight = false;
             portCapLit = true;
@@ -156,6 +156,16 @@ namespace GalForUnity.Graph.GFUNode.Base{
 #endif
         }
 
+        public void RefreshEdgeVisible(){
+            if (port.connected){
+                portContainer.style.opacity = 0f;
+                edge.style.opacity = 0;
+                SetEnabled(false);
+            } else{
+                portContainer.style.opacity = 1f;
+                edge.style.opacity = 1;
+            }
+        }
 
         public static GfuInputView Create(object port){
 #if UNITY_EDITOR

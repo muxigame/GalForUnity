@@ -78,9 +78,9 @@ namespace GalForUnity.Graph.Tool{
                                 if (Assembly.GetExecutingAssembly().FullName != keyValuePair.assembly) fieldType = Assembly.Load(keyValuePair.assembly).GetType(keyValuePair.type);
                             }
                         }
-
                         //Debug.LogError(fieldType);
                         if (fieldType == null) continue;
+                        // gfuInputView.portType=gfuInputView.Type= fieldType; //动态修改端口的类型为保存的类型
                         var fromJson = !fieldType.IsPrimitive && fieldType != typeof(string) ? JsonUtility.FromJson(keyValuePair.data, fieldType) : Convert.ChangeType(keyValuePair.data, fieldType);
                         try{
                             propertyInfo.SetValue(gfuInputView, fromJson);

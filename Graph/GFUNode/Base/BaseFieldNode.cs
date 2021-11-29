@@ -70,7 +70,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 customAttribute = _nodeFieldTypeAttributes[fieldName];
                 typElement = func(customAttribute);
                 fieldInfo.SetValue(this, typElement);
-                mainContainer.Add((VisualElement) fieldInfo.GetValue(this));
+                extensionContainer.Add((VisualElement) fieldInfo.GetValue(this));
             } else{
                 if (field.GetCustomAttribute<RenameAttribute>() != null){
                     customAttribute.Name = field.GetCustomAttribute<RenameAttribute>().LanguageItem.Value;
@@ -81,8 +81,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 } else{
                     typElement = null;
                 }
-
-                mainContainer.Add(typElement);
+                extensionContainer.Add(typElement);
             }
 
             return typElement;

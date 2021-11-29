@@ -19,6 +19,7 @@ using GalForUnity.Graph.Tool;
 using GalForUnity.Model;
 using GalForUnity.System;
 using GalForUnity.System.Event;
+using JetBrains.Annotations;
 using UnityEngine;
 
 
@@ -256,6 +257,18 @@ namespace GalForUnity.Graph.GFUNode.Base{
             }
         }
 
+        // [ItemCanBeNull]
+        // public List<GfuPort> GfuPorts{
+        //     get{
+        //         List<GfuPort> gfuPorts=new List<GfuPort>();
+        //         foreach (var fieldInfo in GetType().GetFields()){
+        //             if (fieldInfo.FieldType == typeof(GfuPort) && fieldInfo.GetCustomAttribute<NodeRenameAttribute>().PortType == NodeDirection.Output){
+        //                 gfuPorts.Add((GfuPort) fieldInfo.GetValue(this));
+        //             }
+        //         }
+        //     }
+        // }
+
         /// <summary>
         /// 获得Input端口数量
         /// </summary>
@@ -263,8 +276,8 @@ namespace GalForUnity.Graph.GFUNode.Base{
         public int InputPortCount{
             get{
                 if (nodeData) return nodeData.InputPort?.Count ?? 0;
-                Debug.LogError("Node data does not exist");
-                return 0;
+                // Debug.LogError("Node data does not exist");
+                return GetInputPortCount();
             }
         }
 
@@ -275,8 +288,8 @@ namespace GalForUnity.Graph.GFUNode.Base{
         public int OutputPortCount{
             get{
                 if (nodeData) return nodeData.OutputPort?.Count ?? 0;
-                Debug.LogError("Node data does not exist");
-                return 0;
+                // Debug.LogError("Node data does not exist");
+                return GetOutputPortCount();
             }
         }
 
@@ -284,14 +297,13 @@ namespace GalForUnity.Graph.GFUNode.Base{
         /// 获得Input端口的所有端口数据
         /// </summary>
         /// <returns></returns>
-        public List<object> InputPortData{
+        public List<PortData> InputPortData{
             get{
-                List<object> inputPort = new List<object>();
+                List<PortData> inputPort = new List<PortData>();
                 if (!nodeData){
                     Debug.LogError("Node data does not exist");
                     return inputPort;
                 }
-
                 nodeData.InputPort?.ForEach((element => { inputPort.Add(element); }));
                 return inputPort;
             }
@@ -301,9 +313,9 @@ namespace GalForUnity.Graph.GFUNode.Base{
         /// 获得Output端口的所有端口数据
         /// </summary>
         /// <returns></returns>
-        public List<object> OutputPortData{
+        public List<PortData> OutputPortData{
             get{
-                List<object> outputPort = new List<object>();
+                List<PortData> outputPort = new List<PortData>();
                 if (!nodeData){
                     Debug.LogError("Node data does not exist");
                     return outputPort;

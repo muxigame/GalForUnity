@@ -15,7 +15,6 @@ using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Data;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.Operation;
-using UnityEngine;
 
 namespace GalForUnity.Graph.GFUNode.Operation{
     [NodeRename("Operation/" + nameof(LinearNode), "提供时间维度的线性操作")]

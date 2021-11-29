@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using GalForUnity.Graph.GFUNode.Base;
@@ -404,18 +405,25 @@ namespace GalForUnity.Graph.Operation{
     /// 数据容器,亦或者称流动的数据本身
     /// </summary>
     public class Data{
-        public Type type;
+        public Type Type{
+            get{
+                if (value != null) return value.GetType();
+                return _type;
+            }
+            set => _type = value;
+        }
+        public Type _type;
         public object value;
         public GfuOperationData gfuOperationData;
         public int outportIndex=-1;
         public int Index => gfuOperationData.Data.IndexOf(this);
         public bool IsOver = false;
         public Data(Type type){
-            this.type = type;
+            this.Type = type;
             this.value = null;
         }
         public Data(object value){
-            this.type = value?.GetType();
+            this.Type = value?.GetType();
             this.value = value;
         }
         // public Data(Data data){
@@ -423,7 +431,7 @@ namespace GalForUnity.Graph.Operation{
         //     this.value = data.type;
         // }
         public Data(Type type, object value){
-            this.type = type;
+            this.Type = type;
             this.value = value;
         }
         

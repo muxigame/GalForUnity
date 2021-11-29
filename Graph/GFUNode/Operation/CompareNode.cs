@@ -76,8 +76,8 @@ namespace GalForUnity.Graph.GFUNode.Operation{
 
             InitDefaultValuePort<CompareOperation>(otherNodeData);
             GfuOperation.OnPostInput += (x) => {
-                x.InputData[0].type = type;
-                x.InputData[1].type = type;
+                x.InputData[0].Type = type;
+                x.InputData[1].Type = type;
                 x.ContainerData[0].value = CompareType;
             };
 #if UNITY_EDITOR

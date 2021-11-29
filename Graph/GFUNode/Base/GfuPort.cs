@@ -34,26 +34,6 @@ namespace GalForUnity.Graph.GFUNode.Base{
 #if UNITY_EDITOR
         protected GfuPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type) : base(portOrientation, portDirection, portCapacity, type){ }
 #endif
-        //         private Type m_PortType;
-        //         public new Type portType{
-        //             get => this.m_PortType;
-        //             set{
-        //                 
-        // #if UNITY_EDITOR
-        //                 if (this.m_PortType == value)
-        //                     return;
-        //                 this.m_PortType = value;
-        //                 this.ManageTypeClassList(this.m_PortType, new Action<string>(((VisualElement) this).RemoveFromClassList));
-        //                 this.m_PortType = value;
-        //                 this.source = Activator.CreateInstance(typeof (PortSource<>).MakeGenericType(this.m_PortType));
-        //                 if (string.IsNullOrEmpty(this.m_ConnectorText.text))
-        //                     this.m_ConnectorText.text = this.m_PortType.Name;
-        //                 this.ManageTypeClassList(this.m_PortType, new Action<string>(((VisualElement) this).AddToClassList));
-        // #else
-        //                 m_PortType = value;
-        // #endif
-        //             }
-        //         }
 
         public Action<GfuPort> OnConnected;
         public Action OnDisConnected;
@@ -92,7 +72,6 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 // var changeType = Convert.ChangeType(InputView.fieldContainer[0], typeFieldDefault);
                 return typeFieldDefault.GetProperty("value")?.GetValue(InputView.fieldContainer[0]);
             }
-
             return null;
         }
 
@@ -116,18 +95,19 @@ namespace GalForUnity.Graph.GFUNode.Base{
         }
 
         public void CheckDefaultValue(GfuPort gfuPort){
+            if(!gfuPort.node.expanded) return;
             if (gfuPort.connected || gfuPort.connections.Count() != 0){
                 Hide(gfuPort);
             } else{
                 Show(gfuPort);
             }
         }
-
+        
         public void Hide(GfuPort gfuPort){
             if (gfuPort.InputView != null){
                 gfuPort.InputView.portContainer.style.opacity = 0;
                 gfuPort.InputView.edge.style.opacity = 0;
-                gfuPort.InputView.SetEnabled(false);
+                gfuPort.InputView.fieldContainer.SetEnabled(false);
             }
         }
 
@@ -135,7 +115,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
             if (gfuPort.InputView != null){
                 gfuPort.InputView.portContainer.style.opacity = 1;
                 gfuPort.InputView.edge.style.opacity = 1;
-                gfuPort.InputView.SetEnabled(true);
+                gfuPort.InputView.fieldContainer.SetEnabled(true);
                 // OnDisConnected?.Invoke();
             }
         }
@@ -160,7 +140,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
             return ele;
         }
 
-        protected class GfuEdgeConnectorListener : IEdgeConnectorListener{
+        private class GfuEdgeConnectorListener : IEdgeConnectorListener{
             private GraphViewChange m_GraphViewChange;
             private List<Edge> m_EdgesToCreate;
             private List<GraphElement> m_EdgesToDelete;
@@ -185,7 +165,9 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 if (edge.input != null && edge.output != null){
                     var edgeInput = (GfuPort) edge.input;
                     var edgeOutput = (GfuPort) edge.output;
+                    edgeInput.Disconnect(edge);
                     edgeInput.OnDisConnected?.Invoke();
+                    edgeOutput.Disconnect(edge);
                     edgeOutput.OnDisConnected?.Invoke();
                     return;
                 }

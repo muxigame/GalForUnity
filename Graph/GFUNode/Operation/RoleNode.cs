@@ -98,15 +98,12 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                 }
             };
             enumField.RegisterValueChangedCallback(evt => { GfuOperation.ContainerData[1].value = roleOperationType = (RoleOperationType) evt.newValue; });
-            mainContainer.Add(objectField);
-            mainContainer.Add(enumField);
-            style.width = 200;
+            extensionContainer.Add(objectField);
+            extensionContainer.Add(enumField);
+            RefreshExpandedState();
+            style.width = 210;
 #endif
         }
-
-        // public override object GetDefaultValue(int portIndex){
-        //     var gfuPort = (GfuPort)inputContainer[portIndex];
-        //     return gfuPort.GetDefaultValue();
-        // }
+        
     }
 }

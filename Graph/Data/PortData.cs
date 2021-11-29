@@ -27,12 +27,14 @@ namespace GalForUnity.Graph.Data{
     public class PortData : DataInfo{
         public List<ConnectData> connections;
         public string sourceType;
+        public string type;
         public long instanceID;
 #if UNITY_EDITOR
         public PortData Parse(Port ports, Dictionary<GfuNode, NodeData> datas){
             connections = new List<ConnectData>();
             if (ports?.source == null) return this;
             sourceType = ports.source.GetType().ToString();
+            type = ports.portType?.ToString();
             foreach (var portsConnection in ports.connections){
                 ConnectData connectData = new ConnectData();
                 if (portsConnection != null){

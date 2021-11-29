@@ -14,7 +14,6 @@ using GalForUnity.Graph.Attributes;
 using GalForUnity.Model;
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
-
 #endif
 
 
@@ -25,7 +24,10 @@ namespace GalForUnity.Graph.GFUNode.Base{
         [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit;
 #if UNITY_EDITOR
-        public MainNode(){ capabilities -= Capabilities.Deletable; }
+        public MainNode(){
+            capabilities -= Capabilities.Deletable;
+            capabilities -= Capabilities.Copiable;
+        }
 #endif
 
         public override RoleData Execute(RoleData roleData){ return base.Execute(roleData); }

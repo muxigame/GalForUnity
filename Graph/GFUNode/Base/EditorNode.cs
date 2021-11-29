@@ -96,7 +96,9 @@ namespace GalForUnity.Graph.GFUNode.Base{
             get => base.title;
             set => base.title = value;
         }
-
+#endif
+        
+#if UNITY_EDITOR
         /// <summary>
         /// EditorMethod
         /// 获取该节点的所有端口
@@ -118,8 +120,9 @@ namespace GalForUnity.Graph.GFUNode.Base{
         /// 获取该节点的所有端口
         /// </summary>
         /// <returns>端口列表</returns>
-        internal List<Port> Ports(){ return GetInput().AddAll(GetOutPut()); }
-
+        internal List<Port> Ports(){
+            return GetInput().AddAll(GetOutPut());
+        }
         /// <summary>
         /// EditorMethod
         /// 获取输出端口列表
@@ -130,10 +133,8 @@ namespace GalForUnity.Graph.GFUNode.Base{
             for (int i = 0; i < outputContainer.childCount; i++){
                 output.Add((Port) outputContainer.ElementAt(i));
             }
-
             return output;
         }
-
         /// <summary>
         /// EditorMethod
         /// 获取输入端口列表
@@ -144,10 +145,75 @@ namespace GalForUnity.Graph.GFUNode.Base{
             for (int i = 0; i < inputContainer.childCount; i++){
                 input.Add((Port) inputContainer.ElementAt(i));
             }
-
             return input;
         }
 #endif
+        /// <summary>
+        /// EditorMethod
+        /// 获取该节点的所有端口
+        /// </summary>
+        /// <returns>端口列表</returns>
+        internal List<GfuPort> GfuPorts(){
+            return GetGfuInput().AddAll(GetGfuOutPut());
+        }
+        
+        /// <summary>
+        /// EditorMethod
+        /// 获取输出端口列表
+        /// </summary>
+        /// <returns>端口列表</returns>
+        protected virtual List<GfuPort> GetGfuOutPut(){
+            var output = new List<GfuPort>();
+#if UNITY_EDITOR
+            for (int i = 0; i < outputContainer.childCount; i++){
+                output.Add((GfuPort) outputContainer.ElementAt(i));
+            } 
+#endif
+            return output;
+        }
+
+        /// <summary>
+        /// EditorMethod
+        /// 获取输入端口列表
+        /// </summary>
+        /// <returns>端口列表</returns>
+        protected virtual List<GfuPort> GetGfuInput(){
+            var input = new List<GfuPort>();
+#if UNITY_EDITOR
+            for (int i = 0; i < inputContainer.childCount; i++){
+                input.Add((GfuPort) inputContainer.ElementAt(i));
+            }
+#endif
+            return input;
+        }
+
+        
+        /// <summary>
+        /// EditorMethod 游戏中始终返回0
+        /// </summary>
+        /// <returns></returns>
+        protected int GetInputPortCount(){
+#if UNITY_EDITOR
+            return inputContainer.childCount;
+            
+#else
+            return 0;
+#endif
+        }
+
+               
+        /// <summary>
+        /// EditorMethod 游戏中始终返回0
+        /// </summary>
+        /// <returns></returns>
+        protected int GetOutputPortCount(){
+#if UNITY_EDITOR
+            return outputContainer.childCount;
+#else
+            return 0;
+#endif
+        }
+
         public GfuNode SetPosition(NodeData otherNodeData){
 #if UNITY_EDITOR
             Rect rect = this.GetPosition();
@@ -179,7 +245,6 @@ namespace GalForUnity.Graph.GFUNode.Base{
 
                 type = type.BaseType;
             }
-
             return false;
         }
 

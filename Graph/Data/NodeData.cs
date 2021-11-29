@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.System;
 #if UNITY_EDITOR
@@ -72,24 +73,23 @@ namespace GalForUnity.Graph.Data{
                 vector4 = new Vector4();
                 return this;
             }
-
             vector4 = new Vector4(node.worldBound.x, node.worldBound.y, node.worldBound.width, node.worldBound.height);
-            type = node.GetType().FullName;
-            var fieldInfos = node.GetType().GetFields();
+            var nodeType = node.GetType();
+            type = nodeType.FullName;
+            name = nodeType.Name;
+            var fieldInfos = nodeType.GetFields();
             if (fieldInfos.Length == 0) return this;
             foreach (var fieldInfo in fieldInfos){
                 object fieldValue = fieldInfo.GetValue(node);
                 if (fieldValue is Port || fieldValue == null) continue; //不保存接口和空对象
                 this.ParseField(fieldValue, fieldInfo);
             }
-
             return this;
         }
 
 
         // public List<Node> Nodes;
         public void Save(string path){
-            name = nameof(NodeData);
             for (var i = 0; i < InputPort.Count; i++){
                 // AssetDatabase.AddObjectToAsset(Input[i], path);
                 InputPort[i].Save(path);
@@ -122,14 +122,35 @@ namespace GalForUnity.Graph.Data{
             set => listInfos = value;
         }
 
-        //         public NodeData ToGfuNode(){
-        // #if UNITY_EDITOR
-        //             return this;
-        // #else
-        //             var gfuNode = ScriptableObject.CreateInstance(Type.GetType(type));
-        //             gfuNode.ToGfuNode(this);
-        //             return gfuNode;
-        // #endif
-        //         }
+        /// <summary>
+        /// 获得输入端口接受的数据类型
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Type InputPortType(int index){
+            if (InputPort != null && InputPort.Count > 0){
+                var portData = InputPort[index];
+                var type1 = Type.GetType(portData.type);
+                if (type1 != null) return type1;
+                if(portData.jsonField!=null&&portData.jsonField.Count > 0) return Assembly.Load(portData.jsonField[0].assembly).GetType(portData.jsonField[0].type);
+                if(portData.idField !=null &&portData.idField.Count >0) return Assembly.Load(portData.idField[0].assembly).GetType(portData.idField[0].type);
+            }
+            return null;
+        }
+        /// <summary>
+        /// 获得输出端口接受的数据类型
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Type OutPutPortType(int index){
+            if (OutputPort != null && OutputPort.Count > 0){
+                var portData = OutputPort[index];
+                var type1 = Type.GetType(portData.type);
+                if (type1 != null) return type1;
+                if(portData.jsonField !=null &&portData.jsonField.Count > 0) return Assembly.Load(portData.jsonField[0].assembly).GetType(portData.jsonField[0].type);
+                if(portData.idField   !=null &&portData.idField.Count   >0) return Assembly.Load(portData.idField[0].assembly).GetType(portData.idField[0].type);
+            }
+            return null;
+        }
     }
 }

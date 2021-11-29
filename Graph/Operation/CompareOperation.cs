@@ -53,17 +53,17 @@ namespace GalForUnity.Graph.Operation{
                 
                 MethodInfo methodInfo = null;
                 if (valueCompareType == ValueCompareType.Equal){
-                    methodInfo = InputData[0].type.GetMethod("op_Equality", BindingFlags.Public | BindingFlags.Static);
+                    methodInfo = InputData[0].Type.GetMethod("op_Equality", BindingFlags.Public | BindingFlags.Static);
                 }else if (valueCompareType == ValueCompareType.NotEqual){
-                    methodInfo = InputData[0].type.GetMethod("op_Inequality", BindingFlags.Public | BindingFlags.Static);
+                    methodInfo = InputData[0].Type.GetMethod("op_Inequality", BindingFlags.Public | BindingFlags.Static);
                 }else if (valueCompareType == ValueCompareType.Less){
-                    methodInfo = InputData[0].type.GetMethod("op_LessThan", BindingFlags.Public | BindingFlags.Static);
+                    methodInfo = InputData[0].Type.GetMethod("op_LessThan", BindingFlags.Public | BindingFlags.Static);
                 }else if (valueCompareType == ValueCompareType.LessOrEqual){
-                    methodInfo = InputData[0].type.GetMethod("op_LessThanOrEqual", BindingFlags.Public | BindingFlags.Static);
+                    methodInfo = InputData[0].Type.GetMethod("op_LessThanOrEqual", BindingFlags.Public | BindingFlags.Static);
                 }else if (valueCompareType == ValueCompareType.Greater){
-                    methodInfo = InputData[0].type.GetMethod("op_GreaterThan", BindingFlags.Public | BindingFlags.Static);
+                    methodInfo = InputData[0].Type.GetMethod("op_GreaterThan", BindingFlags.Public | BindingFlags.Static);
                 }else if (valueCompareType == ValueCompareType.GreaterOrEqual){
-                    methodInfo = InputData[0].type.GetMethod("op_GreaterThanOrEqual", BindingFlags.Public | BindingFlags.Static);
+                    methodInfo = InputData[0].Type.GetMethod("op_GreaterThanOrEqual", BindingFlags.Public | BindingFlags.Static);
                 }
                 
                 if (methodInfo != null){
@@ -75,12 +75,12 @@ namespace GalForUnity.Graph.Operation{
             }else if(ContainerData[0].value is ObjectCompareType objectCompareType){
                 if (InputData[0].value.Equals(InputData[1].value)){
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = objectCompareType == ObjectCompareType.Equal;
                     }
                 }else{
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = objectCompareType == ObjectCompareType.NotEqual;
                     }
                 }
@@ -94,37 +94,37 @@ namespace GalForUnity.Graph.Operation{
             switch (valueCompareType){
                 case ValueCompareType.Equal:
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = Math.Abs(firstFloat - secondFloat) < 0.000001f;
                     };
                     break;
                 case ValueCompareType.NotEqual:
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = Math.Abs(firstFloat - secondFloat) > 0.000001f;
                     };
                     break;
                 case ValueCompareType.Less:
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = firstFloat < secondFloat;
                     };
                     break;
                 case ValueCompareType.LessOrEqual:
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = firstFloat <= secondFloat;
                     };
                     break;
                 case ValueCompareType.Greater:
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = firstFloat > secondFloat;
                     };
                     break;
                 case ValueCompareType.GreaterOrEqual:
                     foreach (var data in OutPutData){
-                        if (data.type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.type);
+                        if (data.Type != typeof(bool)) Debug.LogError("输出端口的类型不是bool而是:" + data.Type);
                         data.value = firstFloat >= secondFloat;
                     };
                     break;
