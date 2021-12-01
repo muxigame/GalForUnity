@@ -45,6 +45,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
             // title = renameAttribute.name;
             if (renameAttribute == null) return;
             title = GfuLanguage.Parse(renameAttribute.name);
+            tooltip=GfuLanguage.Parse(renameAttribute.tooltip);
             var fields = this.GetType().GetFields().ToList();
             // for (var i = 0; i < fields.Count; i++){
             //     //所有GfuNode都会继承出口，非但是GfuOperationNode会正常显示出口，但是GfuOperationNode不会，会被过滤
@@ -80,6 +81,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 field.SetValue(this, port);
                 //设置port显示的名称
                 port.portName = GfuLanguage.Parse(nodeRenameAttribute.name);
+                port.tooltip = GfuLanguage.Parse(nodeRenameAttribute.tooltip);
                 field.SetValue(this, port); //为端口赋值
                 if (nodeRenameAttribute.PortType == NodeDirection.Input){
                     inputContainer.Add(port);

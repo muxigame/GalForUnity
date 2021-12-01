@@ -13,10 +13,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.InstanceID;
-#if UNITY_EDITOR
-using System.Reflection;
-using System.Reflection.Emit;
-#endif
+// #if UNITY_EDITOR
+// using System.Reflection;
+// using System.Reflection.Emit;
+// #endif
 using GalForUnity.System;
 using GalForUnity.System.Event;
 using UnityEngine;
@@ -319,32 +319,32 @@ namespace GalForUnity.Model{
             }
         }
         
-#if UNITY_EDITOR
-        static AssemblyBuilder myAssemblyBuilder;
-        static ModuleBuilder myModuleBuilder;
-        static EnumBuilder myEnumBuilder;
-        /// <summary>
-        /// EditorMethod 获得当前角色数据类型的枚举
-        /// </summary>
-        /// <returns></returns>
-        private Enum CreateEnum(){
-            if (dataArray == null || dataArray.Count < 1) return null;
-            AssemblyName myAssemblyName = Assembly.GetAssembly(typeof(RoleData)).GetName();
-            myAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Save);
-            myModuleBuilder = myAssemblyBuilder.DefineDynamicModule("EmittedModule", 
-                "EmittedModule.mod");
-            myEnumBuilder = myModuleBuilder.DefineEnum(typeof(RoleData).Namespace+"."+RoleModel.Name+"Enum", 
-                TypeAttributes.Public, typeof(Int32));
-            for (var i = 0; i < dataArray.Count; i++){
-                myEnumBuilder.DefineLiteral(dataArray[i].name, i);
-            }
-            //FieldBuilder myFieldBuilder2 = myEnumBuilder.DefineLiteral("FieldTwo", 2);
-            var type = myEnumBuilder.CreateType();
-            // var values = Enum.GetValues(type);
-            Enum @enum = (Enum) Enum.Parse(type,dataArray[0].name);
-            return @enum;
-        }
-#endif
+// #if UNITY_EDITOR
+//         static AssemblyBuilder myAssemblyBuilder;
+//         static ModuleBuilder myModuleBuilder;
+//         static EnumBuilder myEnumBuilder;
+//         /// <summary>
+//         /// EditorMethod 获得当前角色数据类型的枚举
+//         /// </summary>
+//         /// <returns></returns>
+//         private Enum CreateEnum(){
+//             if (dataArray == null || dataArray.Count < 1) return null;
+//             AssemblyName myAssemblyName = Assembly.GetAssembly(typeof(RoleData)).GetName();
+//             myAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Save);
+//             myModuleBuilder = myAssemblyBuilder.DefineDynamicModule("EmittedModule", 
+//                 "EmittedModule.mod");
+//             myEnumBuilder = myModuleBuilder.DefineEnum(typeof(RoleData).Namespace+"."+RoleModel.Name+"Enum", 
+//                 TypeAttributes.Public, typeof(Int32));
+//             for (var i = 0; i < dataArray.Count; i++){
+//                 myEnumBuilder.DefineLiteral(dataArray[i].name, i);
+//             }
+//             //FieldBuilder myFieldBuilder2 = myEnumBuilder.DefineLiteral("FieldTwo", 2);
+//             var type = myEnumBuilder.CreateType();
+//             // var values = Enum.GetValues(type);
+//             Enum @enum = (Enum) Enum.Parse(type,dataArray[0].name);
+//             return @enum;
+//         }
+// #endif
     }
 
 }

@@ -110,7 +110,6 @@ namespace GalForUnity.Graph.GFUNode.Operation{
         /// </summary>
         /// <param name="nodeData"></param>
         public void InitDefaultValuePort(NodeData nodeData){
-            
 #if UNITY_EDITOR
             if(PortDefaultValueContainer != null && PortDefaultValueContainer.childCount >0) PortDefaultValueContainer.Clear();
             if(GfuInputViews != null && GfuInputViews.Count >0) GfuInputViews.Clear();
@@ -334,7 +333,7 @@ namespace GalForUnity.Graph.GFUNode.Operation{
             return datas;
         }
 
-        public void PortTypeSync(List<GfuPort> gfuPorts, Type defaultType){
+        public void PortTypeSync(List<GfuPort> gfuPorts, Type defaultType,bool includeOutput=true){
 #if UNITY_EDITOR
             foreach (var gfuPort in gfuPorts){
                 gfuPort.OnConnected += (x) => {
@@ -360,8 +359,10 @@ namespace GalForUnity.Graph.GFUNode.Operation{
                     }
                 };
             }
-            foreach (var gfuPort in GetGfuOutPut()){
-                gfuPort.portType = defaultType;
+            if (includeOutput){
+                foreach (var gfuPort in GetGfuOutPut()){
+                    gfuPort.portType = defaultType;
+                }
             }
 #endif
         }

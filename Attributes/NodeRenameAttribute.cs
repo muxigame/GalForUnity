@@ -25,7 +25,13 @@ namespace GalForUnity.Attributes{
         public NodeDirection PortType;
         public NodeCapacity Capacity;
 
-        
+        public NodeRenameAttribute(string name,string tooltip,Type type,NodeDirection portType = NodeDirection.Output,NodeCapacity capacity = NodeCapacity.Single){
+            this.name = name;
+            this.Type = type;
+            this.PortType = portType;
+            this.Capacity = capacity;
+            this.tooltip = tooltip;
+        }
         public NodeRenameAttribute(string name,Type type,NodeDirection portType = NodeDirection.Output,NodeCapacity capacity = NodeCapacity.Single){
 //#if UNITY_EDITOR
             // if (new Regex("(^[a-zA-Z]+/?)+").IsMatch(name)){

@@ -20,16 +20,16 @@ namespace GalForUnity.Graph.Operation{
             startTime = Time.time;
             return base.Execute(gfuOperationData);
         }
-
+        
         public override void Start(GfuOperationData gfuOperationData){
-            
+            loopTime = (float) ContainerData[1].value;
             foreach (var data in OutPutData){
                 if (data.Type == typeof(float)){
                     float from = (float) InputData[0].value;
                     float to = (float) InputData[1].value;
                     data.value = from;
                     // Debug.LogError(data.value);
-                    if (Math.Abs(from - to) < 0.01f) Input.Data[2].IsOver = true;
+                    if (Math.Abs(from - to) < 0.000001f) Input.Data[2].IsOver = true;
                 }else{
                     Debug.LogError("一个不合理的输出类型，原因可能是连接了不同类型的接口");
                     Debug.LogError("An unreasonable output type, possibly because a different type of interface is connected");
@@ -39,17 +39,33 @@ namespace GalForUnity.Graph.Operation{
         }
 
         private float startTime;
+        private float loopTime;
+        private bool reverse;
         public override void Update(GfuOperationData gfuOperationData){
             foreach (var data in OutPutData){
                 if (data.Type == typeof(float)){
-                    float from = (float) InputData[0].value;
-                    float to = (float) InputData[1].value;
+                    float from = (float) (reverse?InputData[1].value:InputData[0].value);
+                    float to = (float) (reverse?InputData[0].value:InputData[1].value);
                     float time = (float) InputData[2].value;
                     float timeScale = ((Time.time - startTime) / time);
                     float value = from + (to - from) * (timeScale > 1 ? 1 : timeScale);
                     data.value = value;
+                    if ((bool) ContainerData[0].value){
+                        if (loopTime - (Time.time - startTime) <= 0){
+                            IsOver = true;
+                        }
+                        if (timeScale >= 1){
+                            loopTime = loopTime - time;
+                            startTime = Time.time;
+                            reverse = !reverse;
+                        }
+                    } else{
+                        if (Math.Abs(value - to) < 0.00001f){
+                            IsOver = true;
+                            // Input.Data[2].IsOver = true;
+                        }
+                    }
                     // Debug.LogError(data.value);
-                    if (Math.Abs(value - to) < 0.01f) Input.Data[2].IsOver = true;
                 }else{
                     Debug.LogError("一个不合理的输出类型，原因可能是连接了不同类型的接口");
                     Debug.LogError("An unreasonable output type, possibly because a different type of interface is connected");
@@ -60,7 +76,23 @@ namespace GalForUnity.Graph.Operation{
         public override void OperationOver(){
             foreach (var data in OutPutData){
                 if (data.Type == typeof(float)){
-                    data.value = (float)InputData[1].value;
+                    if ((bool) ContainerData[0].value){
+                        float from = (float) InputData[0].value;
+                        float to = (float) InputData[1].value;
+                        float time = (float) InputData[2].value;
+                        int count = (int) ((float) ContainerData[1].value / time);
+                        float remainder = ((float) ContainerData[1].value % time);
+                        float timeScale = (remainder / time);
+                        if (count % 2 == 0){
+                            float value = from + (to - from) * (timeScale > 1 ? 1 : timeScale);
+                            data.value = value;
+                        } else{
+                            float value = to -  (to - from) * (timeScale > 1 ? 1 : timeScale);
+                            data.value = value;
+                        }
+                    } else{
+                        data.value = (float)InputData[1].value;
+                    }
                 }else{
                     Debug.LogError("一个不合理的输出类型，原因可能是连接了不同类型的接口");
                     Debug.LogError("An unreasonable output type, possibly because a different type of interface is connected");

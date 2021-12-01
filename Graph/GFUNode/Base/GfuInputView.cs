@@ -161,6 +161,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 portContainer.style.opacity = 0f;
                 edge.style.opacity = 0;
                 SetEnabled(false);
+                fieldContainer.SetEnabled(false);
             } else{
                 portContainer.style.opacity = 1f;
                 edge.style.opacity = 1;

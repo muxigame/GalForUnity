@@ -4,8 +4,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GalForUnity.Attributes;
 
+// ReSharper disable all InconsistentNaming
 namespace GalForUnity.System{
-    // ReSharper disable all InconsistentNaming
     public class GfuLanguage{
         public static GfuLanguage GfuLanguageInstance=new GfuLanguage();
         private GfuLanguage(){
@@ -75,8 +75,12 @@ namespace GalForUnity.System{
         public static string ParseLog(string name){
             return LogLanguageItem[name].Value;
         }
+
+        private static Regex isDir = new Regex("(^[a-zA-Z]+/?)+");
+        private static Regex isName = new Regex("[a-zA-Z0-9_]+");
         public static string Parse(string name){
-            if (new Regex("(^[a-zA-Z]+/?)+").IsMatch(name)){
+            if(string.IsNullOrEmpty(name)) return name;
+            if (isDir.IsMatch(name)){
                 var newString = new Regex("[^\\w/]").Replace(name, "").ToUpper();
                 if (newString.Contains("/")){
                     var strings = newString.Split('/');
@@ -88,13 +92,13 @@ namespace GalForUnity.System{
                             throw new NullReferenceException($"language item cannot find string:{name} and want find:{s}");
                         }
                     }
-                    return returnString.Substring(0,returnString.Length-1);
+                    if(!string.IsNullOrEmpty(returnString?.Trim())) return returnString.Substring(0,returnString.Length-1);
                 }
-               // return (string) (typeof(GfuLanguage).GetField(newString).GetValue(GfuLanguageInstance) as LanguageItem).Value;
             }
-            if(new Regex("[a-zA-Z0-9]+").IsMatch(name)){
+            if(isName.IsMatch(name)){
                 // Debug.Log(name);
-                return (string) (typeof(GfuLanguage).GetField(name.ToUpper())?.GetValue(GfuLanguageInstance) as LanguageItem)?.Value;
+                var value = (string) (typeof(GfuLanguage).GetField(name.ToUpper())?.GetValue(GfuLanguageInstance) as LanguageItem)?.Value;
+                if (!string.IsNullOrEmpty(value?.Trim())) return value;
             }
             return name;
         }
@@ -295,6 +299,8 @@ namespace GalForUnity.System{
         public readonly LanguageItem SUBTRACTNODE = new LanguageItem("Subtract Node","相减节点");
         public readonly LanguageItem DIVISIONNODE = new LanguageItem("Division Node","相除节点");
         public readonly LanguageItem MULTIPLYNODE = new LanguageItem("Multiply Node","相乘节点");
+        public readonly LanguageItem COMBINENODE = new LanguageItem("Combine Node","组合节点");
+        public readonly LanguageItem SPLITNODE = new LanguageItem("Split Node","拆分节点");
         public readonly LanguageItem ANIMATIONNODE = new LanguageItem("Animation Node","动画节点");
         public readonly LanguageItem ROLEOPERATIONTYPE = new LanguageItem("Role Operation Type","登场下场操作");
         public readonly LanguageItem LINEARNODE = new LanguageItem("Linear Operation Node","线性操作节点");
@@ -305,6 +311,7 @@ namespace GalForUnity.System{
         public readonly LanguageItem VECTOR2 = new LanguageItem("Vector2","2维向量");
         public readonly LanguageItem VECTOR1 = new LanguageItem("Vector1","1维向量");
         public readonly LanguageItem TIMENODE = new LanguageItem("Time Node","时间节点");
+        public readonly LanguageItem CHANNEL = new LanguageItem("Channel","通道");
         public readonly LanguageItem TIME = new LanguageItem("Time","时间");
         public readonly LanguageItem SINETIME = new LanguageItem("Sine Time","时间正弦值");
         public readonly LanguageItem COSINETIME = new LanguageItem("Cosine Time","时间余弦值");
@@ -313,9 +320,16 @@ namespace GalForUnity.System{
         public readonly LanguageItem FLOAT = new LanguageItem("Float","浮点数");
         public readonly LanguageItem SCENE = new LanguageItem("Scene","场景");
         public readonly LanguageItem BOOLEANNODE = new LanguageItem("Boolean Node","布尔节点");
+        public readonly LanguageItem POWERNODE = new LanguageItem("Power Node","幂指节点");
+        public readonly LanguageItem SQUAREROOTNODE  = new LanguageItem("Square Root Node","平方根节点");
         public readonly LanguageItem BOOLEAN = new LanguageItem("Boolean","布尔");
+        public readonly LanguageItem LOGICOPERATION  = new LanguageItem("Logic Operation","逻辑操作");
         public readonly LanguageItem OBJECT = new LanguageItem("Object","对象");
         public readonly LanguageItem COMPARENODE = new LanguageItem("Compare Node","比较节点");
+        public readonly LanguageItem GEOMETRY = new LanguageItem("Geometry","几何");
+        public readonly LanguageItem SINENODE = new LanguageItem("Sine Node","正弦节点");
+        public readonly LanguageItem TANGENTNODE = new LanguageItem("Tangent Node","正切节点");
+        public readonly LanguageItem COSINENODE = new LanguageItem("Cosine Node","余弦节点");
         public readonly LanguageItem VALUE = new LanguageItem("Value","值");
         public readonly LanguageItem VALUE1 = new LanguageItem("Value1","值1");
         public readonly LanguageItem VALUE2 = new LanguageItem("Value1","值2");
@@ -324,10 +338,14 @@ namespace GalForUnity.System{
         public readonly LanguageItem FROM = new LanguageItem("From","从");
         public readonly LanguageItem SUBTRACT = new LanguageItem("Subtract","减少");
         public readonly LanguageItem ADD = new LanguageItem("Add","添加");
+        public readonly LanguageItem IN = new LanguageItem("In","输入");
+        public readonly LanguageItem OUT = new LanguageItem("Out","输出");
         public readonly LanguageItem EXECUTE = new LanguageItem("Execute","执行");
         public readonly LanguageItem SAVE = new LanguageItem("Sace","保存");
         public readonly LanguageItem HINT = new LanguageItem("hint","提示");
         public readonly LanguageItem MATH = new LanguageItem("Math","数学");
+        public readonly LanguageItem LOOP = new LanguageItem("Loop","循环");
+        public readonly LanguageItem DURATIONTIME = new LanguageItem("Duration time","持续时间");
         public readonly LanguageItem TO = new LanguageItem("To","到");
         public readonly LanguageItem X = new LanguageItem("X","X");
         public readonly LanguageItem YES = new LanguageItem("Yes","是滴");

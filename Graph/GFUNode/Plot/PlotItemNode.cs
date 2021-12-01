@@ -148,8 +148,8 @@ namespace GalForUnity.Graph.GFUNode.Plot{
                         gfuOperationNode.GfuOperation.OnStart += Script.OnGfuOperationStart;
                         gfuOperationNode.GfuOperation.OnUpdate += Script.OnGfuOperationUpdate;
                     }
-
                     gfuOperationNode.GfuOperation.Start(1, null, gfuNode);
+                    gfuOperationNode.GfuOperation.RunAllNode();
                 }
 
                 if (isAutoHighLight){

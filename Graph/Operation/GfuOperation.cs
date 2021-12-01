@@ -101,6 +101,8 @@ namespace GalForUnity.Graph.Operation{
             }
         }
 
+        private static List<GfuOperation> _gfuOperations = new List<GfuOperation>();
+
         public GfuOperation(){
             IsOver = false;
         }
@@ -119,6 +121,7 @@ namespace GalForUnity.Graph.Operation{
             OnInit?.Invoke(this);
             gfuNode = node;
             Priority = Mathf.Max(priority,Priority);
+            if(!_gfuOperations.Contains(this)) _gfuOperations.Add(this);
             EventCenter.GetInstance().OnNodeExecutedEvent+=RegisterExecuted;
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += (x) => {
@@ -130,17 +133,19 @@ namespace GalForUnity.Graph.Operation{
 #endif
             if (data != null){
                 //Start端口会因为多次链接而进入,每次传入都会为OutPutData增加数据原,节点因该为所有需要数据的节点赋值
-                OutPutData.Add(data);
+                if (!OutPutData.Contains(data)){
+                    OutPutData.Add(data);
+                    OnPostInput?.Invoke(this);
+                }
             }
-            OnPostInput?.Invoke(this);
             //有默认值的端口，默认值会覆盖端口原先的值，
             //不存在默认值有两种情况，一种是Unity引用类型，即Object的继承类型，在获取默认值的时候为null，则会不赋值，保持原有的值
             //另一种是端口已经连接，则会使用已经连接的值类型或者是需要使用已经连接的值类型
             if (node is GfuOperationNode gfuOperationNode){
                 for (var i = 0; i < node.InputPortCount; i++){
                     // Debug.Log(node+"==>"+this+Input.Data.Count);
-                    var defaultValue = gfuOperationNode.GetDefaultValue(i);
                     if(gfuOperationNode.IsInputConnected(i)) continue;
+                    var defaultValue = gfuOperationNode.GetDefaultValue(i);
                     Input.Data[i].IsOver = true;
                     if (defaultValue != null){
                         Input.Data[i].value = defaultValue;
@@ -148,6 +153,9 @@ namespace GalForUnity.Graph.Operation{
                 }
                 
             }
+
+            // 将与该节点链接的同层节点保存至字典中
+            Dictionary<Data,GfuOperationNode> currentLevelGfuOperation = new Dictionary<Data,GfuOperationNode>();
             //遍历当前节点的所有父节点,并且依据优先级开启线程。数字越大越优先执行,会将所有数据传入到连入段的节点里去
             if (node.nodeData.InputPort != null && node.nodeData.InputPort.Count > 0){
                 for (var i = 0; i < node.nodeData.InputPort.Count; i++){
@@ -158,18 +166,31 @@ namespace GalForUnity.Graph.Operation{
                         if(portDataConnection?.Output == null) continue;
                         if (node.GfuGraph.GetNode(portDataConnection.Output.instanceID) is GfuOperationNode parentGfuOperationNode){
                             // if (!parentGfuOperationNode.GfuOperation.IsOver) continue;
-                            parentGfuOperationNode.GfuOperation.Start(Priority +1,Input.Data[i],parentGfuOperationNode);
+                            currentLevelGfuOperation.Add(Input.Data[i],parentGfuOperationNode);//注意这两行保存，这是保证节点重复链接时依旧不会被重复激活运行的关键
+                            if(!_gfuOperations.Contains(this)) _gfuOperations.Add(parentGfuOperationNode.GfuOperation);
                         }
                     }
                 }
-            }
-
-            var execute = Execute(Input);//Input不一定存在，可能为一个默认值,默认值则来源上放的默认值算法
-            if (IsSync){
-                execute.Wait();//如果当前方法需要同步执行则阻塞当前线程
+            } 
+            //将保存的节点遍历激活
+            foreach (var operationNode in currentLevelGfuOperation){
+                operationNode.Value.GfuOperation.Start(Priority +1,operationNode.Key,operationNode.Value);
             }
         }
 
+        /// <summary>
+        /// 手动调用RunAllNode开启节点任务
+        /// </summary>
+        public void RunAllNode(){
+            _gfuOperations.Sort((x,y)=>-x.Priority.CompareTo(y.Priority));
+            foreach (var gfuOperation in _gfuOperations){
+                var execute = gfuOperation.Execute(gfuOperation.Input); //Input不一定存在，可能为一个默认值,默认值则来源上放的默认值算法
+                if (IsSync){
+                    execute.Wait(); //如果当前方法需要同步执行则阻塞当前线程
+                }
+            }
+            _gfuOperations.Clear();
+        }
         
         /// <summary>
         /// 执行该节点的操作，操作会被异步执行，同时被加入Mono的生命周期中执行
@@ -218,7 +239,10 @@ namespace GalForUnity.Graph.Operation{
         /// </summary>
         public virtual void Update(GfuOperationData gfuOperationData){
             OnUpdate?.Invoke(this);
-            if(gfuOperationData.IsOver) Executed();
+            if (gfuOperationData.IsOver||IsOver){
+                OperationOver();
+                Executed();
+            }
             IsExecute = false;
         }
 
@@ -253,7 +277,8 @@ namespace GalForUnity.Graph.Operation{
             // ReSharper disable once DelegateSubtraction
             EventCenter.GetInstance().OnNodeExecutedEvent-=RegisterExecuted;
             GfuRunOnMono.LateUpdate(Priority, delegate{
-                if(!IsOver) OperationOver();
+                if(!IsOver) 
+                    OperationOver();
                 // InputData.Clear();//这个行代码会导致节点执行完成之后InputData数据丢失，这会导致上层API选择性执行节点无法执行已经执行过的节点时，无法访问节点数据。
                 // OutPutData.Clear();//这个行代码会导致节点执行完成之后InputData数据丢失，这会导致上层API选择性执行节点无法执行已经执行过的节点时，无法访问节点数据。
                 //所以这里就清楚数据，图结束的时候再清楚

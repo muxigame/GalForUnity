@@ -18,7 +18,7 @@ using UnityEditor.Experimental.GraphView;
 
 
 namespace GalForUnity.Graph.GFUNode.Base{
-    [NodeRename(nameof(MainNode))]
+    [NodeRename(nameof(MainNode),"主节点")]
     [NodeAttributeUsage(NodeAttributeTargets.FlowGraph | NodeAttributeTargets.ItemGraph)]
     public class MainNode : GfuNode{
         [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]

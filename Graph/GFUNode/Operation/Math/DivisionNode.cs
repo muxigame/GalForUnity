@@ -21,12 +21,12 @@ namespace GalForUnity.Graph.GFUNode.Operation.Math{
     [Serializable]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
     public class DivisionNode : GfuOperationNode{
-        [NodeRename(nameof(Vector4), typeof(float), NodeDirection.Input, NodeCapacity.Single)]
-        public GfuPort Vector4;
-        [NodeRename(nameof(Vector4), typeof(float), NodeDirection.Input, NodeCapacity.Single)]
-        public GfuPort Vector4Second;
-        [NodeRename(nameof(Vector4), typeof(float), NodeDirection.Output, NodeCapacity.Multi)]
-        public GfuPort Exit;
+        [NodeRename(nameof(A), typeof(float), NodeDirection.Input, NodeCapacity.Single)]
+        public GfuPort A;
+        [NodeRename(nameof(B), typeof(float), NodeDirection.Input, NodeCapacity.Single)]
+        public GfuPort B;
+        [NodeRename(nameof(Out), typeof(float), NodeDirection.Output, NodeCapacity.Multi)]
+        public GfuPort Out;
         public override void Init(NodeData otherNodeData){
             base.Init(otherNodeData);
             InitDefaultValuePort<DivisionOperation>(otherNodeData);
