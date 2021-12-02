@@ -22,7 +22,7 @@ namespace GalForUnity.System{
     [ExecuteAlways]
     public class GfuRunOnMono : MonoBehaviour{
         private static Dictionary<GfuMethodType, List<MonoAction>> DelegateType = new Dictionary<GfuMethodType, List<MonoAction>>();
-
+        private static Dictionary<GfuMethodType, List<MonoAction>> AlwaysDelegateType = new Dictionary<GfuMethodType, List<MonoAction>>();
         // private static Action actions;
         private static GfuMethodType _gfuMethodType = GfuMethodType.Awake;
 
@@ -34,7 +34,10 @@ namespace GalForUnity.System{
         private void Awake(){ SceneManager.sceneLoaded += (x, y) => { DelegateType.Clear(); }; }
 
         // Unity回调
-        private void Update(){ GfuRunOnMono.ExecuteCallBack(GfuMethodType.Update); }
+        private void Update(){
+            GfuRunOnMono.ExecuteCallBack(GfuMethodType.Update);
+            GfuRunOnMono.ExecuteAlwaysCallBack(GfuMethodType.Update);
+        }
 
         /// <summary>
         /// 向RunOnMono提交回调直到下一次Update时执行
@@ -47,9 +50,16 @@ namespace GalForUnity.System{
         /// </summary>
         /// /// <param name="priority"></param>
         /// <param name="action">要提交的回调</param>
-        public static void Update(int priority, Action action){ RegisterCallBack(action, GfuMethodType.Update, priority); }
+        /// <param name="always"></param>
+        public static void Update(int priority, Action action, bool always = false){
+            if(always) RegisterAlwaysCallBack(action, GfuMethodType.Update, priority);
+            else RegisterCallBack(action, GfuMethodType.Update, priority);
+        }
 
-        private void FixedUpdate(){ GfuRunOnMono.ExecuteCallBack(GfuMethodType.FixedUpdate); }
+        private void FixedUpdate(){
+            GfuRunOnMono.ExecuteCallBack(GfuMethodType.FixedUpdate);
+            GfuRunOnMono.ExecuteAlwaysCallBack(GfuMethodType.FixedUpdate);
+        }
 
         /// <summary>
         /// 向RunOnMono提交回调直到下一次FixedUpdate时执行
@@ -62,9 +72,16 @@ namespace GalForUnity.System{
         /// </summary>
         /// <param name="priority">优先级</param>
         /// <param name="action">要提交的回调</param>
-        public static void FixedUpdate(int priority, Action action){ RegisterCallBack(action, GfuMethodType.FixedUpdate, priority); }
+        /// <param name="always"></param>
+        public static void FixedUpdate(int priority, Action action, bool always = false){
+            if(always) RegisterAlwaysCallBack(action, GfuMethodType.FixedUpdate, priority);
+            else RegisterCallBack(action, GfuMethodType.FixedUpdate, priority);
+        }
 
-        private void LateUpdate(){ GfuRunOnMono.ExecuteCallBack(GfuMethodType.LateUpdate); }
+        private void LateUpdate(){
+            GfuRunOnMono.ExecuteCallBack(GfuMethodType.LateUpdate);
+            GfuRunOnMono.ExecuteAlwaysCallBack(GfuMethodType.LateUpdate);
+        }
 
         /// <summary>
         /// 向RunOnMono提交回调直到下一次LateUpdate时执行
@@ -77,7 +94,11 @@ namespace GalForUnity.System{
         /// </summary>
         /// <param name="priority">优先级</param>
         /// <param name="action">要提交的回调</param>
-        public static void LateUpdate(int priority, Action action){ RegisterCallBack(action, GfuMethodType.LateUpdate, priority); }
+        /// <param name="always"></param>
+        public static void LateUpdate(int priority, Action action, bool always = false){
+            if(always) RegisterAlwaysCallBack(action, GfuMethodType.LateUpdate, priority);
+            else RegisterCallBack(action, GfuMethodType.LateUpdate, priority);
+        }
 
         /// <summary>
         /// 负责执行回调的方法
@@ -99,11 +120,21 @@ namespace GalForUnity.System{
                     }
                 }
             }
-
-            // foreach (var monoAction in monoActions){
-            //     
-            // }
             DelegateType[gfuMethodType].Clear();
+        }
+        public static void ExecuteAlwaysCallBack(GfuMethodType gfuMethodType){
+            _gfuMethodType = gfuMethodType;
+            if (!AlwaysDelegateType.TryGetValue(gfuMethodType, out List<MonoAction> alwaysMonoActions)) return;
+            if (alwaysMonoActions == null || alwaysMonoActions.Count <= 0) return;
+            alwaysMonoActions.Sort();
+            alwaysMonoActions.Reverse();
+            for (int i = alwaysMonoActions.Count - 1; i >= 0; i--){
+                try{
+                    alwaysMonoActions[i].Action.Invoke();
+                } catch (Exception e){
+                    Debug.LogError("Action execution failed:" + e);
+                }
+            }
         }
 
         /// <summary>
@@ -120,6 +151,23 @@ namespace GalForUnity.System{
                 } else{
                     GfuRunOnMono.DelegateType.Add(gfuMethodType, new List<MonoAction>());
                     GfuRunOnMono.DelegateType[gfuMethodType].Add(new MonoAction(callback, priority));
+                }
+            }
+        } 
+        /// <summary>
+        /// 注册委托的方法
+        /// </summary>
+        /// <param name="priority"></param>
+        /// <param name="callback">回调方法</param>
+        /// <param name="gfuMethodType">回调方法类型</param>
+        private static void RegisterAlwaysCallBack(Action callback, GfuMethodType gfuMethodType, int priority){
+            lock (AlwaysDelegateType){
+                // RunOnMono.actions += callback;
+                if (GfuRunOnMono.AlwaysDelegateType.ContainsKey(gfuMethodType)){
+                    GfuRunOnMono.AlwaysDelegateType[gfuMethodType].Add(new MonoAction(callback, priority));
+                } else{
+                    GfuRunOnMono.AlwaysDelegateType.Add(gfuMethodType, new List<MonoAction>());
+                    GfuRunOnMono.AlwaysDelegateType[gfuMethodType].Add(new MonoAction(callback, priority));
                 }
             }
         }

@@ -12,9 +12,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.GFUNode.Operation;
 using GalForUnity.System;
@@ -128,6 +125,7 @@ namespace GalForUnity.Graph.Operation{
                 if (x == PlayModeStateChange.ExitingPlayMode){
                     IsOver = true;
                     GfuRunOnMono.Clear(GfuMethodType.Update);
+                    _gfuOperations.Clear();
                 }
             };
 #endif
@@ -184,10 +182,11 @@ namespace GalForUnity.Graph.Operation{
         public void RunAllNode(){
             _gfuOperations.Sort((x,y)=>-x.Priority.CompareTo(y.Priority));
             foreach (var gfuOperation in _gfuOperations){
-                var execute = gfuOperation.Execute(gfuOperation.Input); //Input不一定存在，可能为一个默认值,默认值则来源上放的默认值算法
-                if (IsSync){
-                    execute.Wait(); //如果当前方法需要同步执行则阻塞当前线程
-                }
+                // var execute = ; //Input不一定存在，可能为一个默认值,默认值则来源上放的默认值算法
+                gfuOperation.Execute(gfuOperation.Input);
+                // if (IsSync){
+                //     execute.Wait(); //如果当前方法需要同步执行则阻塞当前线程
+                // }
             }
             _gfuOperations.Clear();
         }
@@ -197,14 +196,14 @@ namespace GalForUnity.Graph.Operation{
         /// </summary>
         /// <param name="gfuOperationData"></param>
         /// <returns></returns>
-        public virtual async Task Execute(GfuOperationData gfuOperationData){
-            await Task.Run(delegate{
-                bool isFirst = true;
-                while (!IsOver){
-                    if (GfuRunOnMono.IsLateUpdate&&!IsExecute){
+        public virtual void Execute(GfuOperationData gfuOperationData){
+            bool isFirst = true;
+            GfuRunOnMono.LateUpdate(Priority,() => {
+                if (!IsOver){
+                    if (GfuRunOnMono.IsLateUpdate &&!IsExecute){
                         IsExecute = true;
                         GfuRunOnMono.Update(Priority,delegate{
-                            if(!IsOver&&!isFirst) Update(gfuOperationData);
+                            if(!IsOver &&!isFirst) Update(gfuOperationData);
                             if (!IsOver && isFirst){
                                 isFirst = false;
                                 OnStart?.Invoke(this);
@@ -212,9 +211,9 @@ namespace GalForUnity.Graph.Operation{
                             }
                         });
                     }
-                    Thread.Sleep(1);
                 }
-            });
+                // Thread.Sleep(1);
+            },true);
         }
 
         /// <summary>

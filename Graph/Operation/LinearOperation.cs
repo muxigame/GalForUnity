@@ -15,10 +15,10 @@ using UnityEngine;
 
 namespace GalForUnity.Graph.Operation{
     public class LinearOperation : GfuOperation{
-        public override Task Execute(GfuOperationData gfuOperationData){
+        public override void Execute(GfuOperationData gfuOperationData){
             Input.Data[2].IsOver = false;
             startTime = Time.time;
-            return base.Execute(gfuOperationData);
+            base.Execute(gfuOperationData);
         }
         
         public override void Start(GfuOperationData gfuOperationData){
