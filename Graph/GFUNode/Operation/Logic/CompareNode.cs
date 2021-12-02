@@ -22,7 +22,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 
-namespace GalForUnity.Graph.GFUNode.Operation.Logic{
+namespace GalForUnity.Graph.GFUNode.Operation{
     [NodeRename("Operation/LogicOperation/" + nameof(CompareNode), "布尔节点，能进行逻辑判断")]
     [NodeAttributeUsage(NodeAttributeTargets.ItemGraph)]
     public class CompareNode : GfuOperationNode{

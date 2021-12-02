@@ -11,7 +11,7 @@
 
 using System;
 using System.Reflection;
-using GalForUnity.Graph.GFUNode.Operation.Logic;
+using GalForUnity.Graph.GFUNode.Operation;
 using UnityEngine;
 
 namespace GalForUnity.Graph.Operation.Logic{

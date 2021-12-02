@@ -330,11 +330,14 @@ namespace GalForUnity.System{
         public readonly LanguageItem SINENODE = new LanguageItem("Sine Node","正弦节点");
         public readonly LanguageItem TANGENTNODE = new LanguageItem("Tangent Node","正切节点");
         public readonly LanguageItem COSINENODE = new LanguageItem("Cosine Node","余弦节点");
+        public readonly LanguageItem ARCSINENODE = new LanguageItem("Arcsine Node","反正弦节点");
+        public readonly LanguageItem ARCCOSINENODE = new LanguageItem("Arccosine Node","反余弦节点");
+        public readonly LanguageItem ARCTANGENTNODE = new LanguageItem("Arctangent Node","反正切节点");
         public readonly LanguageItem VALUE = new LanguageItem("Value","值");
         public readonly LanguageItem VALUE1 = new LanguageItem("Value1","值1");
         public readonly LanguageItem VALUE2 = new LanguageItem("Value1","值2");
         public readonly LanguageItem TRUE = new LanguageItem("True","真");
-        public readonly LanguageItem FALSE = new LanguageItem("False","假");
+        public readonly LanguageItem FALSE = new LanguageItem("False", "假");
         public readonly LanguageItem FROM = new LanguageItem("From","从");
         public readonly LanguageItem SUBTRACT = new LanguageItem("Subtract","减少");
         public readonly LanguageItem ADD = new LanguageItem("Add","添加");
