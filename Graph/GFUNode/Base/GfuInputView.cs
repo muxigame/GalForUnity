@@ -157,6 +157,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
         }
 
         public void RefreshEdgeVisible(){
+#if UNITY_EDITOR
             if (port.connected){
                 portContainer.style.opacity = 0f;
                 edge.style.opacity = 0;
@@ -166,6 +167,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 portContainer.style.opacity = 1f;
                 edge.style.opacity = 1;
             }
+#endif
         }
 
         public static GfuInputView Create(object port){

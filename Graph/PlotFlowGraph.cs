@@ -18,20 +18,23 @@ using UnityEditor;
 
 
 namespace GalForUnity.Graph{
+
     public class PlotFlowGraph : GfuGraph {
         public PlotFlowGraph(){
-            GameSystem.GraphData.CurrentPlotFlowGraph = this;
+            GameSystem.GraphData.currentGraph = this;
+        }
+        public PlotFlowGraph(GraphCallChain graphCallChain):base(graphCallChain){
+            
         }
         public PlotFlowGraph(Data.GraphData graphData) : base(graphData){
+            GameSystem.GraphData.currentGraph = this;
 #if UNITY_EDITOR
-            GameSystem.GraphData.CurrentPlotFlowGraph = this;
             EditorWindow = GameSystem.GraphData.currentGfuPlotFlowEditorWindow;
 #endif
         }
         
 #if UNITY_EDITOR
         public PlotFlowGraph(EditorWindow editorWindow, string path) : base(path){
-            GameSystem.GraphData.CurrentPlotFlowGraph = this;
             EditorWindow = editorWindow;
             Init();
         }

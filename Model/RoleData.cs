@@ -269,15 +269,16 @@ namespace GalForUnity.Model{
             private RoleDataItem _currentRoleDataItem;
 
             public RoleDateEnumerator(List<RoleDataItem> roleDataItems){
-                this._roleDataItems = roleDataItems;
+                this._roleDataItems = (List<RoleDataItem>) roleDataItems.Clone();
             }
 
             public bool MoveNext(){
-                if (_index < _roleDataItems.Count){
+                if (_index < _roleDataItems.Count-1&&_roleDataItems.Count>0){
+                    // Debug.Log(_roleDataItems[++_index]);
                     _currentRoleDataItem = _roleDataItems[++_index];
                     return true;
                 }
-
+                
                 _index = _roleDataItems.Count;
                 return false;
             }

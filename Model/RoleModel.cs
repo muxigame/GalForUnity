@@ -11,9 +11,9 @@
 using System;
 using System.Collections.Generic;
 using GalForUnity.Attributes;
-using GalForUnity.Graph;
 using GalForUnity.InstanceID;
-using GalForUnity.System;
+using GalForUnity.System.Archive.Behavior;
+using GalForUnity.System.Archive.Data;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -30,7 +30,7 @@ namespace GalForUnity.Model {
 	[RequireComponent(typeof(RoleData))]
 	[RequireComponent(typeof(GfuInstance))]
 	[Serializable]
-	public class RoleModel : MonoBehaviour {
+	public class RoleModel : TransformSavableBehaviour {
 		//姓名 
 		[Rename(nameof(name))]
 		[SerializeField]
@@ -38,6 +38,19 @@ namespace GalForUnity.Model {
 
 		public static readonly Color HighLightColor = UnityEngine.Color.white;
 		public static readonly Color UnHighLightColor = new Color(0.35f, 0.35f, 0.35f,1f) ;
+		[Rename(nameof(roleSpriteMap))]
+		[SerializeField]
+		private Sprite roleSpriteMap;
+
+		public Sprite RoleSpriteMap{
+			get => roleSpriteMap;
+			set => SpriteRenderer.sprite = roleSpriteMap  = value;
+		}
+
+		private SpriteRenderer _spriteRenderer;
+
+		public SpriteRenderer SpriteRenderer => _spriteRenderer ? _spriteRenderer : gameObject.AddComponent<SpriteRenderer>();
+
 		public string Name {
 			set => name = value;
 			get => name;
@@ -54,6 +67,9 @@ namespace GalForUnity.Model {
 			&&gameObject.GetComponent<CubismModel>()
 			) gameObject.AddComponent<CubismMotionController>();
 #endif
+			if (!gameObject.TryGetComponent(out SpriteRenderer spriteRenderer)) _spriteRenderer = spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+			spriteRenderer.sprite = roleSpriteMap;
+			_spriteRenderer = spriteRenderer;
 		}
 
 		/// <summary>
@@ -153,6 +169,19 @@ namespace GalForUnity.Model {
 			if (!(material is null)){
 				material.color = otherColor;
 			}
+		}
+
+		public override void GetObjectData(ScriptData scriptData){
+			savableData.AddValue(nameof(_spriteRenderer.sprite),_spriteRenderer,_spriteRenderer.sprite);
+			savableData.AddValue(nameof(_spriteRenderer.color),_spriteRenderer,_spriteRenderer.color);
+			savableData.AddValue(nameof(_spriteRenderer.flipX),_spriteRenderer,_spriteRenderer.flipX);
+			savableData.AddValue(nameof(_spriteRenderer.flipY),_spriteRenderer,_spriteRenderer.flipY);
+			base.GetObjectData(scriptData);
+		}
+
+		public override void Recover(){
+			base.Recover();
+			savableData.Recover();
 		}
 	}
 }

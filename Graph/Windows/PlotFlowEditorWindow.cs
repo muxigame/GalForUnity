@@ -25,9 +25,7 @@ namespace GalForUnity.Graph.Windows{
             GraphView = new PlotFlowGraph(this, path);
             rootVisualElement.Add(GraphView);
             AddButton(GraphView);
-
             titleContent = new GUIContent(GfuLanguage.GfuLanguageInstance.PLOTFLOWEDITORWINDOW.Value);
-            // EditorWindow.FocusWindowIfItsOpen(GetType());
         }
 
         private void OnDidOpenScene(){

@@ -12,7 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using GalForUnity.Graph.Data.Property;
+using GalForUnity.InstanceID;
 using GalForUnity.Model;
+using GalForUnity.System.Address;
+using GalForUnity.System.Address.Addresser;
+using GalForUnity.System.Archive.Behavior;
+using GalForUnity.System.Archive.Data;
 using UnityEngine;
 
 namespace GalForUnity.System.Archive{
@@ -154,6 +159,7 @@ namespace GalForUnity.System.Archive{
         [NonSerialized] public Texture2D Texture2D;
         [SerializeField] public string name;
         [SerializeField] public string speak;
+        public List<ScriptData> Saveables=new List<ScriptData>();
 
         public PlotItemGraphData PlotItemGraphData{
             get{
@@ -183,17 +189,49 @@ namespace GalForUnity.System.Archive{
             set => plotFlowGraphDataInstanceID = value.instanceID;
         }
         public override void Save(string fileName){
-            var photoPath=ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;
-            if (!Directory.Exists(ArchiveSystem.Path)) Directory.CreateDirectory(ArchiveSystem.Path);
-            if (!File.Exists(photoPath) && Texture2D != null) ArchiveSystem.SaveTextureToFile(photoPath, Texture2D);
-            base.Save(ArchiveSystem.Path + fileName + ArchiveSystem.archiveSuffix);
+            var transform = GameSystem.GetInstance().transform;
+            SaveHierarchy(transform);
+            SaveMonoScript(transform);
+            // var photoPath=ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;
+            // if (!Directory.Exists(ArchiveSystem.Path)) Directory.CreateDirectory(ArchiveSystem.Path);
+            // if (!File.Exists(photoPath) && Texture2D != null) ArchiveSystem.SaveTextureToFile(photoPath, Texture2D);
+            // base.Save(ArchiveSystem.Path + fileName + ArchiveSystem.archiveSuffix);
+        }
+
+        private void SaveHierarchy(Transform transform){
+            for (int i = 0; i < transform.childCount; i++){
+                SaveHierarchy(transform.GetChild(i));
+            }
+
+            if (transform.GetComponent<GfuInstance>()){
+                var savable = new ScriptData(transform.gameObject);
+                Saveables.Add(savable);
+            }
+        }
+        private void SaveMonoScript(Transform transform){
+            for (int i = 0; i < transform.childCount; i++){
+                SaveMonoScript(transform.GetChild(i));
+            }
+            var components = transform.GetComponents<MonoBehaviour>();
+            
+            // var gfuInstances = transform.GetComponent<GfuInstance>();
+            foreach (var component in components){
+                if (component.gameObject.hideFlags == HideFlags.HideInHierarchy | component.gameObject.hideFlags == HideFlags.HideInInspector) continue;
+                var savable = new ScriptData(component);
+                if (!string.IsNullOrEmpty(savable.ObjectAddressExpression)){
+                    Saveables.Add(savable);
+                }
+            }
         }
         public override void Load(string fileName){
-            base.Load(ArchiveSystem.Path + fileName + ArchiveSystem.archiveSuffix);
-            var photoPath=ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;
-            if (!File.Exists(photoPath)) return;
-            if (!Texture2D) Texture2D = new Texture2D(500, 500);
-            Texture2D.LoadImage(ArchiveSystem.GetTextureByte(photoPath));
+            foreach (var saveable in Saveables){
+                saveable.Recover();
+            }
+            // base.Load(ArchiveSystem.Path + fileName + ArchiveSystem.archiveSuffix);
+            // var photoPath=ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;
+            // if (!File.Exists(photoPath)) return;
+            // if (!Texture2D) Texture2D = new Texture2D(500, 500);
+            // Texture2D.LoadImage(ArchiveSystem.GetTextureByte(photoPath));
         }
         public void Delete(string fileName){
             var photoPath = ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;

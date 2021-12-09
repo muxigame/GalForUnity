@@ -12,9 +12,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+using System.Text.RegularExpressions;
+using GalForUnity.Controller;
 using GalForUnity.Graph.Data;
+using GalForUnity.Graph.Data.Property;
 using GalForUnity.Graph.GFUNode.Base;
+using GalForUnity.Graph.GFUNode.Plot;
 using GalForUnity.System;
+using GalForUnity.System.Archive.Data;
 using GalForUnity.System.Event;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -31,8 +38,6 @@ namespace GalForUnity.Graph{
     /// 这样便能在运行时创建一个图并且播放
     /// </summary>
     public class GfuGraph : EditorGraph{
-        
-        private GfuNode _currentNode;
         /// <summary>
         /// 指示图是否在执行
         /// </summary>
@@ -42,14 +47,12 @@ namespace GalForUnity.Graph{
         /// </summary>
         public bool HasNext => _currentNode?.HasNext() ?? false;
         public GfuNode CurrentNode => _currentNode;
-
+        
+        private GfuNode _currentNode;
+        
         private object _caller = null;
-        /// <summary>
-        /// 指示图的调用者，由GalForUnity手动赋值，用户调用该值可能为空
-        /// </summary>
-        /// <param name="caller"></param>
-        /// <returns></returns>
-        public bool IsCaller(object caller){ return _caller == caller; }
+        
+        private GraphCallChain graphCallChain;
 
         /// <summary>
         /// 用指定图数据创建一个图
@@ -58,9 +61,62 @@ namespace GalForUnity.Graph{
         public GfuGraph(Data.GraphData graphData = null){
             if (graphData) Init(graphData);
         }
+        
+        public GfuGraph(GraphCallChain graphCallChain){
+            GfuGraph gfuGraph=null;
+            if (graphCallChain != null){
+                var info = graphCallChain.Pop();
+                Init((GraphData) info.callerGraphData);
+                gfuGraph = this;
+                while (graphCallChain.Next(out CallInfo callInfo)){
+                    Debug.Log(callInfo);
+                    GfuGraph graph=null;
+                    if(callInfo.callerGraphData is PlotItemGraphData plotItemGraphData) graph = new PlotItemGraph(plotItemGraphData);
+                    if(callInfo.callerGraphData is PlotFlowGraphData plotFlowGraphData) graph = new PlotFlowGraph(plotFlowGraphData);
+                    var gfuNode = graph.GetNode((NodeData) callInfo.callerNodeData);
+                    graph._currentNode = gfuNode;
+                    if (graph._currentNode is PlotGraphNode plotGraphNode){
+                        plotGraphNode.Recover(gfuGraph);//恢复保存的数据
+                        gfuGraph._caller = plotGraphNode;//保存调用者信息
+                    }
+                    Debug.Log(gfuGraph.GetGraphCallChain());
+                    gfuNode.OnExecuted = graph.Execute;//添加节点执行完毕后的回调
+                    gfuGraph = graph;//保存当前数据进行下次迭代
+                }
+                Execute((NodeData) info.callerNodeData);//运行当前节点
+            }else{
+                Debug.Log("graphCallChain is"+graphCallChain);
+            }
+        }
 
         public GfuGraph(string path) : base(path){ }
 
+        /// <summary>
+        /// 指示图的调用者，由GalForUnity手动赋值，用户调用该值可能为空
+        /// </summary>
+        /// <param name="caller"></param>
+        /// <returns></returns>
+        public bool IsCaller(object caller){ return _caller == caller; }
+
+        public GraphCallChain GetGraphCallChain(){
+            graphCallChain=new GraphCallChain();
+            GfuGraph gfuGraph = this;
+            graphCallChain.Add(gfuGraph.GetCallInfo());
+            while (!ReferenceEquals(gfuGraph._caller, GameSystem.Data.PlotFlowController)){
+                if (gfuGraph._caller is GfuNode gfuNode){
+                    graphCallChain.Add(gfuNode.GfuGraph.GetCallInfo());
+                    gfuGraph = gfuNode.GfuGraph;
+                }
+            }
+            return graphCallChain;
+        }
+
+        private CallInfo GetCallInfo(){
+            return new CallInfo() {
+                callerGraphData = graphData, callerNodeData = _currentNode.nodeData
+            };
+        }
+        
         /// <summary>
         /// 指定剧情图播放某个图数据
         /// </summary>
@@ -71,7 +127,7 @@ namespace GalForUnity.Graph{
             else{
                 this._caller = caller;
             }
-            GraphData.isPlay = isPlay = true;
+            graphData.isPlay = isPlay = true;
             if(Root == null) InitNode();
             Execute();
         }
@@ -86,7 +142,7 @@ namespace GalForUnity.Graph{
                 return;
             }
 #endif
-            if( Root == null) InitNode();
+            if(Root == null) InitNode();
             if (Root != null){
                 _currentNode = Root;
                 Root.OnExecuted = Execute;
@@ -101,12 +157,7 @@ namespace GalForUnity.Graph{
         /// </summary>
         /// <param name="nodeObj"></param>
         public override void Execute(GfuNode nodeObj){
-#if UNITY_EDITOR
-            if (!EditorApplication.isPlaying){
-                Debug.LogError(GfuLanguage.ParseLog("It is not allowed to execute the diagram without playing, please run the scene first"));
-                return;
-            }
-#endif
+            // Debug.Log(GetGraphCallChain());
             base.Execute(nodeObj);
             if (_currentNode!=null&&_currentNode!=RootNode){
                 _currentNode.OnExecuted = null;
@@ -116,15 +167,17 @@ namespace GalForUnity.Graph{
             _currentNode = nodeObj;
             if (nodeObj != null){
                 nodeObj.OnExecuted = Execute;
+                // GameSystem.GraphData.currentPlotItemGraphData = this;
                 GameSystem.Data.CurrentRoleModel.roleData = nodeObj.Execute(GameSystem.Data.CurrentRoleModel.roleData);
             } else{
                 GfuRunOnMono.LateUpdate(Int32.MaxValue, () => {
-                    GraphData.isPlay = isPlay = false;
+                    graphData.isPlay = isPlay = false;
                     EventCenter.GetInstance().OnGraphExecutedEvent(this);
                 });
             }
         }
-
+        public void Execute(NodeData nodeData) => Execute(GetNode(nodeData));
+        
         /// <summary>
         /// 通过默认端口号执行下一个默认节点
         /// </summary>
@@ -173,7 +226,7 @@ namespace GalForUnity.Graph{
         /// 需要注意的是，在编辑器模式中，初始化方法会解析所有节点，但是
         /// </summary>
         public override void Init(Data.GraphData graphData){
-            GraphData = graphData;
+            base.graphData = graphData;
             NodeDataset = new List<NodeData>();
             CreateNodeDataset = new Dictionary<long, GfuNode>();
             if (graphData != null && graphData.Nodes != null && graphData.Nodes.Count != 0){
@@ -185,8 +238,6 @@ namespace GalForUnity.Graph{
             //编辑器下创建空图base.Init会默认创建一个MainNode节点，但是运行下创建空图会产生ArgumentException异常。
             if(Root==null) InitNode();
         }
-
-
         /// <summary>
         /// 初始化所有的Node,初始化成功就意味着可以Play了
         /// </summary>
@@ -213,5 +264,31 @@ namespace GalForUnity.Graph{
                 keyValuePair.Value.Init(nodeData);
             }
         }
+        // [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        // protected GfuGraph(SerializationInfo info, StreamingContext context){
+        //     Type type=GetType();
+        //     type.GetField(nameof(isPlay)).SetValue(this,info.GetValue(nameof(isPlay), typeof(bool)));
+        //     type.GetField(nameof(_currentNode)).SetValue(this,info.GetValue(nameof(_currentNode), typeof(object)));
+        //     var value = info.GetValue(nameof(_caller), typeof(object));
+        //     if (value is string memoryAddress){
+        //         if (new Regex(@"\[Memory\.[\s\.]+\]").IsMatch(memoryAddress)){
+        //             var substring = memoryAddress.Substring(1, memoryAddress.Length - 2);
+        //         }
+        //         type.GetField(nameof(_caller)).SetValue(this,typeof(string));
+        //     }
+        //     type.GetField(nameof(_caller)).SetValue(this,typeof(object));
+        // }
+        // public override void GetObjectData(SerializationInfo info, StreamingContext context){
+        //     info.AddValue(nameof(isPlay),isPlay);
+        //     info.AddValue(nameof(_currentNode),_currentNode);
+        //     if (_caller is PlotFlowController){
+        //         info.AddValue(nameof(_caller),"[Memory.GameSystem.Data.PlotFlowController]");
+        //     } else{
+        //         info.AddValue(nameof(_caller),_caller);
+        //     }
+        //     
+        //     base.GetObjectData(info, context);
+        // }
+
     }
 }

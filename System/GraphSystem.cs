@@ -56,12 +56,10 @@ namespace GalForUnity.System{
 
             [FormerlySerializedAs("CurrentPlotItemGraphData")] [Rename(nameof(currentPlotItemGraphData))]
             public GraphData currentPlotItemGraphData;
-
-            [Rename(nameof(CurrentPlotFlowGraph))]
-            public GfuGraph CurrentPlotFlowGraph;
-
-            [Rename(nameof(CurrentPlotItemGraph))]
-            public GfuGraph CurrentPlotItemGraph;
+            
+            [Rename(nameof(currentGraph))]
+            public GfuGraph currentGraph;
+            
 #if UNITY_EDITOR
             [Rename(nameof(currentGfuPlotFlowEditorWindow))]
             public PlotFlowEditorWindow currentGfuPlotFlowEditorWindow;
@@ -87,7 +85,7 @@ namespace GalForUnity.System{
 
                     if (gfuEditorWindow != null){
                         gfuEditorWindow.Open(strFilePath);
-                        GameSystem.GraphData.CurrentPlotFlowGraph = gfuEditorWindow.GraphView;
+                        GameSystem.GraphData.currentGraph = gfuEditorWindow.GraphView;
                     }
                     
                     return true;
@@ -99,7 +97,7 @@ namespace GalForUnity.System{
                     }
                     if (gfuEditorWindow != null){
                         gfuEditorWindow.Open(strFilePath);
-                        GameSystem.GraphData.CurrentPlotItemGraph = gfuEditorWindow.GraphView;
+                        GameSystem.GraphData.currentGraph = gfuEditorWindow.GraphView;
                     }
                     return true;
                 }

@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using GalForUnity.Attributes;
 using GalForUnity.Graph.Data;
 using GalForUnity.Graph.Tool;
@@ -29,7 +31,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
     /// GfuNode是GalForUnity中所有节点的父类，提供了基础的反射，保存，和节点执行方法，使用和继承此类应注意和Editor的解耦
     /// </summary>
     [Serializable]
-    public class GfuNode : EditorNode{
+    public class GfuNode : EditorNode,ISerializable{
         /// <summary>
         /// 当节点执行完毕回调
         /// </summary>
@@ -79,10 +81,10 @@ namespace GalForUnity.Graph.GFUNode.Base{
             GfuNode inputNode = null;
             if (nodeData.OutputPort != null && nodeData.OutputPort.Count > 0){
                 var output = nodeData.OutputPort[index];
-                if (output == null) throw new NullReferenceException(GfuLanguage.ParseLog("The current node has no output port"                                            + this));
-                if (output.connections == null || output.connections.Count == 0) throw new NullReferenceException(GfuLanguage.ParseLog("The current port is not connected" + this));
+                if (output == null) throw new NullReferenceException(GfuLanguage.ParseLog("The current node has no output port") + this);
+                if (output.connections == null || output.connections.Count == 0) throw new NullReferenceException(GfuLanguage.ParseLog("The current port is not connected") + this);
                 var input = output.connections.FirstOrDefault()?.Input;
-                if (input == null) throw new NullReferenceException(GfuLanguage.ParseLog("The current connection has no input node" + this));
+                if (input == null) throw new NullReferenceException(GfuLanguage.ParseLog("The current connection has no input node") + this);
                 inputNode = GfuGraph.GetNode(input.instanceID);
             }
 
@@ -323,6 +325,24 @@ namespace GalForUnity.Graph.GFUNode.Base{
 
                 nodeData.OutputPort?.ForEach((element => outputPort.Add(element)));
                 return outputPort;
+            }
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context){
+            var fieldInfos = GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            foreach (var fieldInfo in fieldInfos){
+                if (fieldInfo.GetValue(this) !=null){
+                    fieldInfo.SetValue(this,fieldInfo.GetValue(this));
+                }
+            }
+        }
+        
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected GfuNode(SerializationInfo info, StreamingContext context){
+            Type type = GetType();
+            var serializationInfoEnumerator = info.GetEnumerator();
+            while (serializationInfoEnumerator.MoveNext()){
+                type.GetField(serializationInfoEnumerator.Name).SetValue(this,serializationInfoEnumerator.Value);
             }
         }
     }

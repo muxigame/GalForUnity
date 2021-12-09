@@ -9,6 +9,7 @@
 //
 //======================================================================
 using System;
+using GalForUnity.System.Archive.Behavior;
 using UnityEngine;
 
 namespace GalForUnity.System{
@@ -24,7 +25,7 @@ namespace GalForUnity.System{
         private static volatile T instance;
 
         /// <summary>
-        /// 或得类实例，无需担心空指针问题
+        /// 获得类实例，无需担心空指针问题
         /// </summary>
         /// <returns></returns>
         public static T GetInstance(){
@@ -58,13 +59,13 @@ namespace GalForUnity.System{
 #endregion
     }
 
-    public class GfuInstanceManagerForMono<T> : MonoBehaviour, IDisposable
+    public abstract class GfuSavableMonoInstanceManager<T> : SavableBehaviour, IDisposable
         where T : MonoBehaviour /*new() 允许子类存在私有构造，并不会出现编译器错误，但运行时依旧会出现无法new的异常*/{
         private static object Lock = new object();
         private static volatile T instance;
 
         /// <summary>
-        /// 或得类实例，无需担心空指针问题
+        /// 获得类实例，无需担心空指针问题
         /// </summary>
         /// <returns></returns>
         public static T GetInstance(){
@@ -73,9 +74,55 @@ namespace GalForUnity.System{
                     if (instance == null){
                         instance = FindObjectOfType<T>(); //避免子类必须为可new类型，所以这里使用工厂
                     }
+
+                    if (instance == null){
+                        instance = new GameObject().AddComponent<T>();
+                    }
                 }
             }
 
+            return instance;
+        }
+
+#region IDisposable Support
+
+        protected virtual void Dispose(bool disposing){ }
+
+        // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
+        // ~InstanceManager()
+        // {
+        //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+        //   Dispose(false);
+        // }
+
+        // 添加此代码以正确实现可处置模式。
+        public virtual void Dispose(){ Dispose(true); }
+
+#endregion
+    }
+    
+
+    public abstract class GfuMonoInstanceManager<T> : MonoBehaviour, IDisposable
+        where T : MonoBehaviour /*new() 允许子类存在私有构造，并不会出现编译器错误，但运行时依旧会出现无法new的异常*/{
+        private static object Lock = new object();
+        private static volatile T instance;
+
+        /// <summary>
+        /// 获得类实例，无需担心空指针问题
+        /// </summary>
+        /// <returns></returns>
+        public static T GetInstance(){
+            if (instance == null){
+                lock (Lock){
+                    if (instance == null){
+                        instance = FindObjectOfType<T>(); //避免子类必须为可new类型，所以这里使用工厂
+                    }
+
+                    if (instance == null){
+                        instance = new GameObject().AddComponent<T>();
+                    }
+                }
+            }
             return instance;
         }
 

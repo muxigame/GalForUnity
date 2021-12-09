@@ -10,14 +10,17 @@
 //======================================================================
 
 using GalForUnity.Attributes;
+using GalForUnity.InstanceID;
 using GalForUnity.Model;
 using GalForUnity.System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using NotImplementedException = System.NotImplementedException;
 
 namespace GalForUnity.Controller{
-    public class OptionController : GfuInstanceManagerForMono<OptionController>{
+    [RequireComponent(typeof(GfuInstance))]
+    public class OptionController : GfuSavableMonoInstanceManager<OptionController>{
         [Rename(nameof(optionsPool))]
         public GfuObjectPool optionsPool;
         [Rename(nameof(autoSize))]
@@ -29,6 +32,9 @@ namespace GalForUnity.Controller{
         public OptionViewType optionViewType;
         [RenameInEditor(nameof(customView))]
         public UnityEvent<GfuOptions> customView;
+
+        [SerializeField]
+        private bool showing=false;
 
         public enum OptionViewType{
             [Rename(nameof(Horizontal))]
@@ -50,6 +56,7 @@ namespace GalForUnity.Controller{
         }
         
         public void ShowOption(GfuOptions gfuOptionsData){
+            showing = true;
             if (customView != null&&customView.GetPersistentEventCount()>0){
                 customView.Invoke(gfuOptionsData);
                 return;
@@ -62,6 +69,7 @@ namespace GalForUnity.Controller{
         }
         public void HideOption(){
             optionsPool.PutAll();
+            showing = false;
         }
         private void Horizontal(GfuOptions gfuOptions){
             for (var i = 0; i < gfuOptions.options.Count; i++){
@@ -97,8 +105,8 @@ namespace GalForUnity.Controller{
             gfuOptionsModel.GfuOptionData.text.text = gfuOptionData.optionContent;
             gfuOptionsModel.GfuOptionData.index = gfuOptionData.index;
             button.onClick.AddListener(() => {
-                optionsPool.PutAll();
-                gfuOptions.OnSelect(gfuOptionsModel.GfuOptionData.index);
+                HideOption();
+                gfuOptions?.OnSelect(gfuOptionsModel.GfuOptionData.index);
             });
         }
 
@@ -116,6 +124,14 @@ namespace GalForUnity.Controller{
             var size = maxDistance - distance;
             return (distance, size);
         }
-        
+
+        public override void Recover(){
+            //如果显示选项状态保存游戏，游戏结束的时候会保存到选项节点的调用链，读档时选项节点会被执行重新显示选项
+            var componentsInChildren = GetComponentsInChildren<Button>();
+            foreach (var componentsInChild in componentsInChildren){
+                componentsInChild.onClick.RemoveAllListeners();
+            }
+            if(!showing) HideOption(); //但是如果在选项激活的时候读档，目标档没有显示选项，那就将选项隐藏
+        }
     }
 }

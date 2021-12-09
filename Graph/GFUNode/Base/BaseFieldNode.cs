@@ -15,9 +15,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using GalForUnity.Attributes;
 using GalForUnity.Graph.Attributes;
-using GalForUnity.Graph.Data;
-using GalForUnity.System;
-using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -26,8 +23,10 @@ using Object = UnityEngine.Object;
 // #endif
 
 namespace GalForUnity.Graph.GFUNode.Base{
+    [Serializable]
     public class BaseFieldNode : EnterNode{
-        [NonSerialized] private readonly Dictionary<string, NodeFieldTypeAttribute> _nodeFieldTypeAttributes;
+        [NonSerialized] 
+        private readonly Dictionary<string, NodeFieldTypeAttribute> _nodeFieldTypeAttributes;
 
         /// <summary>
         /// 将所有的NodeFieldTypeAttribute放入字典当中
@@ -40,17 +39,7 @@ namespace GalForUnity.Graph.GFUNode.Base{
                 }
             }
         }
-
-
-#if UNITY_EDITOR
-
-
-#endif
-        public override void Init(NodeData otherNodeData){
-            base.Init(otherNodeData);
-            // RegisterValueChangedCallback<BaseField<Object>, Object>(this);
-            // RegisterValueChangedCallback<BaseField<object>, object>(this);
-        }
+        
 
         /// <summary>
         /// 通过反射来将字段添加到节点容器当中，需要注意的是，需要在func中初始化一个UIElement返回，并且如果没有将字段放置到全局，一定要注册回调，否则字段无法保存

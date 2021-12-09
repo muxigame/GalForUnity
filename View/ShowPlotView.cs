@@ -18,13 +18,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using EventCenter = GalForUnity.System.Event.EventCenter;
+using NotImplementedException = System.NotImplementedException;
 
 namespace GalForUnity.View{
     /// <summary>
     /// 剧情视图类，负责将剧情的内容展示出来
     /// </summary>
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-    public class ShowPlotView : GfuInstanceManagerForMono<OptionController>{
+    public class ShowPlotView : GfuSavableMonoInstanceManager<OptionController>{
         [FormerlySerializedAs("OptionController")]
         [Rename(nameof(optionController))]
         [Tooltip("控制游戏中选项的选项控制器")]
@@ -52,6 +53,15 @@ namespace GalForUnity.View{
         [Rename(nameof(parentCanvas))]
         public Canvas parentCanvas;
 
+        [SerializeField]
+        private string roleName;
+        [SerializeField]
+        private string speak;
+        [SerializeField]
+        private AudioClip audioClip;
+        [SerializeField]
+        private Sprite background;
+
         private void Start(){
             InitialView();
         }
@@ -64,7 +74,7 @@ namespace GalForUnity.View{
 
         // ReSharper disable all MemberCanBeProtected.Global
         public virtual void ShowName(string roleName) {
-            nameView.text = roleName;
+            nameView.text = this.roleName = roleName;
         }
         public virtual void ShowSpeak(string speak, AudioClip audioClip) {
             ShowSpeak(speak);
@@ -72,6 +82,7 @@ namespace GalForUnity.View{
         }
 
         public virtual void ShowSpeak(string speak){
+            this.speak = speak;
             var onSpeak = EventCenter.GetInstance().OnSpeak;
             speakView.text = onSpeak != null ? onSpeak(speak) : speak;
         }
@@ -79,7 +90,7 @@ namespace GalForUnity.View{
         public virtual void ShowBackground(Sprite background){
             if (ReferenceEquals(background, null)) return;
             if (ReferenceEquals(backgroundView, null)) return;
-            backgroundView.sprite=background;
+            backgroundView.sprite=this.background=background;
         }
         public virtual void ShowSceneModel(SceneModel sceneModel){
             if(!sceneModel) return;
@@ -89,7 +100,7 @@ namespace GalForUnity.View{
         public virtual void PlayAudioClip(AudioClip audioClip){
             if (ReferenceEquals(audioClip, null)) return;
             if (audioSource) return;
-            audioSource.clip = audioClip;
+            audioSource.clip =this.audioClip= audioClip;
             audioSource.Play();
         }
 
@@ -166,6 +177,17 @@ namespace GalForUnity.View{
                 return obj.AddComponent<T>();
             }
             return typeObj;
+        }
+
+        /// <summary>
+        /// TODO 恢复视图
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        public override void Recover(){
+            nameView.text = roleName;
+            speakView.text = speak;
+            PlayAudioClip(audioClip);
+            ShowBackground(background);
         }
     }
 }

@@ -32,7 +32,8 @@ namespace GalForUnity.Graph.GFUNode.Base{
         /// <summary>
         /// 节点数据
         /// </summary>
-        [NonSerialized] public NodeData nodeData;
+        [NonSerialized]
+        public NodeData nodeData;
 
         /// <summary>
         /// 如果当前节点数据被创建为图,则能访问到GfuGraph的数据

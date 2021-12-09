@@ -13,9 +13,13 @@ using System;
 using System.Collections.Generic;
 using GalForUnity.Attributes;
 using GalForUnity.Graph;
+using GalForUnity.Graph.Data;
+using GalForUnity.Graph.Data.Property;
 using GalForUnity.Model;
 using GalForUnity.Model.Plot;
 using GalForUnity.System;
+using GalForUnity.System.Archive.Behavior;
+using GalForUnity.System.Archive.Data;
 using GalForUnity.System.Event;
 #if LIVE2D
 using Live2D.Cubism.Framework.Motion;
@@ -29,18 +33,29 @@ namespace GalForUnity.Controller{
     /// <summary>
     /// 剧情流控制器，控制着剧情的流程，执行着剧情的流程，剧情逻辑的核心
     /// </summary>
-    public class PlotFlowController : MonoBehaviour{
+    public class PlotFlowController : SavableBehaviour{
         // [Rename(nameof(plotMode))] public PlotMode plotMode;
         // [Rename(nameof(SceneGraph))] 
         /// <summary>
         /// 当前接受剧情流控制器管控的剧情图数据，并不是所有的剧情图在在剧情流控制器中都可以访问到
         /// </summary>
-        [FormerlySerializedAs("SceneGraph")] [HideInInspector]
+        [FormerlySerializedAs("SceneGraph")] 
+        [HideInInspector]
         public GraphData currentGraphData;
+
+
+        [FormerlySerializedAs("CurrentGraph")]
+        private GfuGraph currentGraph;
+
         /// <summary>
         /// 当前接受剧情流控制器管控的剧情图，并不是所有的剧情图在在剧情流控制器中都可以访问到
         /// </summary>
-        public GfuGraph CurrentGraph;
+        public GfuGraph CurrentGraph{
+            get => GameSystem.GraphData.currentGraph;
+            set{
+                GameSystem.GraphData.currentGraph = value;
+            }
+        }
         /// <summary>
         /// 当前正在执行的剧情模型
         /// </summary>
@@ -51,6 +66,10 @@ namespace GalForUnity.Controller{
         /// 所有待执行剧情的列表引用
         /// </summary>
         public PlotModelList ReadyExecutePlotModelSet;
+
+        [SerializeField]
+        [HideInInspector]
+        private GraphCallChain _callChain;
 
         /// <summary>
         /// 所有剧情的列表引用
@@ -200,6 +219,16 @@ namespace GalForUnity.Controller{
             }
             return true;
         }
-        
+
+        public override void GetObjectData(ScriptData scriptData){
+            _callChain = CurrentGraph.GetGraphCallChain();
+            base.GetObjectData(scriptData);
+        }
+
+        public override void Recover(){
+            var callInfo = _callChain.Peek();
+            if(callInfo.callerGraphData is PlotItemGraphData plotItemGraphData) CurrentGraph = new PlotItemGraph(_callChain);
+            if(callInfo.callerGraphData is PlotFlowGraphData plotFlowGraphData) CurrentGraph = new PlotFlowGraph(_callChain);
+        }
     }
 }

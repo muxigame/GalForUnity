@@ -31,7 +31,6 @@ namespace GalForUnity.Graph.Windows{
             rootVisualElement.Add(GraphView);
             AddButton(GraphView);
             titleContent = new GUIContent(GfuLanguage.GfuLanguageInstance.PLOTITEMEDITORWINDOW.Value);
-            // EditorWindow.FocusWindowIfItsOpen(GetType());
         }
 
 

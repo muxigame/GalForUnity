@@ -178,7 +178,7 @@ namespace GalForUnity.Graph.GFUNode.Plot{
                 Script.RoleData = roleData;
                 Script.NodeData = this.nodeData;
                 Script.PlotModel = GameSystem.Data.PlotFlowController.currentPlotModel;
-                Script.GraphData = this.GfuGraph.GraphData;
+                Script.GraphData = this.GfuGraph.graphData;
                 Script.GfuGraph = this.GfuGraph;
                 Script.OnNodeWillExecute();
             }

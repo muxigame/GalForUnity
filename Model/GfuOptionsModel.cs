@@ -18,18 +18,14 @@ namespace GalForUnity.Model{
     public class GfuOptionsModel : MonoBehaviour{
         [SerializeField]
         public GfuOptionData GfuOptionData;
-
-        private void OnEnable(){
-            
-        }
     }
     [Serializable]
     public class GfuOptionData{
         public int index;
         public string optionContent;
-        public GameObject optionContainer;
         public Text text;
     }
+    [Serializable]
     public class GfuOptions{
         public List<GfuOptionData> options;
         public Action<int> OnSelect;

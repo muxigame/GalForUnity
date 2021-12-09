@@ -33,7 +33,7 @@ namespace GalForUnity.Graph.GFUNode.Plot{
 #if UNITY_EDITOR
         public ObjectField ObjectField;
 #endif
-
+        [NonSerialized]
         public PlotFlow PlotFlow;
 
         public override RoleData Execute(RoleData roleData){

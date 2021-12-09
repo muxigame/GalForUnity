@@ -130,6 +130,9 @@ namespace GalForUnity.Graph.Data{
         public Type InputPortType(int index){
             if (InputPort != null && InputPort.Count > 0){
                 var portData = InputPort[index];
+                if (string.IsNullOrEmpty(portData.type)){
+                    Type.GetType(portData.sourceType.Substring(portData.sourceType.IndexOf("[", StringComparison.Ordinal)+1).Replace("]", ""));
+                }
                 var type1 = Type.GetType(portData.type);
                 if (type1 != null) return type1;
                 if(portData.jsonField!=null&&portData.jsonField.Count > 0) return Assembly.Load(portData.jsonField[0].assembly).GetType(portData.jsonField[0].type);

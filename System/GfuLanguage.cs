@@ -352,6 +352,7 @@ namespace GalForUnity.System{
         public readonly LanguageItem TO = new LanguageItem("To","到");
         public readonly LanguageItem X = new LanguageItem("X","X");
         public readonly LanguageItem YES = new LanguageItem("Yes","是滴");
+        public readonly LanguageItem OK = new LanguageItem("OK","好的");
         public readonly LanguageItem NO = new LanguageItem("No,Thinks","不了，谢谢");
         public readonly LanguageItem Y = new LanguageItem("Y","Y");
         public readonly LanguageItem Z = new LanguageItem("Z","Z");
@@ -363,11 +364,17 @@ namespace GalForUnity.System{
         public readonly LanguageItem ISLOOPING = new LanguageItem("Is Looping","是否循环");
         public readonly LanguageItem ISAUTOHIGHLIGHT = new LanguageItem("Is Auto High Light","是否自动高光");
         public readonly LanguageItem INITIALIZETHEGAMESYSTEM = new LanguageItem("Initialize the game system","初始化游戏系统");
+        public readonly LanguageItem ROLESPRITEMAP = new LanguageItem("Role Sprite Map","角色精灵贴图");
         public readonly LanguageItem INITIALIZEHIERARCHY = new LanguageItem("Initialize all role model","初始化Hierarchy中所有角色");
         public readonly LanguageItem INITIALIZEGAMEVIEW = new LanguageItem("Initialize the game view system","初始化游戏视图系统");
         public readonly LanguageItem ADDALLSCENEMODEL = new LanguageItem("Add all SceneModel","添加Hierarchy中所有场景");
         public readonly LanguageItem INITIALIZEALLPLOTMODEL = new LanguageItem("Initialize all PlotModel","初始化Hierarchy中所有剧情");
+        public readonly LanguageItem ADDTYPE = new LanguageItem("Add Type","添加类型");
+        public readonly LanguageItem REMOVETYPE = new LanguageItem("Remove Type","移除类型");
+        public readonly LanguageItem CHANGETYPE = new LanguageItem("Change Type","选择类型");
+        public readonly LanguageItem CURRENTSAVABLECONFIG = new LanguageItem("Current Savable Config", "当前可保存类型配置");
         public readonly LanguageItem INITIALIZEAOTHER = new LanguageItem("Do I need to initialize additional dependencies for you?","需要为您初始化其他依赖项吗");
+        public readonly LanguageItem HASEXISTS = new LanguageItem("The same item already exists","已经存在相同项");
     }
     public class LanguageItem{
         public LanguageItem(Dictionary<string,string> value){

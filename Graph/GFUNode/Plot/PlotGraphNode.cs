@@ -15,20 +15,21 @@ using GalForUnity.Graph.Data;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Model;
 using GalForUnity.System;
+using GalForUnity.System.Archive.Data;
 using GalForUnity.System.Event;
 #if UNITY_EDITOR
 using UnityEditor.UIElements;
 #endif
 using UnityEngine;
 using UnityEngine.UIElements;
-
+using NotImplementedException = System.NotImplementedException;
 
 
 namespace GalForUnity.Graph.GFUNode.Plot{
     [NodeRename("Node/" + nameof(PlotGraphNode))]
     [NodeFieldType(typeof(Data.GraphData), "PlotGraph")]
     [NodeAttributeUsage(NodeAttributeTargets.FlowGraph)]
-    public class PlotGraphNode : ObjectFieldNode<Data.GraphData>{
+    public class PlotGraphNode : ObjectFieldNode<Data.GraphData>,INodeSaveable{
         [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Multi)]
         public GfuPort Exit;
 
@@ -76,7 +77,7 @@ namespace GalForUnity.Graph.GFUNode.Plot{
 
 
         private void OnSubGraphEnd(GfuGraph arg0){
-            if (_graphData == arg0.GraphData){
+            if (_graphData == arg0.graphData&&arg0.IsCaller(this)){
                 base.Executed();
             }
         }
@@ -132,5 +133,9 @@ namespace GalForUnity.Graph.GFUNode.Plot{
             graphSource = (GraphSource) EnumField.value;
         }
 #endif
+        public void Recover(GfuGraph gfuGraph){
+            _graphData = gfuGraph.graphData;
+            EventCenter.GetInstance().OnGraphExecutedEvent += OnSubGraphEnd;
+        }
     }
 }

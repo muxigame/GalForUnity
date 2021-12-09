@@ -327,9 +327,9 @@ namespace GalForUnity.System.Event {
 
 		public static int limitCount =
 #if UNITY_EDITOR
-				200
+				1000
 #else
-				800
+				2000
 #endif
 			;
 		

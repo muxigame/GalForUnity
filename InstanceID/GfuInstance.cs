@@ -16,6 +16,7 @@ using UnityEditor.SceneManagement;
 #endif
 using System;
 using System.Collections.Generic;
+using GalForUnity.Graph.Data;
 using GalForUnity.System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -51,7 +52,7 @@ namespace GalForUnity.InstanceID{
 #if UNITY_EDITOR
             if (!this) return;
 
-            hideFlags = HideFlags.NotEditable;
+            hideFlags = HideFlags.None;
 
             if (MemoryInstanceID != -1){
                 instanceID = MemoryInstanceID;
@@ -96,16 +97,18 @@ namespace GalForUnity.InstanceID{
         public void SafeInstanceID(){
 #if UNITY_EDITOR
             var componentInChildren = transform.GetComponentInChildren<SafeInstanceID>();
-            if (!componentInChildren){
+            if (!componentInChildren||componentInChildren.transform.parent!=transform){
                 if (!EditorUtility.IsPersistent(gameObject)){
                     GfuRunOnMono.Update(() => {
-                        var safeInstanceIDObject = new GameObject {
-                            name = instanceID + ""
-                        };
-                        safeInstanceIDObject.transform.parent = transform;
-                        safeInstanceIDObject.transform.SetAsFirstSibling();
-                        safeInstanceIDObject.gameObject.hideFlags = HideFlags.HideInHierarchy;
-                        safeInstanceIDObject.gameObject.AddComponent<SafeInstanceID>();
+                        if (this){
+                            var safeInstanceIDObject = new GameObject {
+                                name = instanceID + ""
+                            };
+                            safeInstanceIDObject.transform.parent = transform;
+                            safeInstanceIDObject.transform.SetAsFirstSibling();
+                            safeInstanceIDObject.gameObject.hideFlags = HideFlags.HideInHierarchy;
+                            safeInstanceIDObject.gameObject.AddComponent<SafeInstanceID>();
+                        }
                     });
                 }
             } else{
@@ -170,10 +173,32 @@ namespace GalForUnity.InstanceID{
                     return gfuInstance.GetComponent(type);
                 }
             }
-
+            if (type.IsSubclassOf(typeof(GraphData)) || type == typeof(GraphData)){
+                var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
+                foreach (var graphData in graphDatas){
+                    if (graphData.instanceID == gfuInstanceID) return graphData;
+                }
+            }
             return null;
         }
-
+        public static Object FindAllWithGfuInstanceID(long gfuInstanceID){
+            if (GfuInstances != null && GfuInstances.ContainsKey(gfuInstanceID)) return GfuInstances[gfuInstanceID]; //优先到字典中寻找对象而非去遍历
+            var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
+            Object loadedObject = null;
+            if (currentInstanceIDStorage) loadedObject = InstanceIDStorageLoadTool.Load(gfuInstanceID); //如果内存字典找不到对象，则去InstanceID储存器中去加载
+            if (loadedObject) return loadedObject;
+            foreach (var gfuInstance in AllOfType<GfuInstance>()){ //如果InstanceID储存器不存在遍历Resource及场景中全部对象
+                if (gfuInstanceID == gfuInstance.instanceID){
+                    if (!GfuInstances.ContainsKey(gfuInstanceID)) GfuInstances.Add(gfuInstanceID, gfuInstance);
+                    return gfuInstance;
+                }
+            }
+            var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
+            foreach (var graphData in graphDatas){
+                if (graphData.instanceID == gfuInstanceID) return graphData;
+            }
+            return null;
+        }
         private void OnDestroy(){ GfuInstances.Remove(instanceID); }
 
         private static T[] ObjectOfType<T>() where T : Object{ return FindObjectsOfType<T>(); }

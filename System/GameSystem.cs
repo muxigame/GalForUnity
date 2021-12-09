@@ -16,11 +16,15 @@ using GalForUnity.Graph.Windows;
 using GalForUnity.InstanceID;
 using GalForUnity.Model;
 using GalForUnity.Model.Scene;
+using GalForUnity.System.Archive.Behavior;
+using GalForUnity.System.Archive.Data;
 using GalForUnity.View;
 #if UNITY_EDITOR
+using UnityEditor.Compilation;
 using UnityEditor;
 #endif
 using UnityEngine;
+using UnityEngine.EventSystems;
 using EventCenter = GalForUnity.System.Event.EventCenter;
 
 namespace GalForUnity.System{
@@ -30,10 +34,18 @@ namespace GalForUnity.System{
 	// [RequireComponent(typeof(GraphSystem))]
 	// [RequireComponent(typeof(GfuInstance))]
 	[ExecuteAlways]
-	public class GameSystem : GfuInstanceManagerForMono<GameSystem>{
+	public class GameSystem : GfuSavableMonoInstanceManager<GameSystem>{
 		// ReSharper disable all MemberCanBePrivate.Global
+		[SerializeField]
 		private static SystemData _systemData;
+		[SerializeField]
 		private static GraphSystem.GraphSystemData _graphSystem;
+		[Rename(nameof(systemData))]
+		[SerializeField]
+		public SystemData systemData=new SystemData();
+		[Rename(nameof(graphSystem))]
+		[SerializeField]
+		public GraphSystem graphSystem;
 		private void OnEnable(){
 #if UNITY_EDITOR
 			BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
@@ -51,15 +63,25 @@ namespace GalForUnity.System{
 					PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, symbols.Replace("LIVE2D",""));
 				}
 			}
-			if (!EditorApplication.isPlaying){
-				
-			}
+			// if (!EditorApplication.isPlaying){
+			// 	
+			// }
+			// if(!currentSavableConfig)
+			// 	if (!string.IsNullOrEmpty(Data.currentSavableConfigPath))
+			// 		currentSavableConfig = AssetDatabase.LoadAssetAtPath<SavableConfig>(Data.currentSavableConfigPath);
+			AutoAddGfuCompoenent(transform);
+			TraverseTheSubclass(transform);
 #endif
+			
 		}
 		
 		// // Unity回调
+		private float clickTime;
 		private void Update(){
 			if (Input.GetMouseButtonDown(0)){
+				clickTime = Time.time;
+			}
+			if (Input.GetMouseButtonUp(0)&&(Time.time-clickTime<=1) &&!EventSystem.current.IsPointerOverGameObject()){
 				EventCenter.GetInstance().OnMouseDown.Invoke(Input.mousePosition);
 			}
 		}
@@ -115,15 +137,12 @@ namespace GalForUnity.System{
 				_systemData = value;
 			}
 		}
-
-		[Rename(nameof(systemData))]
-		public SystemData systemData=new SystemData();
-
-		[Rename(nameof(graphSystem))]
-		public GraphSystem graphSystem;
-
+		
 		private void OnValidate(){
-			// _graphSystem = graphSystem.GraphData;
+// #if UNITY_EDITOR
+// 			if (currentSavableConfig) StaticData.currentSavableConfigPath = AssetDatabase.GetAssetPath(currentSavableConfig);
+// #endif
+// 			
 		}
 		
 		private void Awake(){
@@ -209,12 +228,13 @@ namespace GalForUnity.System{
 		// 	}
 		// }
 
-		private InstanceIDStorage _instanceIDStorage;
+		// private InstanceIDStorage _instanceIDStorage;
 			
 		[Rename(nameof(currentInstanceIDStorage))]
 		[SerializeField]
 		public InstanceIDStorage currentInstanceIDStorage;
-		
+		[Rename(nameof(currentSavableConfig))]
+		public SavableConfig currentSavableConfig;
 		[Serializable]
 		public class SystemData{
 
@@ -254,7 +274,8 @@ namespace GalForUnity.System{
 				}
 			}
 			
-			[Rename(nameof(currentSceneModel))] [SerializeField]
+			[Rename(nameof(currentSceneModel))]
+			[SerializeField]
 			private SceneModel currentSceneModel;
 
 			[Rename(nameof(SceneController))]
@@ -276,7 +297,49 @@ namespace GalForUnity.System{
 			[SerializeField]
 			public GfuRunOnMono currentMonoProxy;
 			
+			// [HideInInspector]
+			// [Rename(nameof(currentMonoProxy))]
+			// public string currentSavableConfigPath;
+
 		}
+
+		//TODO 恢复内存中的图
+		public override void Recover(){
+			
+		}
+#if UNITY_EDITOR
+		void TraverseTheSubclass(Transform transform){
+			foreach (var subCalss in transform){
+				var calss = (Transform) subCalss;
+				AutoAddGfuCompoenent(calss);
+				TraverseTheSubclass(calss);
+			}
+		}
+
+		void AutoAddGfuCompoenent(Transform transform){
+			var components = transform.GetComponents<MonoBehaviour>();
+			foreach (var component in components){
+				var type = component.GetType();
+				var gfuInstance = component.GetComponent<GfuInstance>();
+				if (type.IsSubclassOf(typeof(SavableBehaviour)) ||(currentSavableConfig&&currentSavableConfig.Contains(type))){
+					if(!gfuInstance) component.gameObject.AddComponent<GfuInstance>();
+					if(gfuInstance)AutoParent(component.transform);
+					break;
+				}
+				if(gfuInstance)AutoParent(component.transform);
+			}
+		}
+
+		void AutoParent(Transform transform){
+			var transformParent = transform;
+			while (transformParent.parent!=null){
+				transformParent = transformParent.parent;
+				if(transformParent.GetComponent<GfuInstance>() ==null) transformParent.gameObject.AddComponent<GfuInstance>();
+			}
+			
+		}
+#endif
+
 	}
 
 }

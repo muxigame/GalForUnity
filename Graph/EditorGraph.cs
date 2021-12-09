@@ -13,12 +13,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Permissions;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Data;
-using GalForUnity.Graph.Data.Property;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.Tool;
 using GalForUnity.InstanceID;
+using System.Runtime.Serialization;
 using GalForUnity.System;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,22 +28,23 @@ using UnityEditor.SceneManagement;
 #endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace GalForUnity.Graph{
     public class EditorGraph
 #if UNITY_EDITOR
-        : GraphView
+        : GraphView,ISerializable
 #endif
     {
-        
         public readonly string path;
-        public Data.GraphData GraphData;
+        [FormerlySerializedAs("GraphData")] public Data.GraphData graphData;
         public GfuNode RootNode => Root;
         
         protected MainNode Root;
 #if UNITY_EDITOR
+        [NonSerialized]
         public EditorWindow EditorWindow;
         private class GfuBackground : GridBackground{ }
         protected class PasteFlagClass{
@@ -68,16 +70,16 @@ namespace GalForUnity.Graph{
         /// 需要注意的是，在编辑器模式中，初始化方法会解析所有节点，但是
         /// </summary>
         public void Init(){
-            GraphData = null;
+            graphData = null;
             //如果路径为空的话，创建一个含有主节点的空图，否则从资源文件中加载Gfu图进行初始化
 #if UNITY_EDITOR
             if (path != null){
-                GraphData = AssetDatabase.LoadAssetAtPath<Data.GraphData>(path);
+                graphData = AssetDatabase.LoadAssetAtPath<Data.GraphData>(path);
             } else{
                 // throw new NullReferenceException("An attempt was made to initialize the graph using no-parameter initialization, but path was not provided!");
             }
 #endif
-            Init(GraphData);
+            Init(graphData);
         }
         /// <summary>
         /// 通过GraphData创建图,如果传入为空则创建默认空图
@@ -127,6 +129,13 @@ namespace GalForUnity.Graph{
         /// </summary>
         /// <param name="nodeObj"></param>
         public virtual void Execute(GfuNode nodeObj){
+#if UNITY_EDITOR
+            if (!EditorApplication.isPlaying){
+                Debug.LogError(GfuLanguage.ParseLog("It is not allowed to execute the diagram without playing, please run the scene first"));
+                return;
+            }
+#endif
+
 #if UNITY_EDITOR
             LoadGraph();
             // AddToSelection(nodeObj); //在编辑模式是，显示剧情进度
@@ -207,7 +216,7 @@ namespace GalForUnity.Graph{
             var graphMousePosition = contentViewContainer.WorldToLocal(mousePosition);
             node.GfuGraph = (GfuGraph) this;
             var nodeData = ScriptableObject.CreateInstance<NodeData>();
-            nodeData.GraphData = GraphData;
+            nodeData.GraphData = graphData;
             node.Init(nodeData);
             position1.position = graphMousePosition;
             node.SetPosition(position1); //将节点移动到鼠标位置
@@ -417,19 +426,44 @@ namespace GalForUnity.Graph{
 
             if (graphData == null) throw new ArgumentException("A graph type that is not allowed!");
             // graphData.Nodes = listNode;
-            if (!GraphData || !AssetDatabase.Contains(GraphData)){
+            if (!this.graphData || !AssetDatabase.Contains(this.graphData)){
                 graphData.Parse(listNode, scale, graphData.instanceID);
                 AssetDatabase.CreateAsset(graphData, path);
                 graphData.Save(path);
                 AssetDatabase.ImportAsset(path);
             } else{
-                GraphData.Delete(path);
-                GraphData.Parse(listNode, scale, GraphData.instanceID);
-                GraphData.Save(path);
+                this.graphData.Delete(path);
+                this.graphData.Parse(listNode, scale, this.graphData.instanceID);
+                this.graphData.Save(path);
                 AssetDatabase.Refresh();
             }
             EditorSceneManager.SaveScene(SceneManager.GetSceneByName(SceneManager.GetActiveScene().name));
 #endif
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context){
+            var fieldInfos = GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            foreach (var fieldInfo in fieldInfos){
+                if (fieldInfo.GetValue(this)!=null){
+                    fieldInfo.SetValue(this,fieldInfo.GetValue(this));
+                }
+            }
+        }
+        
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected EditorGraph(SerializationInfo info, StreamingContext context){
+
+            Type type = GetType();
+            var serializationInfoEnumerator = info.GetEnumerator();
+            while (serializationInfoEnumerator.MoveNext()){
+                type.GetField(serializationInfoEnumerator.Name).SetValue(this,serializationInfoEnumerator.Value);
+            }
+            Type basetype = this.GetType().BaseType;
+            MemberInfo[] mi = FormatterServices.GetSerializableMembers(basetype, context);
+            for (int i = 0; i < mi.Length; i++){
+                //由于AddValue不能添加重名值，为了避免子类变量名与基类变量名相同，将基类序列化的变量名加上基类类名
+                info.AddValue(basetype.FullName + "+" + mi[i].Name, ((FieldInfo)mi[i]).GetValue(this));
+            }
         }
     }
 }

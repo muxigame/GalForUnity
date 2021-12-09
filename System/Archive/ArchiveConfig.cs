@@ -10,6 +10,9 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using GalForUnity.Graph;
 using UnityEngine;
 
 namespace GalForUnity.System.Archive{
@@ -77,6 +80,27 @@ namespace GalForUnity.System.Archive{
         
         public void LoadAll(){
             _configs.ForEach(config => config.Load());
+        }
+
+        public void SaveGraph(){
+            Debug.Log(Application.persistentDataPath);
+            FileStream file = File.Create(Application.persistentDataPath + "/playerInfo.dat");
+            BinaryFormatter bf = new BinaryFormatter();
+            //序列化储存
+            GfuRunOnMono.LateUpdate(() => {
+                Debug.Log(GameSystem.Data.PlotFlowController.CurrentGraph);
+                bf.Serialize(file, GameSystem.Data.PlotFlowController.CurrentGraph); //将data序列化为file文件（即playerInfo.dat）储存
+                file.Close();                                                        //关闭流操作
+            });
+        }
+
+        public void LoadGraph(){
+            // Debug.Log(Application.persistentDataPath);
+            FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.Open);
+            BinaryFormatter bf = new BinaryFormatter();
+            PlotItemGraph plotItem = bf.Deserialize(file) as PlotItemGraph;     
+            file.Close();
+            Debug.Log(plotItem.RootNode);
         }
         // private GameObject loadImage;
         // public void ShowLoad(ArchiveItem archiveItem){
