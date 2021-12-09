@@ -12,37 +12,39 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GalForUnity.Graph.Data{
     [Serializable]
     public class GraphCallChain{
-        [SerializeField]
-        private List<CallInfo> CallInfos = new List<CallInfo>();
+        [FormerlySerializedAs("CallInfos")] [SerializeField]
+        private List<CallInfo> callInfos = new List<CallInfo>();
 
         public void Add(CallInfo callInfo){
-            CallInfos.Insert(0,callInfo);
+            callInfos.Insert(0,callInfo);
         }
         public CallInfo Pop(){
-            var info = CallInfos[CallInfos.Count-1];
-            CallInfos.Remove(info);
+            var info = callInfos[callInfos.Count-1];
+            callInfos.Remove(info);
             return info;
         }
         public CallInfo Peek(){
-            var info = CallInfos[CallInfos.Count -1];
+            var info = callInfos[callInfos.Count -1];
             return info;
         }
         public bool HasNext(){
-            return CallInfos!=null&&CallInfos.Count != 0;
+            return callInfos!=null&&callInfos.Count != 0;
         }
         public bool Next(out CallInfo callInfo){
             callInfo = null;
-            if(HasNext()) callInfo = Pop();
-            return HasNext();
+            var hasNext = HasNext();
+            if(hasNext) callInfo = Pop();
+            return hasNext;
         }
         
         public override string ToString(){
             string str = "";
-            foreach (var callInfo in CallInfos){
+            foreach (var callInfo in callInfos){
                 str += callInfo + "==>";
             }
             return str.Substring(0,str.Length>3?str.Length-3:str.Length);
@@ -53,7 +55,6 @@ namespace GalForUnity.Graph.Data{
     public class CallInfo{
         public ScriptableObject callerGraphData;
         public ScriptableObject callerNodeData;
-        public ScriptableObject callToGraphData;
 
         public override string ToString(){
             return callerGraphData.name+"-->"+callerNodeData.name;

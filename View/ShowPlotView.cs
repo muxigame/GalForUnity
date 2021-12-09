@@ -157,8 +157,10 @@ namespace GalForUnity.View{
             var optionController = InitialSystemComponent<OptionController>();
             optionController.transform.SetParent(parentCanvas.transform);
             if (FindObjectOfType<EventSystem>() == null){
-                gameObject.AddComponent<EventSystem>();
-                gameObject.AddComponent<StandaloneInputModule>();
+                var eventSystem = new GameObject();
+                eventSystem.AddComponent<EventSystem>();
+                eventSystem.AddComponent<StandaloneInputModule>();
+                eventSystem.name = "Event System";
             }
             GameSystem.Data.OptionController = this.optionController = optionController;
         }

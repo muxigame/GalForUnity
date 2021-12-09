@@ -10,19 +10,12 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
-using System.IO;
-using GalForUnity.Graph.Data.Property;
-using GalForUnity.InstanceID;
-using GalForUnity.Model;
-using GalForUnity.System.Address;
-using GalForUnity.System.Address.Addresser;
-using GalForUnity.System.Archive.Behavior;
-using GalForUnity.System.Archive.Data;
 using UnityEngine;
 
 namespace GalForUnity.System.Archive{
     [Serializable]
     public class ArchiveSet :SerializeSelfable{
+        
         public static ArchiveSet Instance=new ArchiveSet();
     
         [SerializeField]
@@ -65,8 +58,11 @@ namespace GalForUnity.System.Archive{
         /// <param name="archiveItem"></param>
         public void DeleteArchive(ArchiveItem archiveItem){
             configs.RemoveAll((config => {
-                config.Delete();
-                return config.archiveItem == archiveItem;
+                if (config.ArchiveItem == archiveItem){
+                    config.Delete();
+                    return true;
+                }
+                return false;
             }));
         }
         /// <summary>
@@ -89,9 +85,9 @@ namespace GalForUnity.System.Archive{
             SaveConfig();
         }
         public void OverrideArchive(ArchiveItem oldArchiveItem,ArchiveItem newArchiveItem){
-            var archiveConfig = configs.Find((config => config.archiveItem == oldArchiveItem));
+            var archiveConfig = configs.Find((config => config.ArchiveItem == oldArchiveItem));
             var archiveConfig1 = configs[archiveConfig.ArchiveIndex] = new ArchiveConfig(newArchiveItem);//在内存中替换掉存档
-            oldArchiveItem.Delete(archiveConfig.archiveFileName);//删除就存档
+            archiveConfig.Delete();//删除就存档
             archiveConfig1.Save();//保存新存档
             SaveConfig();//保存配置
         }
@@ -99,6 +95,7 @@ namespace GalForUnity.System.Archive{
             configs[oldArchiveItemIndex].Delete();//删除旧存档
             configs[oldArchiveItemIndex]=new ArchiveConfig(newArchiveItem);//在内存中替换掉
             configs[oldArchiveItemIndex].Save();//保存新存档
+            SaveConfig();
         }
         public void OverrideArchive(ArchiveConfig archiveConfig,ArchiveItem newArchiveItem){
             var config = new ArchiveConfig(newArchiveItem);
@@ -109,140 +106,38 @@ namespace GalForUnity.System.Archive{
         }
 
         public ArchiveItem this[int index]{
-            get => configs[index].archiveItem;
-            set => configs[index].archiveItem = value;
+            get => configs[index].ArchiveItem;
+            set => configs[index].ArchiveItem = value;
         }
         
         public ArchiveItem GetArchive(int index){
-            return configs[index].archiveItem;
+            return configs[index].ArchiveItem;
         }
         public ArchiveItem GetArchiveWithInstanceID(long instanceID){
             return configs.Find(item => {
-                var itemArchiveItem = item.archiveItem;
+                var itemArchiveItem = item.ArchiveItem;
                 if (itemArchiveItem != null){
-                    return itemArchiveItem.instanceID == instanceID||
-                           itemArchiveItem.plotFlowGraphDataInstanceID == instanceID||
-                           itemArchiveItem.plotItemGraphDataInstanceID == instanceID;
+                    return itemArchiveItem.instanceID == instanceID;
                 }
                 return false;
-            }).archiveItem;
+            }).ArchiveItem;
         }
-        public ArchiveItem Last => configs[configs.Count - 1].archiveItem;
+        public ArchiveItem Last => configs[configs.Count - 1].ArchiveItem;
         public void Clear(){
             configs.Clear();
         }
         public void SaveAll(){
             configs.ForEach(config => config.Save());
-            base.Save(ArchiveSystem.Path+ArchiveSystem.configsFileName);
+            SaveConfig();
         }
 
-        public void SaveConfig() => base.Save(ArchiveSystem.Path+ArchiveSystem.configsFileName);
+        public void SaveConfig() => base.Save(ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
         
         public void LoadAll(){
-            base.Load(ArchiveSystem.Path+ArchiveSystem.configsFileName);
+            base.Load( ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
             configs.ForEach(config => config.Load());
         }
 
-        public void LoadConfig() => base.Load(ArchiveSystem.Path + ArchiveSystem.configsFileName);
-    }
-
-    /// <summary>
-    /// 存档内容及底层文件操作
-    /// </summary>
-    [Serializable]
-    public class ArchiveItem : SerializeSelfable{
-        [SerializeField] public long instanceID;
-        [SerializeField] public long plotItemGraphDataInstanceID;
-        [SerializeField] public long plotFlowGraphDataInstanceID;
-        [SerializeField] public long startIndex;
-        [SerializeField] public RoleData roleData;
-        [NonSerialized] public Texture2D Texture2D;
-        [SerializeField] public string name;
-        [SerializeField] public string speak;
-        public List<ScriptData> Saveables=new List<ScriptData>();
-
-        public PlotItemGraphData PlotItemGraphData{
-            get{
-                var findObjectsOfTypeAll = Resources.FindObjectsOfTypeAll<PlotItemGraphData>();
-                foreach (var itemGraphData in findObjectsOfTypeAll){
-                    if (itemGraphData.instanceID == plotItemGraphDataInstanceID){
-                        return itemGraphData;
-                    }
-                }
-
-                throw new NullReferenceException("InstanceID not exit in Resources");
-            }
-            set => plotItemGraphDataInstanceID = value.instanceID;
-        }
-
-        public PlotFlowGraphData PlotFlowGraphData{
-            get{
-                var findObjectsOfTypeAll = Resources.FindObjectsOfTypeAll<PlotFlowGraphData>();
-                foreach (var itemGraphData in findObjectsOfTypeAll){
-                    if (itemGraphData.instanceID == plotFlowGraphDataInstanceID){
-                        return itemGraphData;
-                    }
-                }
-
-                throw new NullReferenceException("InstanceID not exit in Resources");
-            }
-            set => plotFlowGraphDataInstanceID = value.instanceID;
-        }
-        public override void Save(string fileName){
-            var transform = GameSystem.GetInstance().transform;
-            SaveHierarchy(transform);
-            SaveMonoScript(transform);
-            // var photoPath=ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;
-            // if (!Directory.Exists(ArchiveSystem.Path)) Directory.CreateDirectory(ArchiveSystem.Path);
-            // if (!File.Exists(photoPath) && Texture2D != null) ArchiveSystem.SaveTextureToFile(photoPath, Texture2D);
-            // base.Save(ArchiveSystem.Path + fileName + ArchiveSystem.archiveSuffix);
-        }
-
-        private void SaveHierarchy(Transform transform){
-            for (int i = 0; i < transform.childCount; i++){
-                SaveHierarchy(transform.GetChild(i));
-            }
-
-            if (transform.GetComponent<GfuInstance>()){
-                var savable = new ScriptData(transform.gameObject);
-                Saveables.Add(savable);
-            }
-        }
-        private void SaveMonoScript(Transform transform){
-            for (int i = 0; i < transform.childCount; i++){
-                SaveMonoScript(transform.GetChild(i));
-            }
-            var components = transform.GetComponents<MonoBehaviour>();
-            
-            // var gfuInstances = transform.GetComponent<GfuInstance>();
-            foreach (var component in components){
-                if (component.gameObject.hideFlags == HideFlags.HideInHierarchy | component.gameObject.hideFlags == HideFlags.HideInInspector) continue;
-                var savable = new ScriptData(component);
-                if (!string.IsNullOrEmpty(savable.ObjectAddressExpression)){
-                    Saveables.Add(savable);
-                }
-            }
-        }
-        public override void Load(string fileName){
-            foreach (var saveable in Saveables){
-                saveable.Recover();
-            }
-            // base.Load(ArchiveSystem.Path + fileName + ArchiveSystem.archiveSuffix);
-            // var photoPath=ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;
-            // if (!File.Exists(photoPath)) return;
-            // if (!Texture2D) Texture2D = new Texture2D(500, 500);
-            // Texture2D.LoadImage(ArchiveSystem.GetTextureByte(photoPath));
-        }
-        public void Delete(string fileName){
-            var photoPath = ArchiveSystem.Path + fileName + ArchiveSystem.photoSuffix;
-            var archivePath = ArchiveSystem.Path + fileName + ArchiveSystem.archiveSuffix;
-            if (File.Exists(photoPath)) File.Delete(photoPath);
-            if (File.Exists(archivePath)) File.Delete(archivePath);
-        }
-        
-        public void Override(string oldFileName,string newFileName){
-            Delete(oldFileName);
-            Save(newFileName);
-        }
+        public void LoadConfig() => base.Load( ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
     }
 }

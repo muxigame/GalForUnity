@@ -42,7 +42,7 @@ namespace GalForUnity.Model.Scene {
         /// <param name="x">SceneModel</param>
         /// <returns>是否相同引用</returns>
         public override bool Equals(object x) {
-            if ((x is GameObject g) && ReferenceEquals(g, gameObject)) {
+		    if ((x is GameObject g) && ReferenceEquals(g, gameObject)) {
 				return true;
 			}
 			return x is SceneModel && ReferenceEquals(this,x);

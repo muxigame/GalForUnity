@@ -30,7 +30,7 @@ namespace GalForUnity.Graph.GFUNode.Plot{
     [NodeFieldType(typeof(Data.GraphData), "PlotGraph")]
     [NodeAttributeUsage(NodeAttributeTargets.FlowGraph)]
     public class PlotGraphNode : ObjectFieldNode<Data.GraphData>,INodeSaveable{
-        [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Multi)]
+        [NodeRename(nameof(Exit), typeof(RoleData), NodeDirection.Output, NodeCapacity.Single)]
         public GfuPort Exit;
 
         public enum GraphSource{

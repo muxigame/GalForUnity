@@ -79,13 +79,12 @@ namespace GalForUnity.Graph{
                         plotGraphNode.Recover(gfuGraph);//恢复保存的数据
                         gfuGraph._caller = plotGraphNode;//保存调用者信息
                     }
-                    Debug.Log(gfuGraph.GetGraphCallChain());
                     gfuNode.OnExecuted = graph.Execute;//添加节点执行完毕后的回调
                     gfuGraph = graph;//保存当前数据进行下次迭代
                 }
                 Execute((NodeData) info.callerNodeData);//运行当前节点
             }else{
-                Debug.Log("graphCallChain is"+graphCallChain);
+                Debug.LogError("graphCallChain is"+graphCallChain);
             }
         }
 
@@ -98,14 +97,22 @@ namespace GalForUnity.Graph{
         /// <returns></returns>
         public bool IsCaller(object caller){ return _caller == caller; }
 
+        /// <summary>
+        /// 获得该图的调用链
+        /// </summary>
+        /// <returns></returns>
         public GraphCallChain GetGraphCallChain(){
             graphCallChain=new GraphCallChain();
             GfuGraph gfuGraph = this;
             graphCallChain.Add(gfuGraph.GetCallInfo());
             while (!ReferenceEquals(gfuGraph._caller, GameSystem.Data.PlotFlowController)){
+                if(gfuGraph._caller==null) break;
                 if (gfuGraph._caller is GfuNode gfuNode){
                     graphCallChain.Add(gfuNode.GfuGraph.GetCallInfo());
                     gfuGraph = gfuNode.GfuGraph;
+                } else{
+                    Debug.LogError("未知调用者");
+                    break;
                 }
             }
             return graphCallChain;
