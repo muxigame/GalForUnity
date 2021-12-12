@@ -9,24 +9,30 @@
 //
 //======================================================================
 
-using System;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace GalForUnity.System.Archive.UI{
+namespace GalForUnity.System.Archive.UI.Buttons{
     public class AddArchiveButton : MonoBehaviour{
-        [SerializeField]
-        private ArchiveSystem archiveSystem;
+        
+        private ArchiveSystem _archiveSystem;
         
         private RectTransform _rectTransform;
 
         public void Start(){
-            if(!archiveSystem) archiveSystem=ArchiveSystem.GetInstance();
+            if(!_archiveSystem) _archiveSystem=ArchiveSystem.GetInstance();
             _rectTransform = GetComponent<RectTransform>();
+            if (!TryGetComponent(out Button button)) button=gameObject.AddComponent<Button>();
+            if(_archiveSystem)button.onClick.AddListener(Save);
         }
 
         private void Update(){
-            _rectTransform.anchoredPosition = new Vector2(0,(archiveSystem._archiveCount) * -200);
+            _rectTransform.anchoredPosition = new Vector2(0,(_archiveSystem.ArchiveCount) * -200);
             _rectTransform.SetAsLastSibling();
+        }
+
+        private void Save(){
+            _archiveSystem.SaveAsync(_archiveSystem.ArchiveCount);
         }
     }
 }

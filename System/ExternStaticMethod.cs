@@ -151,6 +151,15 @@ namespace GalForUnity.System{
             return false;
         }
 
+        public static FieldInfo[] GetFields<T>(this Type type,BindingFlags bindingFlags=BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic){
+            var fieldInfos = type.GetFields(bindingFlags);
+            List<FieldInfo> fieldInfosList=new List<FieldInfo>();
+            foreach (var fieldInfo in fieldInfos){
+                if(fieldInfo.FieldType==typeof(T)||fieldInfo.FieldType.IsSubclassOf(typeof(T))) fieldInfosList.Add(fieldInfo);
+            }
+            return fieldInfosList.ToArray();
+        }
+        
         public static T FindObjectsWithGfuInstanceID<T>(this Object obj, long gfuInstanceID) where T : Object{
             if (GfuInstance.GfuInstances.ContainsKey(gfuInstanceID)) return GfuInstance.GfuInstances[gfuInstanceID].GetComponent<T>();
             foreach (var gfuInstance in ObjectOfType<GfuInstance>()){

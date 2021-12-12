@@ -10,11 +10,13 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
+using GalForUnity.System.Archive.UI;
 using UnityEngine;
 
 namespace GalForUnity.System.Archive{
     /// <summary>
-    /// ArchiveConfig不应该是一个可配置的类，而是一个自动配置的类
+    /// ArchiveConfig 保存着存档项的配置，包含路径，文件名，后缀名等
+    /// 不应该是一个可配置的类，而是一个自动配置的类
     /// </summary>
     [Serializable]
     public class ArchiveConfig{
@@ -25,7 +27,19 @@ namespace GalForUnity.System.Archive{
         private string archiveTime;
         [NonSerialized]
         private ArchiveItem _archiveItem;
+        [NonSerialized]
+        private ArchiveSlot _archiveSlot;
 
+        /// <summary>
+        /// 访问存档配置的存档槽，如果存档没有被加载到存档遭中返回null
+        /// </summary>
+        public ArchiveSlot ArchiveSlot{
+            get => _archiveSlot;
+            set => _archiveSlot = value;
+        }
+        /// <summary>
+        /// 访问存档配置的存档数据，如果存档没有从本地加载返回null
+        /// </summary>
         public ArchiveItem ArchiveItem{
             get => _archiveItem;
             set => _archiveItem = value;
@@ -41,22 +55,25 @@ namespace GalForUnity.System.Archive{
             set => archiveFileName = value;
         }
 
-        public string ArchiveDirectory=>ArchiveEnvironmentConfig.GetInstance().archiveDirectory;
+        public string ArchiveDirectory=>ArchiveEnvironmentConfig.GetInstance().ArchiveDirectory;
         public string ArchiveSuffix=>ArchiveEnvironmentConfig.GetInstance().archiveSuffix;
         public string PhotoSuffix=>ArchiveEnvironmentConfig.GetInstance().photoSuffix;
         
-        public Texture2D ArchiveImage => _archiveItem.Texture2D ? _archiveItem.Texture2D : _archiveItem.LoadPhoto(ArchiveDirectory,archiveFileName,PhotoSuffix);
+        public Texture2D ArchiveImage => _archiveItem.Texture2D;
 
-        private static List<ArchiveConfig> _configs = ArchiveSet.Instance.configs;
+        private static List<ArchiveConfig> _configs =ArchiveSet.GetInstance().configs;
         
         public ArchiveConfig(string name){
             archiveFileName = name;
             archiveTime = ArchiveEnvironmentConfig.GetInstance().Time;
             _configs.Add(this);
         }
-        public ArchiveConfig(ArchiveItem archiveItem){
-            this._archiveItem = archiveItem;
-            _configs.Add(this);
+        public ArchiveConfig(ArchiveItem archiveItem,int index=-1){
+            if(index<0)ArchiveSet.GetInstance().configs.Add(this);
+            else ArchiveSet.GetInstance().configs[index]=this;
+            _archiveItem=archiveItem;
+            archiveTime = ArchiveEnvironmentConfig.GetInstance().Time;
+            archiveFileName = ArchiveEnvironmentConfig.GetInstance().archiveDefaultName+ArchiveIndex;
         }
         public static ArchiveConfig Create(string name){
             var archiveConfig = new ArchiveConfig(name);
@@ -68,7 +85,7 @@ namespace GalForUnity.System.Archive{
         /// </summary>
         public static int ArchiveCount => _configs.Count;
         /// <summary>
-        /// 任何对象的所以索引均是访问在集合中的值
+        /// 存档的索引号
         /// </summary>
         public int ArchiveIndex=>_configs.IndexOf(this);
 
@@ -85,7 +102,7 @@ namespace GalForUnity.System.Archive{
         }
         public void Load(){
             if (!string.IsNullOrEmpty(archiveFileName)){
-                if(_archiveItem==null) _archiveItem=new ArchiveItem();
+                _archiveItem=new ArchiveItem(this);
                 _archiveItem.Load(ArchiveDirectory,archiveFileName,ArchiveSuffix,PhotoSuffix);
             }
         }

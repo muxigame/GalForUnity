@@ -72,8 +72,12 @@ namespace GalForUnity.Graph.Operation{
         }
 
         public override void Update(GfuOperationData gfuOperationData){
+            
             if (ContainerData != null && ContainerData.Count >= 2){
                 var roleModel=(RoleModel) ContainerData[0];
+                // Debug.LogError(roleModel.GetComponent<SpriteRenderer>());
+                // Debug.LogError(roleModel.GetComponent<SpriteRenderer>().sprite);
+                // Debug.LogError(roleModel.GetComponent<SpriteRenderer>().size);
                 if (roleModel){
                     if (InputData[0] != null && ContainerData?[0] != null){
                         var transform = roleModel.transform;
@@ -84,6 +88,9 @@ namespace GalForUnity.Graph.Operation{
                     }
                     float opacity = (float) InputData[2].value;
                     Color color =  InputData[3].value as Color? ?? (Vector4)InputData[3].value;
+                    // Debug.LogError(color);
+                    // Debug.LogError(InputData[3].value);
+                    // Debug.LogError(opacity);
                     color.a = opacity;
                     roleModel.Color(color);
                 }

@@ -14,6 +14,7 @@ using GalForUnity.Attributes;
 using GalForUnity.InstanceID;
 using GalForUnity.System.Archive.Behavior;
 using GalForUnity.System.Archive.Data;
+using GalForUnity.System.Archive.Data.Savables;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -31,6 +32,10 @@ namespace GalForUnity.Model {
 	[RequireComponent(typeof(GfuInstance))]
 	[Serializable]
 	public class RoleModel : TransformSavableBehaviour {
+		[SerializeField]
+		[HideInInspector]
+		public SavableSpriteRender SavableSpriteRender;
+		
 		//姓名 
 		[Rename(nameof(name))]
 		[SerializeField]
@@ -41,6 +46,10 @@ namespace GalForUnity.Model {
 		[Rename(nameof(roleSpriteMap))]
 		[SerializeField]
 		private Sprite roleSpriteMap;
+		
+		[SerializeField]
+		[Rename(nameof(color))]
+		private Color color=new Color();
 
 		public Sprite RoleSpriteMap{
 			get => roleSpriteMap;
@@ -69,7 +78,12 @@ namespace GalForUnity.Model {
 #endif
 			if (!gameObject.TryGetComponent(out SpriteRenderer spriteRenderer)) _spriteRenderer = spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
 			spriteRenderer.sprite = roleSpriteMap;
+			spriteRenderer.color = color;
 			_spriteRenderer = spriteRenderer;
+		}
+
+		private void Awake(){
+			Debug.Log("Awake");
 		}
 
 		/// <summary>
@@ -172,16 +186,12 @@ namespace GalForUnity.Model {
 		}
 
 		public override void GetObjectData(ScriptData scriptData){
-			savableData.AddValue(nameof(_spriteRenderer.sprite),_spriteRenderer,_spriteRenderer.sprite);
-			savableData.AddValue(nameof(_spriteRenderer.color),_spriteRenderer,_spriteRenderer.color);
-			savableData.AddValue(nameof(_spriteRenderer.flipX),_spriteRenderer,_spriteRenderer.flipX);
-			savableData.AddValue(nameof(_spriteRenderer.flipY),_spriteRenderer,_spriteRenderer.flipY);
+			SavableSpriteRender = new SavableSpriteRender(_spriteRenderer);
 			base.GetObjectData(scriptData);
 		}
 
 		public override void Recover(){
 			base.Recover();
-			savableData.Recover();
 		}
 	}
 }

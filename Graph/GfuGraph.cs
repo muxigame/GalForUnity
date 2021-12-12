@@ -21,6 +21,7 @@ using GalForUnity.Graph.Data.Property;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Graph.GFUNode.Plot;
 using GalForUnity.System;
+using GalForUnity.System.Archive;
 using GalForUnity.System.Archive.Data;
 using GalForUnity.System.Event;
 using UnityEngine;
@@ -37,7 +38,7 @@ namespace GalForUnity.Graph{
     /// 默认情况下,图会响应鼠标点击事件,自动执行,也可以改写程序响应自定义事件
     /// 这样便能在运行时创建一个图并且播放
     /// </summary>
-    public class GfuGraph : EditorGraph{
+    public class GfuGraph : EditorGraph,IDisposable{
         /// <summary>
         /// 指示图是否在执行
         /// </summary>
@@ -90,6 +91,9 @@ namespace GalForUnity.Graph{
 
         public GfuGraph(string path) : base(path){ }
 
+        ~GfuGraph(){
+            ReleaseUnmanagedResources();
+        }
         /// <summary>
         /// 指示图的调用者，由GalForUnity手动赋值，用户调用该值可能为空
         /// </summary>
@@ -235,6 +239,11 @@ namespace GalForUnity.Graph{
         public override void Init(Data.GraphData graphData){
             base.graphData = graphData;
             NodeDataset = new List<NodeData>();
+            EventCenter.GetInstance().archiveEvent.AddListener((x) => {
+                if (x == ArchiveSystem.ArchiveEventType.ArchiveLoadStart){
+                    this.Dispose();
+                }
+            });
             CreateNodeDataset = new Dictionary<long, GfuNode>();
             if (graphData != null && graphData.Nodes != null && graphData.Nodes.Count != 0){
                 foreach (var t in graphData.Nodes){
@@ -297,5 +306,15 @@ namespace GalForUnity.Graph{
         //     base.GetObjectData(info, context);
         // }
 
+        private void ReleaseUnmanagedResources(){
+            _currentNode.OnExecuted = null;
+            NodeDataset.Clear();
+            CreateNodeDataset.Clear();
+        }
+
+        public void Dispose(){
+            ReleaseUnmanagedResources();
+            GC.SuppressFinalize(this);
+        }
     }
 }

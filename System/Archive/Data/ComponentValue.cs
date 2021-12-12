@@ -1,16 +1,23 @@
 ﻿using System;
-using GalForUnity.System.Address;
 using GalForUnity.System.Address.Addresser;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace GalForUnity.System.Archive.Data{
     [Serializable]
     public class ComponentValue:KeyValue{
-        public ComponentValue(string name,Component component,object value):base(name,value){
+        public ComponentValue(string name,Component component,object value){
             addressExpression=InstanceIDAddresser.GetInstance().Parse(component);
+            if (value is Object o){
+                this.value = o;
+            }
+
+            this.name = name;
         }
         [SerializeField]
         public string addressExpression;
+        [SerializeField]
+        public new Object value;
 
         public Component Value(){
             object obj;
@@ -20,6 +27,10 @@ namespace GalForUnity.System.Archive.Data{
         
         public void Set(object wantSetValue){
             InstanceIDAddresser.GetInstance().Set(addressExpression,wantSetValue);
+        }
+
+        public override string ToString(){
+            return  name + ":" + addressExpression + ":" + value+"-----";
         }
     }
 }

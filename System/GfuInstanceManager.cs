@@ -10,18 +10,20 @@
 //======================================================================
 using System;
 using GalForUnity.System.Archive.Behavior;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace GalForUnity.System{
     /// <summary>
-    /// CopyRight © MUXI Studio 
-    /// Author Roc
     /// 实例管理器类，继承了此类的类可以使用GetInstance()获取对象实例，类似于单例，但是对象本身依旧是可New的
     /// 使用此类需要传入一个要单例使用的类
     /// </summary>
     /// <typeparam name="T">要创建实例的泛型类</typeparam>
     public class GfuInstanceManager<T> : IDisposable where T : class /*new() 允许子类存在私有构造，并不会出现编译器错误，但运行时依旧会出现无法new的异常*/{
-        private static object Lock = new object();
+        // ReSharper disable all StaticMemberInGenericType
+        private static readonly object Lock = new object();
         private static volatile T instance;
 
         /// <summary>
@@ -124,6 +126,19 @@ namespace GalForUnity.System{
                 }
             }
             return instance;
+        }
+
+        protected virtual void Reset(){
+            if (FindObjectsOfType<T>().Length > 1){
+                Invoke(nameof(Destroy), 0);
+            }
+        }
+
+        protected void Destroy(){
+            DestroyImmediate(this);
+#if UNITY_EDITOR
+            Selection.activeGameObject = FindObjectOfType<T>().gameObject;
+#endif
         }
 
 #region IDisposable Support

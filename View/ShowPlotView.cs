@@ -13,6 +13,7 @@ using GalForUnity.Attributes;
 using GalForUnity.Controller;
 using GalForUnity.Model.Scene;
 using GalForUnity.System;
+using GalForUnity.System.Archive.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -27,28 +28,36 @@ namespace GalForUnity.View{
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class ShowPlotView : GfuSavableMonoInstanceManager<OptionController>{
         [FormerlySerializedAs("OptionController")]
+        [SerializeField]
         [Rename(nameof(optionController))]
         [Tooltip("控制游戏中选项的选项控制器")]
         public OptionController optionController;
         [FormerlySerializedAs("NameView")]
+        [SerializeField]
         [Rename(nameof(nameView))]
         [Tooltip("请放置Text或其子类，自动创建默认视图")]
         public Text nameView;
         [FormerlySerializedAs("SpeakView")]
+        [SerializeField]
         [Rename(nameof(speakView))]
         [Tooltip("请放置Text或其子类，如果为空，自动创建默认视图")]
         public Text speakView;
         [Rename(nameof(backgroundDistance))]
+        [SerializeField]
         [Tooltip("指示背景图片距离主相机的距离")]
         public float backgroundDistance=100;
-        [FormerlySerializedAs("BackgroundView")] [Rename(nameof(backgroundView))]
+        [FormerlySerializedAs("BackgroundView")] 
+        [Rename(nameof(backgroundView))]
+        [SerializeField]
         [Tooltip("请放置Image或其子类，如果为空，自动创建默认视图")]
         public SpriteRenderer backgroundView;
         [FormerlySerializedAs("AudioSource")]
         [Tooltip("您可以指定视图显示的画布")]
+        [SerializeField]
         [Rename(nameof(audioSource))]
         public AudioSource audioSource;
         [FormerlySerializedAs("ParentCanvas")]
+        [SerializeField]
         [Tooltip("您可以指定视图显示的画布")]
         [Rename(nameof(parentCanvas))]
         public Canvas parentCanvas;
@@ -181,13 +190,18 @@ namespace GalForUnity.View{
             return typeObj;
         }
 
+        public override void GetObjectData(ScriptData scriptData){
+            base.GetObjectData(scriptData);
+            scriptData.priority = -1;
+        }
+
         /// <summary>
         /// TODO 恢复视图
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
         public override void Recover(){
-            nameView.text = roleName;
-            speakView.text = speak;
+            if(nameView) nameView.text = roleName;
+            if(speakView) speakView.text = speak;
             PlayAudioClip(audioClip);
             ShowBackground(background);
         }

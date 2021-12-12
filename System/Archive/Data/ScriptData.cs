@@ -30,12 +30,18 @@ namespace GalForUnity.System.Archive.Data{
         // public Dictionary<string,string> objectAddressExpression;
         // public Dictionary<string,object> fields;
         public bool activeSelf;
+        /// <summary>
+        /// 在层级面板中相对于父容器的索引
+        /// </summary>
         private int _index;
+
+        public int priority = Int32.MinValue;
+        
         public string parentObjectAddressExpression;
         public string ObjectAddressExpression{
             set{
-                _objectAddressExpression = value;
-                if(InstanceIDAddresser.GetInstance().Get(_objectAddressExpression,out object obj)){
+                objectAddressExpression = value;
+                if(InstanceIDAddresser.GetInstance().Get(objectAddressExpression,out object obj)){
                     if (obj is MonoBehaviour monoBehaviour){
                         activeSelf = monoBehaviour.enabled;
                     } else if (obj is GameObject gameObject){
@@ -49,20 +55,25 @@ namespace GalForUnity.System.Archive.Data{
                     throw new ObjectNotFoundException("找不到指定地址的对象");
                 }
             }
-            get => _objectAddressExpression;
+            get => objectAddressExpression;
         }
-
-        private string _objectAddressExpression;
+        [SerializeField]
+        private string objectAddressExpression;
         public string json;
 
         public ScriptData(MonoBehaviour monoBehaviour){
             if (monoBehaviour is SavableBehaviour savableBehaviour){
                 savableBehaviour.GetObjectData(this);
             } else{
-                if (monoBehaviour.GetComponent<GfuInstance>()!=null){
+                if (monoBehaviour.TryGetComponent(out GfuInstance gfuInstance)){
                     json = JsonUtility.ToJson(monoBehaviour);
                     ObjectAddressExpression = InstanceIDAddresser.GetInstance().Parse(monoBehaviour);
                     activeSelf = monoBehaviour.enabled;
+                }
+                var fieldInfos = monoBehaviour.GetType().GetFields<Savable>();
+                foreach (var fieldInfo in fieldInfos){
+                    var value = (Savable)fieldInfo.GetValue(this);
+                    value.Save();
                 }
             }
         }
@@ -72,7 +83,7 @@ namespace GalForUnity.System.Archive.Data{
         }
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected ScriptData(SerializationInfo info, StreamingContext context){
-            _objectAddressExpression = info.GetString(nameof(_objectAddressExpression));
+            objectAddressExpression = info.GetString(nameof(objectAddressExpression));
             parentObjectAddressExpression = info.GetString(nameof(parentObjectAddressExpression));
             activeSelf = info.GetBoolean(nameof(activeSelf));
             json = info.GetString(nameof(json));
@@ -81,14 +92,14 @@ namespace GalForUnity.System.Archive.Data{
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context){
             info.AddValue(nameof(json),json);
-            info.AddValue(nameof(_objectAddressExpression),_objectAddressExpression);
+            info.AddValue(nameof(objectAddressExpression),objectAddressExpression);
             info.AddValue(nameof(parentObjectAddressExpression),parentObjectAddressExpression);
             info.AddValue(nameof(activeSelf),activeSelf);
             info.AddValue(nameof(_index),_index);
         }
 
         public virtual void Recover(){
-            if(string.IsNullOrEmpty(_objectAddressExpression)) return;
+            if(string.IsNullOrEmpty(objectAddressExpression)) return;
             if (InstanceIDAddresser.GetInstance().Get(ObjectAddressExpression, out var obj)){
                 if (obj is SavableBehaviour savableBehaviour){
                     savableBehaviour.Recover(this);
@@ -106,13 +117,18 @@ namespace GalForUnity.System.Archive.Data{
                         }
                     }
                 }
+                var fields = obj.GetType().GetFields<Savable>();
+                foreach (var fieldInfo in fields){
+                    Savable savable=(Savable)fieldInfo.GetValue(obj);
+                    if(!savable.Recovered) savable.Recover();
+                }
             } else{
-                //如果没有查找到这个组件或者对象
-                Debug.Log(_objectAddressExpression);
+                //如果没有查找到这个组件或者对象,代表这个对象存档前有这个组件，但是现在没有这个组件，重新构建表达式创建这个组件
+                Debug.Log(objectAddressExpression);
                 var expressionParser = new ExpressionParser(ObjectAddressExpression);
-                var objectName = expressionParser.GetInstanceID();
+                var instanceID = expressionParser.GetInstanceID();
                 var expressionCreator = new ExpressionCreator();
-                expressionCreator.AddInstanceID(objectName);
+                expressionCreator.AddInstanceID(instanceID);
                 expressionCreator.AddProtocol(expressionParser.GetProtocol());
                 expressionCreator.AddAssemblyName(expressionParser.GetAssemblyName());
                 if (InstanceIDAddresser.GetInstance().Get(expressionCreator.Create(), out var gfuInstance)){
@@ -127,6 +143,8 @@ namespace GalForUnity.System.Archive.Data{
                         JsonUtility.FromJsonOverwrite(json,monoBehaviour);
                         monoBehaviour.enabled = activeSelf;
                     }
+                } else{
+                    new GameObject().AddComponent<GfuInstance>().instanceID = instanceID;
                 }
                 
             }

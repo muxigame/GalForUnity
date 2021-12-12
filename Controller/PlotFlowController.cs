@@ -83,8 +83,7 @@ namespace GalForUnity.Controller{
             EventCenter.GetInstance().AddEventListening("date", Date);
             EventCenter.GetInstance().OnPlotWillExecuteEvent = Plot;
             EventCenter.GetInstance().OnGraphExecutedEvent = OnGraphExecuted;
-            EventCenter.GetInstance().OnGraphExecutedEvent += (x) => {
-            };
+            EventCenter.GetInstance().OnGraphExecutedEvent += (x) => { };
             ReadyExecutePlotModelSet = PlotModelList.GetInstance();
         }
 

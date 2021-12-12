@@ -32,7 +32,6 @@ namespace GalForUnity.System.Archive{
             if (File.Exists(fileName)){
                 FileStream fileStream = File.OpenRead(fileName);
                 var deserialize = (string) binaryFormatter.Deserialize(fileStream);
-                Debug.Log(deserialize);
                 JsonUtility.FromJsonOverwrite(deserialize,this);
                 fileStream.Close();
             }

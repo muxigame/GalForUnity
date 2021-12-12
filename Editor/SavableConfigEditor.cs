@@ -34,9 +34,12 @@ namespace GalForUnity.Editor{
             var savableConfig = (SavableConfig) target;
             _inspectorType = Assembly.GetAssembly(typeof(UnityEditor.Editor)).GetType("UnityEditor.InspectorWindow", true);
             var editorWindow = EditorWindow.GetWindow(_inspectorType);
-            var serializedProperty = o.FindProperty("types");
+            _list = new PropertyField(o.FindProperty("types"));
+            var castDictionaryCountSer = o.FindProperty("castDictionaryCount");
+            var saveHierarchySer = o.FindProperty("saveHierarchy");
             _container = new VisualElement();
-            _list = new PropertyField(serializedProperty) { };
+            var saveHierarchy = new PropertyField(saveHierarchySer) { };
+            var castDictionaryCount = new PropertyField(castDictionaryCountSer) { };
             var button = new Button() {
                 text= GfuLanguage.GfuLanguageInstance.ADDTYPE.Value
             };
@@ -78,6 +81,13 @@ namespace GalForUnity.Editor{
                 };
                 SearchWindow.Open(searchWindowContext, searchTypeProvider);
             };
+            var obj = new ObjectField {
+                value = MonoScript.FromScriptableObject((ScriptableObject) target), objectType = typeof(MonoScript), allowSceneObjects = false
+            };
+            // obj.s
+            _container.Add(obj);
+            _container.Add(castDictionaryCount);
+            _container.Add(saveHierarchy);
             _container.Add(_list);
             _container.Add(button);
             _container.Add(removeButton);

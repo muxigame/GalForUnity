@@ -19,7 +19,8 @@ using GalForUnity.Graph.Data;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.Model;
 using GalForUnity.System;
-using UnityEngine;
+using GalForUnity.System.Archive;
+using GalForUnity.System.Event;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.GFUNode.Logic{
@@ -180,16 +181,26 @@ namespace GalForUnity.Graph.GFUNode.Logic{
             }
         }
 #endif
+
+        private GfuOptions gfuOptions;
         public override RoleData Execute(RoleData roleData){
-            var gfuOptions = new GfuOptions();
+            gfuOptions = new GfuOptions();
             gfuOptions.Parse(optionsName);
             gfuOptions.OnSelect = Executed;
+            EventCenter.GetInstance().archiveEvent.AddListener(ArchiveListener);
             OptionController.GetInstance().ShowOption(gfuOptions);
             return roleData;
         }
-
+        void ArchiveListener(ArchiveSystem.ArchiveEventType arg0){
+            if (arg0 == ArchiveSystem.ArchiveEventType.ArchiveLoadStart){
+                gfuOptions.options.Clear();
+                gfuOptions.OnSelect = null;
+                EventCenter.GetInstance().archiveEvent.RemoveListener(ArchiveListener);
+            }
+        }
         public override void Executed(int index){
             GameSystem.Data.OptionController.HideOption();
+            EventCenter.GetInstance().archiveEvent.RemoveListener(ArchiveListener);
             base.Executed(index);
         }
     }

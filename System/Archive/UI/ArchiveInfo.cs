@@ -9,24 +9,40 @@
 //
 //======================================================================
 
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace GalForUnity.System.Archive.UI{
     public class ArchiveInfo : MonoBehaviour{
+        
+#pragma warning disable 0649
+        [SerializeField]
+        private ArchiveSlot archiveSlot;
         [SerializeField]
         private Text archiveName;
         [SerializeField]
         private Text archiveTime;
+
+        private RectTransform _rectTransform;
+        private RectTransform _imageRectTransform;
+        
+#pragma warning disable 0649
+
+        private void Awake(){
+            if(!archiveSlot) archiveSlot= ArchiveSlot.GetArchiveSlot(this);
+            if (!_imageRectTransform) _imageRectTransform = archiveSlot.archiveImage.GetComponent<RectTransform>();
+            if(!_rectTransform) _rectTransform = GetComponent<RectTransform>();
+        }
+
         void Start(){
             SetInfoPosition();
         }
 
         internal void SetInfoPosition(){
-            var archiveSlot = ArchiveSlot.GetArchiveSlot(this);
-            var anchoredPositionX = archiveSlot.archiveImage.GetComponent<RectTransform>().rect.width;
-            var rectTransform = GetComponent<RectTransform>();
-            rectTransform.anchoredPosition=new Vector2(anchoredPositionX,rectTransform.anchoredPosition.y);
+            if (!_imageRectTransform) Awake();
+            var anchoredPositionX = _imageRectTransform.rect.width;
+            _rectTransform.anchoredPosition=new Vector2(anchoredPositionX,_rectTransform.anchoredPosition.y);
         }
 
         public ArchiveInfo SetArchiveName(string str){

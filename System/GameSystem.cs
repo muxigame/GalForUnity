@@ -16,6 +16,7 @@ using GalForUnity.Graph.Windows;
 using GalForUnity.InstanceID;
 using GalForUnity.Model;
 using GalForUnity.Model.Scene;
+using GalForUnity.System.Archive;
 using GalForUnity.System.Archive.Behavior;
 using GalForUnity.System.Archive.Data;
 using GalForUnity.View;
@@ -315,7 +316,7 @@ namespace GalForUnity.System{
 				TraverseTheSubclass(calss);
 			}
 		}
-
+		//为含有可保存的组件的添加GfuInstance
 		void AutoAddGfuCompoenent(Transform transform){
 			var components = transform.GetComponents<MonoBehaviour>();
 			foreach (var component in components){
@@ -329,7 +330,7 @@ namespace GalForUnity.System{
 				if(gfuInstance)AutoParent(component.transform);
 			}
 		}
-
+		//为含有GfuInstance组件的所有父组件添加GfuInstance
 		void AutoParent(Transform transform){
 			var transformParent = transform;
 			while (transformParent.parent!=null){
@@ -338,8 +339,14 @@ namespace GalForUnity.System{
 			}
 			
 		}
+		
 #endif
 
+		//存档系统支持
+		public void Save(int index) => ArchiveSystem.GetInstance().SaveAsync(index);
+		public void Save() => ArchiveSystem.GetInstance().SaveAsync(0);
+		public void Load(int index) => ArchiveSystem.GetInstance().LoadAsync(index);
+		public void Load() => ArchiveSystem.GetInstance().LoadAsync(0);
 	}
 
 }

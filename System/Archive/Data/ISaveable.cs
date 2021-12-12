@@ -14,7 +14,9 @@ using GalForUnity.Graph;
 using GalForUnity.Graph.Data;
 
 namespace GalForUnity.System.Archive.Data{
-    public interface ISaveable:ISerializable{
+    public interface ISaveable:ISerializable,IRecoverable{
+    }
+    public interface IRecoverable{
         void Recover();
     }
     public interface INodeSaveable:ISerializable{

@@ -20,6 +20,7 @@ using GalForUnity.Graph.Operation;
 using GalForUnity.Model;
 using GalForUnity.Model.Plot;
 using GalForUnity.System;
+using GalForUnity.System.Archive;
 using GalForUnity.System.Event;
 #if UNITY_EDITOR
 using UnityEditor.UIElements;
@@ -117,7 +118,13 @@ namespace GalForUnity.Graph.GFUNode.Plot{
             RefreshExpandedState();
 #endif
         }
-
+        void ArchiveListener(ArchiveSystem.ArchiveEventType arg0){
+            if (arg0 == ArchiveSystem.ArchiveEventType.ArchiveLoadStart){
+                EventCenter.GetInstance().OnMouseDown.RemoveListener(OnMouseDown);
+                EventCenter.GetInstance().archiveEvent.RemoveListener(ArchiveListener);
+            }
+        }
+        
         public override RoleData Execute(RoleData roleData){
             InitScript(roleData);
             if (!_isExecuting){
@@ -125,6 +132,7 @@ namespace GalForUnity.Graph.GFUNode.Plot{
                 //TODO 还要写是否节点允许跳过的逻辑
                 var gfuNodes = GetInputNodes(0);
                 EventCenter.GetInstance().OnMouseDown.AddListener(OnMouseDown);
+                EventCenter.GetInstance().archiveEvent.AddListener(ArchiveListener);
                 GameSystem.Data.PlotFlowController.ExecutePoltItem(new PlotItem() {
                     name = this.name, speak = this.speak,
                 });
@@ -204,8 +212,8 @@ namespace GalForUnity.Graph.GFUNode.Plot{
                 Script.OnPlotItemExecuted();
 #pragma warning restore 612
             }
-
             _isExecuting = false;
+            EventCenter.GetInstance().archiveEvent.RemoveListener(ArchiveListener);
             EventCenter.GetInstance().OnMouseDown.RemoveListener(OnMouseDown);
             EventCenter.GetInstance().OnPlotItemExecutedEvent.Invoke();
             base.Executed();

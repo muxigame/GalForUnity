@@ -370,6 +370,7 @@ namespace GalForUnity.System{
         public readonly LanguageItem ADDALLSCENEMODEL = new LanguageItem("Add all SceneModel","添加Hierarchy中所有场景");
         public readonly LanguageItem INITIALIZEALLPLOTMODEL = new LanguageItem("Initialize all PlotModel","初始化Hierarchy中所有剧情");
         public readonly LanguageItem ADDTYPE = new LanguageItem("Add Type","添加类型");
+        public readonly LanguageItem DELETEALLARCHIVE = new LanguageItem("Delete All Archive","删除所有存档");
         public readonly LanguageItem REMOVETYPE = new LanguageItem("Remove Type","移除类型");
         public readonly LanguageItem CHANGETYPE = new LanguageItem("Change Type","选择类型");
         public readonly LanguageItem CURRENTSAVABLECONFIG = new LanguageItem("Current Savable Config", "当前可保存类型配置");

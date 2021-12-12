@@ -19,6 +19,7 @@ namespace GalForUnity.System.Archive.Data{
     public class SavableConfig : ScriptableObject{
         
         public int castDictionaryCount = 100;
+        public bool saveHierarchy = true;
         
         [SerializeField]
         public List<SerializableType> types=new List<SerializableType>();

@@ -18,6 +18,7 @@ using GalForUnity.Graph.Operation;
 using GalForUnity.Model;
 using GalForUnity.Model.Plot;
 using GalForUnity.Model.Scene;
+using GalForUnity.System.Archive;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -322,6 +323,10 @@ namespace GalForUnity.System.Event {
 		/// 当剧情操作执行完毕执行完毕时触发
 		/// </summary>
 		public UnityEvent<GfuOperation> OnOperationExecutedEvent;
+		/// <summary>
+		/// 当存档系统活动时回调
+		/// </summary>
+		public UnityEvent<ArchiveSystem.ArchiveEventType> archiveEvent;
 		
 		public float time;
 
@@ -352,6 +357,7 @@ namespace GalForUnity.System.Event {
 			// OnSpeak = (x) => { return x;};
 			// OnSpeak=new Func<string, string>();
 			OnMouseDown = new UnityEvent<Vector2>();
+			archiveEvent=new UnityEvent<ArchiveSystem.ArchiveEventType>();
 			RoleStateChangeEvent = (x)=> { };
 			SceneStateChangeEvent = new UnityAction<SceneModel>((x)=>{});
 			OnPlotWillExecuteEvent = (x,y) => false;

@@ -12,26 +12,34 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace GalForUnity.System.Archive.Data{
     /// <summary>
-    /// Savable是一个用来保存不可序列化对象的数据，Unity的内置对象大都不可序列化，如Transform,SprineRender
+    /// Savable是一个用来保存不可序列化对象的数据，Unity的内置对象大都不可序列化，如Transform,SpriteRender
     /// 其余对象不需要手动添加，一般都可以序列化
     /// </summary>
     [Serializable]
-    public class Savable {
-        
+    public abstract class Savable : IRecoverable{
+
+        [SerializeField]
+        protected string address;
         [SerializeField]
         protected List<ComponentValue> componentValues=new List<ComponentValue>();
-        
+
+        [NonSerialized]
+        internal bool Recovered = false;
         protected Savable(){ }
         
         public void AddValue(string name,Component component, object value){
             componentValues.Add(new ComponentValue(name,component,value));
         }
+
+        public abstract void Save();
         
         public virtual void Recover(){
+            Recovered = true;
             var type = GetType();
             foreach (var keyValue in componentValues){
                 if (keyValue is ComponentValue componentValue){
@@ -47,7 +55,14 @@ namespace GalForUnity.System.Archive.Data{
                 }
             }
         }
-        
+
+        public override string ToString(){
+            string str = "";
+            foreach (var componentValue in componentValues){
+                str += componentValue.ToString() + ":";
+            }
+            return str;
+        }
     }
 }
 // [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]

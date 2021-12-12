@@ -12,11 +12,20 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace GalForUnity.System.Archive{
     [Serializable]
     public class ArchiveSet :SerializeSelfable{
         
-        public static ArchiveSet Instance=new ArchiveSet();
+        private static ArchiveSet _archive;
+
+        public static ArchiveSet GetInstance(){
+            if (_archive == null){
+                return _archive = new ArchiveSet();
+            }
+
+            return _archive;
+        }
     
         [SerializeField]
         public List<ArchiveConfig> configs=new List<ArchiveConfig>();
@@ -26,15 +35,18 @@ namespace GalForUnity.System.Archive{
         /// 向内存中添加一个新存档到存档槽末尾
         /// </summary>
         /// <param name="archiveItem"></param>
-        public void AddArchive(ArchiveItem archiveItem){
-            configs.Add(new ArchiveConfig(archiveItem));
+        public ArchiveConfig AddArchive(ArchiveItem archiveItem){
+            return AddArchive(new ArchiveConfig(archiveItem));
         }
         /// <summary>
         /// 向内存中添加一个新存档到存档槽末尾
         /// </summary>
         /// <param name="archiveConfig"></param>
-        public void AddArchive(ArchiveConfig archiveConfig){
-            configs.Add(archiveConfig);
+        public ArchiveConfig AddArchive(ArchiveConfig archiveConfig){
+            if(!configs.Contains(archiveConfig))configs.Add(archiveConfig);
+            archiveConfig.Save();
+            SaveConfig(false);
+            return archiveConfig;
         }
         /// <summary>
         /// 在内存及文件中删除一个存档
@@ -51,6 +63,7 @@ namespace GalForUnity.System.Archive{
         public void DeleteArchive(int archiveIndex){
             configs[archiveIndex].Delete();
             configs.RemoveAt(archiveIndex);
+            SaveConfig(false);
         }
         /// <summary>
         /// 在内存及文件中删除一个存档
@@ -73,7 +86,7 @@ namespace GalForUnity.System.Archive{
             var archiveConfig = new ArchiveConfig(archiveItem);
             configs.Add(archiveConfig);
             archiveConfig.Save();
-            SaveConfig();
+            SaveConfig(false);
         }
         /// <summary>
         /// 向内存及文件中添加一个新存档到存档槽末尾
@@ -82,32 +95,33 @@ namespace GalForUnity.System.Archive{
         public void SaveArchive(ArchiveConfig archiveConfig){
             configs.Add(archiveConfig);
             archiveConfig.Save();
-            SaveConfig();
+            SaveConfig(false);
         }
         public void OverrideArchive(ArchiveItem oldArchiveItem,ArchiveItem newArchiveItem){
             var archiveConfig = configs.Find((config => config.ArchiveItem == oldArchiveItem));
-            var archiveConfig1 = configs[archiveConfig.ArchiveIndex] = new ArchiveConfig(newArchiveItem);//在内存中替换掉存档
-            archiveConfig.Delete();//删除就存档
+            archiveConfig.Delete(); //删除就存档
+            var archiveConfig1 = new ArchiveConfig(newArchiveItem,archiveConfig.ArchiveIndex);//在内存中替换掉存档
             archiveConfig1.Save();//保存新存档
-            SaveConfig();//保存配置
+            SaveConfig(false);//保存配置
         }
-        public void OverrideArchive(int oldArchiveItemIndex,ArchiveItem newArchiveItem){
+        public ArchiveConfig OverrideArchive(int oldArchiveItemIndex,ArchiveItem newArchiveItem){
             configs[oldArchiveItemIndex].Delete();//删除旧存档
-            configs[oldArchiveItemIndex]=new ArchiveConfig(newArchiveItem);//在内存中替换掉
-            configs[oldArchiveItemIndex].Save();//保存新存档
-            SaveConfig();
+            var archiveConfig = new ArchiveConfig(newArchiveItem,oldArchiveItemIndex);
+            archiveConfig.Save();//保存新存档
+            SaveConfig(false);
+            return configs[oldArchiveItemIndex];
         }
-        public void OverrideArchive(ArchiveConfig archiveConfig,ArchiveItem newArchiveItem){
-            var config = new ArchiveConfig(newArchiveItem);
-            configs[archiveConfig.ArchiveIndex] = config;
+        public ArchiveConfig OverrideArchive(ArchiveConfig archiveConfig,ArchiveItem newArchiveItem){
             archiveConfig.Delete();
+            var config = new ArchiveConfig(newArchiveItem,archiveConfig.ArchiveIndex);
             config.Save();
-            SaveConfig();
+            SaveConfig(false);
+            return config;
         }
 
-        public ArchiveItem this[int index]{
-            get => configs[index].ArchiveItem;
-            set => configs[index].ArchiveItem = value;
+        public ArchiveConfig this[int index]{
+            get => configs[index];
+            set => configs[index] = value;
         }
         
         public ArchiveItem GetArchive(int index){
@@ -126,18 +140,38 @@ namespace GalForUnity.System.Archive{
         public void Clear(){
             configs.Clear();
         }
-        public void SaveAll(){
-            configs.ForEach(config => config.Save());
-            SaveConfig();
-        }
-
-        public void SaveConfig() => base.Save(ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
         
-        public void LoadAll(){
-            base.Load( ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
-            configs.ForEach(config => config.Load());
+
+        public void SaveConfig(bool includeAllArchive = true){
+            if (includeAllArchive) Save(ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
+            else base.Save(ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
         }
 
-        public void LoadConfig() => base.Load( ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
+        public override void Save(string fileName){
+            base.Save(fileName);
+            configs.ForEach(config => config.Save());
+        }
+        
+        public void LoadConfig(bool includeAllArchive = true){
+            if (includeAllArchive) Load(ArchiveEnvironmentConfig.GetInstance().ConfigsFile); 
+            else base.Load(ArchiveEnvironmentConfig.GetInstance().ConfigsFile);
+        }
+        
+        public override void Load(string str){
+            ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ConfigReadStart);
+            var archiveConfigs = configs.ToArray();
+            base.Load(str);
+            for (var i = 0; i < configs.Count; i++){
+                if(i>=archiveConfigs.Length) configs[i].ArchiveItem = new ArchiveItem(configs[i]);
+                else if (configs[i].ArchiveFileName == archiveConfigs[i].ArchiveFileName){ //如果当前项没有更新的话，复制内存中的副本，否则初始化存档项从本地加载
+                    if(configs[i].ArchiveTime == archiveConfigs[i].ArchiveTime && archiveConfigs[i].ArchiveImage) configs[i].ArchiveItem=archiveConfigs[i].ArchiveItem; 
+                    else configs[i].ArchiveItem = new ArchiveItem(configs[i]);
+                }
+            }
+            // configs.ForEach(config => {
+            //     if(!config.ArchiveItem.Texture2D) config.ArchiveItem = new ArchiveItem(config);
+            // });
+            ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ConfigReadOver); //完成刷新后发送回调数据
+        }
     }
 }

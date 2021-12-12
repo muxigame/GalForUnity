@@ -9,6 +9,7 @@
 //
 //======================================================================
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +21,9 @@ namespace GalForUnity.System{
             Pools.Add(gameObject.name,this);
         }
         public GameObject obj;
+        [NonSerialized]
         public Stack<GameObject> readyGameObjects=new Stack<GameObject>();
+        [NonSerialized]
         public List<GameObject> playingGameObjects=new List<GameObject>();
 
         public GameObject Get(UnityEngine.Transform otherTransform,bool rotation=true,bool scale=true){

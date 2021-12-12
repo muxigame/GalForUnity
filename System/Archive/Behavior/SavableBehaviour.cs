@@ -9,6 +9,7 @@
 //
 //======================================================================
 
+using System;
 using GalForUnity.System.Address.Addresser;
 using GalForUnity.System.Archive.Data;
 using UnityEngine;
@@ -17,11 +18,17 @@ namespace GalForUnity.System.Archive.Behavior{
     /// <summary>
     /// SavableBehaviour继承自MonoBehaviour，提供可运行时保存数据的能力
     /// </summary>
+    [Serializable]
     public abstract class SavableBehaviour : MonoBehaviour{
         [SerializeField]
         [HideInInspector]
-        protected Savable savableData;
+        // protected Savable savableData;
         public virtual void GetObjectData(ScriptData scriptData){
+            var fieldInfos = GetType().GetFields<Savable>();
+            foreach (var fieldInfo in fieldInfos){
+                var value = (Savable)fieldInfo.GetValue(this);
+                value.Save();
+            }
             scriptData.json = JsonUtility.ToJson(this);
             scriptData.ObjectAddressExpression = InstanceIDAddresser.GetInstance().Parse(this);
             scriptData.activeSelf = enabled;

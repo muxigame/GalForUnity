@@ -80,7 +80,7 @@ namespace GalForUnity.System.Address{
         private string GameObjectPath(GameObject gameObject){
             string path = "";
             var gameObjectTransform = gameObject.transform;
-            while (gameObjectTransform.parent !=null){
+            while (gameObjectTransform.parent){
                 var parent = gameObjectTransform.parent;
                 path = parent.name + "/" + path;
                 gameObjectTransform = parent;
