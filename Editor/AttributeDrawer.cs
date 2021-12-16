@@ -23,8 +23,10 @@ using Object = UnityEngine.Object;
 namespace GalForUnity.Editor{
 	
 	public class ButtonEditor : BaseEditor {
-		protected void DrawButton<T>(string text,Action<T> action) where T:Object{
+		public override void OnInspectorGUI(){
 			DrawDefaultInspector();
+		}
+		protected void DrawButton<T>(string text,Action<T> action) where T:Object{
 			GUILayout.Space(5);
 			GUILayout.BeginHorizontal();
 			GUILayout.Space(EditorGUIUtility.currentViewWidth /4f -20);
@@ -36,6 +38,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(PlotFlowController))]
 		public class PlotFlowControllerEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
+				base.OnInspectorGUI();
 				DrawButton<PlotFlowController>(GfuLanguage.GfuLanguageInstance.INITIALIZEALLPLOTMODEL.Value,(x)=>{
 					x.InitialPlowFlowController();
 				});
@@ -44,6 +47,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(SceneController))]
 		public class SceneControllerEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
+				base.OnInspectorGUI();
 				DrawButton<SceneController>(GfuLanguage.GfuLanguageInstance.ADDALLSCENEMODEL.Value,(x)=>{			
 					x.InitialSceneController();
 				});
@@ -52,6 +56,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(ShowPlotView))]
 		public class ShowPlotViewEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
+				base.OnInspectorGUI();
 				DrawButton<ShowPlotView>(GfuLanguage.GfuLanguageInstance.INITIALIZEGAMEVIEW.Value,(x)=>{
 					x.InitialView();
 				});
@@ -60,6 +65,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(RoleController))]
 		public class RoleControllerEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
+				base.OnInspectorGUI();
 				DrawButton<RoleController>(GfuLanguage.GfuLanguageInstance.INITIALIZEHIERARCHY.Value,(x)=>{
 					x.InitialRoleController();
 				});
@@ -68,6 +74,7 @@ namespace GalForUnity.Editor{
 		[CustomEditor(typeof(GameSystem))]
 		public class GameSystemEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
+				base.OnInspectorGUI();
 				DrawButton<GameSystem>(GfuLanguage.GfuLanguageInstance.INITIALIZETHEGAMESYSTEM.Value,(x)=>{	
 					if (EditorUtility.DisplayDialog(GfuLanguage.GfuLanguageInstance.HINT.Value,
 						GfuLanguage.GfuLanguageInstance.INITIALIZEAOTHER.Value,GfuLanguage.GfuLanguageInstance.YES.Value,

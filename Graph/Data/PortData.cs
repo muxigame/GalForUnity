@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalForUnity.External;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.System;
 #if UNITY_EDITOR

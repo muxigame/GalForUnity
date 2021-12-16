@@ -16,6 +16,7 @@ using UnityEditor.SceneManagement;
 #endif
 using System;
 using System.Collections.Generic;
+using GalForUnity.External;
 using GalForUnity.Graph.Data;
 using GalForUnity.System;
 using UnityEngine;

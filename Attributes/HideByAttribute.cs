@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using GalForUnity.External;
 using GalForUnity.System;
 #if UNITY_EDITOR
 using UnityEditor;

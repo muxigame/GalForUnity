@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using GalForUnity.External;
 using GalForUnity.System;
 #if UNITY_EDITOR
 using System.Collections.Generic;

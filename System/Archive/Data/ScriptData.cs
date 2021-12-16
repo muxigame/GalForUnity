@@ -13,6 +13,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using GalForUnity.External;
 using GalForUnity.InstanceID;
 using GalForUnity.System.Address;
 using GalForUnity.System.Address.Addresser;

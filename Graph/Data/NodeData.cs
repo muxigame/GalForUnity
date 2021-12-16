@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using GalForUnity.External;
 using GalForUnity.Graph.GFUNode.Base;
 using GalForUnity.InstanceID;
 using GalForUnity.System;

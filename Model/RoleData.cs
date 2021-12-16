@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using GalForUnity.External;
 using GalForUnity.InstanceID;
 // #if UNITY_EDITOR
 // using System.Reflection;

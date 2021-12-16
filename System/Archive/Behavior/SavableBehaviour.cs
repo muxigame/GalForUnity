@@ -10,6 +10,7 @@
 //======================================================================
 
 using System;
+using GalForUnity.External;
 using GalForUnity.System.Address.Addresser;
 using GalForUnity.System.Archive.Data;
 using UnityEngine;
