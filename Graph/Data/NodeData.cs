@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using GalForUnity.Graph.GFUNode.Base;
+using GalForUnity.InstanceID;
 using GalForUnity.System;
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
@@ -64,7 +65,7 @@ namespace GalForUnity.Graph.Data{
         /// <param name="node">VisualElement节点</param>
         /// <returns>解析得到的纯节点数据</returns>
         public NodeData Parse(GfuNode node){
-            instanceID =instanceID==0? BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0):instanceID; //保存节点的InstanceID此ID供节点系统查找唯一节点
+            instanceID  = instanceID ==0? BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0):instanceID; //保存节点的InstanceID此ID供节点系统查找唯一节点
             jsonField = new List<NodeFieldInfo>();
             idField = new List<NodeFieldInfo>();
             listField = new List<ListData>();

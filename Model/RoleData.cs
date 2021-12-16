@@ -12,12 +12,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalForUnity.InstanceID;
 // #if UNITY_EDITOR
 // using System.Reflection;
 // using System.Reflection.Emit;
 // #endif
 using GalForUnity.System;
+using GalForUnity.System.Archive.Attributes;
+using GalForUnity.System.Archive.Behavior;
 using GalForUnity.System.Event;
 using UnityEngine;
 
@@ -26,28 +29,13 @@ namespace GalForUnity.Model{
     /// 角色数据，角色数据存放的类，保存着玩家定义的角色数据
     /// </summary>
     [RequireComponent(typeof(GfuInstance))]
-    public class RoleData : MonoBehaviour, IEnumerable<RoleData.RoleDataItem>{
-        /// <summary>
-        /// 某一项角色数据
-        /// </summary>
-        [Serializable]
-        public class RoleDataItem : ICloneable {
-            public RoleDataItem(string name,int otherValue,int index){
-                this.name = name;
-                value = otherValue;
-                this.index = index;
-            }
-            [SerializeField] public string name;
-            [SerializeField] public int value;
-            public int index;
+    [Serializable]
+    public class RoleData : SavableBehaviour, IEnumerable<RoleDataItem>{
 
-            public object Clone(){
-                return new RoleDataItem(name,value,index);
-            }
-        }
-        
-
-        [SerializeField] public List<RoleDataItem> dataArray;
+        [SerializeField] 
+        [SaveFlag]
+        public List<RoleDataItem> dataArray;
+        [NonSerialized]
         private readonly Dictionary<string,RoleDataItem> _dataMap = new Dictionary<string, RoleDataItem>();
 
         public RoleData Data{
@@ -319,7 +307,14 @@ namespace GalForUnity.Model{
 
             }
         }
-        
+
+        public override void GetObjectData(){
+            
+        }
+
+        public override void Recover(){
+            
+        }
 // #if UNITY_EDITOR
 //         static AssemblyBuilder myAssemblyBuilder;
 //         static ModuleBuilder myModuleBuilder;
@@ -346,6 +341,7 @@ namespace GalForUnity.Model{
 //             return @enum;
 //         }
 // #endif
+        
     }
 
 }

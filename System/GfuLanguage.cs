@@ -268,6 +268,27 @@ namespace GalForUnity.System{
         public readonly LanguageItem MAINNODE = new LanguageItem("Main Node","主节点");
         
         
+        public readonly LanguageItem SCROLLRECT = new LanguageItem("Scroll Rect","滚动矩形");
+        public readonly LanguageItem ARCHIVESLOT = new LanguageItem("Archive Slot","存档槽");
+        public readonly LanguageItem RENDERCAMERA = new LanguageItem("Render Camera","渲染相机");
+        public readonly LanguageItem ARCHIVESET = new LanguageItem("Archive Set","存档集");
+        public readonly LanguageItem ARCHIVEENVIRONMENTCONFIG = new LanguageItem("Archive Environment Config","存档环境配置");
+        public readonly LanguageItem ARCHIVEALGORITHM = new LanguageItem("Archive Algorithm","存档算法");
+        public readonly LanguageItem SAVEHIERARCHY = new LanguageItem("Save Hierarchy","保存层级");
+        public readonly LanguageItem SAVEDATA = new LanguageItem("Save Data","保存数据");
+        public readonly LanguageItem ARCHIVESUFFIX = new LanguageItem("Archive Suffix","存档后缀");
+        public readonly LanguageItem PHOTOSUFFIX = new LanguageItem("Photo Suffix","图片后缀");
+        public readonly LanguageItem ARCHIVEDEFAULTNAME = new LanguageItem("Archive Default Name","默认存档名");
+        public readonly LanguageItem PHOTOQUALITY = new LanguageItem("Photo Quality","图片质量");
+        public readonly LanguageItem CONFIGSFILENAME = new LanguageItem("Configs File Name","配置文件名");
+        public readonly LanguageItem CONFIGSSUFFIX = new LanguageItem("Configs Suffix","配置后缀");
+        public readonly LanguageItem ARCHIVESYSTEMTHREADNAME = new LanguageItem("Archive System Thread Name","存档系统线程名");
+        public readonly LanguageItem ARCHIVESYSTEMTHREADWAITINGTIME = new LanguageItem("Archive System Thread Waiting Time","存档线程等待间隔(毫秒)");
+        public readonly LanguageItem ARCHIVESYSTEMTHREADWAITINGMAXSECOND = new LanguageItem("Archive System Thread Waiting Max(Second)","存档线程等待时长(秒)");
+        public readonly LanguageItem REFLECTIONSERIALIZATION = new LanguageItem("Reflection Serialization","反射序列化");
+        public readonly LanguageItem UNITYJSON = new LanguageItem("Unity Json","Unity 对象简谱");
+        public readonly LanguageItem CONFIGS = new LanguageItem("configs","配置");
+
         public readonly LanguageItem NAMEVIEW = new LanguageItem("Name View","姓名视图容器");
         public readonly LanguageItem SPEAKVIEW = new LanguageItem("Speak View","说话视图容器");
         public readonly LanguageItem NAME = new LanguageItem("Name","姓名");
@@ -319,6 +340,9 @@ namespace GalForUnity.System{
         public readonly LanguageItem SMOOTHDELTATIME = new LanguageItem("Smooth Delta Time","平滑增量时间");
         public readonly LanguageItem FLOAT = new LanguageItem("Float","浮点数");
         public readonly LanguageItem SCENE = new LanguageItem("Scene","场景");
+        public readonly LanguageItem LOW = new LanguageItem("Low","低");
+        public readonly LanguageItem MIDDLE = new LanguageItem("Middle","中");
+        public readonly LanguageItem HIGH = new LanguageItem("High","高");
         public readonly LanguageItem BOOLEANNODE = new LanguageItem("Boolean Node","布尔节点");
         public readonly LanguageItem POWERNODE = new LanguageItem("Power Node","幂指节点");
         public readonly LanguageItem SQUAREROOTNODE  = new LanguageItem("Square Root Node","平方根节点");

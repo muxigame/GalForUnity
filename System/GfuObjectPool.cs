@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace GalForUnity.System{
@@ -18,12 +19,13 @@ namespace GalForUnity.System{
         public static readonly Dictionary<string,GfuObjectPool> Pools=new Dictionary<string, GfuObjectPool>();
 
         private void Awake(){
+            if (Pools.ContainsKey(gameObject.name)) Pools.Remove(gameObject.name);
             Pools.Add(gameObject.name,this);
         }
         public GameObject obj;
-        [NonSerialized]
+        // [NonSerialized]
         public Stack<GameObject> readyGameObjects=new Stack<GameObject>();
-        [NonSerialized]
+        // [NonSerialized]
         public List<GameObject> playingGameObjects=new List<GameObject>();
 
         public GameObject Get(UnityEngine.Transform otherTransform,bool rotation=true,bool scale=true){

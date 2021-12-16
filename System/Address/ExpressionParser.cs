@@ -19,6 +19,7 @@ namespace GalForUnity.System.Address{
     public class ExpressionParser{
         
         public ExpressionParser(string expression){
+            // Debug.Log(expression);
             if(!AddressableExpression.IsAddress.IsMatch(expression)) throw new ArgumentException("这不是一个地址表达式");
             _expression = AddressableExpression.getExpression.Match(expression).Value;
             var strings = _expression.Split(':');

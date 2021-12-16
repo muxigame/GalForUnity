@@ -92,8 +92,14 @@ namespace GalForUnity.System{
 		/// </summary>
 		public static SystemData Data{
 			get{
+				
+				
 				if (_systemData == null){
-					_systemData = new SystemData();
+					if (GameObject.FindObjectOfType<GameSystem>()?.systemData != null){
+						_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
+					} else{
+						_systemData = new SystemData();
+					}
 				}
 
 				return _systemData;
@@ -305,6 +311,9 @@ namespace GalForUnity.System{
 		}
 
 		//TODO 恢复内存中的图
+		public override void GetObjectData(){
+			
+		}
 		public override void Recover(){
 			
 		}

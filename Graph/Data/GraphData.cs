@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using GalForUnity.Graph.GFUNode.Base;
+using GalForUnity.InstanceID;
 #if UNITY_EDITOR
 using GalForUnity.System;
 using UnityEditor;
@@ -26,10 +27,9 @@ namespace GalForUnity.Graph.Data{
     /// 关于数据保存的方法，如果有更好的建议欢迎通过https://github.com/muxigame/GalForUnity提交。
     /// </summary>
     [Serializable]
-    public class GraphData : ScriptableObject{
+    public class GraphData : GfuInstanceID{
         public List<NodeData> Nodes;
         public float scale;
-        public long instanceID = 0;
         public bool isPlay = false;
         [NonSerialized] private Dictionary<GfuNode, NodeData> _dictionary = new Dictionary<GfuNode, NodeData>();
 #if UNITY_EDITOR
@@ -44,7 +44,7 @@ namespace GalForUnity.Graph.Data{
         public virtual GraphData Parse(List<Node> nodes, float graphScale, long instanceID){
             try{
                 this.scale = graphScale;
-                this.instanceID = instanceID == 0 ? BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0) : instanceID;
+                this.InstanceID = instanceID == 0 ? BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0) : instanceID;
                 Nodes = new List<NodeData>();
                 _dictionary = new Dictionary<GfuNode, NodeData>();
                 if (nodes == null || nodes.Count == 0) return this;

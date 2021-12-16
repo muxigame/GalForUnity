@@ -10,6 +10,7 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
+using GalForUnity.Attributes;
 using UnityEngine;
 
 
@@ -28,6 +29,7 @@ namespace GalForUnity.System.Archive{
         }
     
         [SerializeField]
+        [Rename(nameof(configs))]
         public List<ArchiveConfig> configs=new List<ArchiveConfig>();
 
         public int Count => configs.Count;

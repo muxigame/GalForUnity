@@ -67,14 +67,14 @@ namespace GalForUnity.Graph{
             GfuGraph gfuGraph=null;
             if (graphCallChain != null){
                 var info = graphCallChain.Pop();
-                Init((GraphData) info.callerGraphData);
+                Init((GraphData) info.CallerGraphData);
                 gfuGraph = this;
                 while (graphCallChain.Next(out CallInfo callInfo)){
                     Debug.Log(callInfo);
                     GfuGraph graph=null;
-                    if(callInfo.callerGraphData is PlotItemGraphData plotItemGraphData) graph = new PlotItemGraph(plotItemGraphData);
-                    if(callInfo.callerGraphData is PlotFlowGraphData plotFlowGraphData) graph = new PlotFlowGraph(plotFlowGraphData);
-                    var gfuNode = graph.GetNode((NodeData) callInfo.callerNodeData);
+                    if(callInfo.CallerGraphData is PlotItemGraphData plotItemGraphData) graph = new PlotItemGraph(plotItemGraphData);
+                    if(callInfo.CallerGraphData is PlotFlowGraphData plotFlowGraphData) graph = new PlotFlowGraph(plotFlowGraphData);
+                    var gfuNode = graph.GetNode((NodeData) callInfo.CallerNodeData);
                     graph._currentNode = gfuNode;
                     if (graph._currentNode is PlotGraphNode plotGraphNode){
                         plotGraphNode.Recover(gfuGraph);//恢复保存的数据
@@ -83,7 +83,7 @@ namespace GalForUnity.Graph{
                     gfuNode.OnExecuted = graph.Execute;//添加节点执行完毕后的回调
                     gfuGraph = graph;//保存当前数据进行下次迭代
                 }
-                Execute((NodeData) info.callerNodeData);//运行当前节点
+                Execute((NodeData) info.CallerNodeData);//运行当前节点
             }else{
                 Debug.LogError("graphCallChain is"+graphCallChain);
             }
@@ -124,7 +124,7 @@ namespace GalForUnity.Graph{
 
         private CallInfo GetCallInfo(){
             return new CallInfo() {
-                callerGraphData = graphData, callerNodeData = _currentNode.nodeData
+                CallerGraphData = graphData, CallerNodeData = _currentNode.nodeData
             };
         }
         

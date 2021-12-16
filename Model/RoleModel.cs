@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using GalForUnity.Attributes;
 using GalForUnity.InstanceID;
+using GalForUnity.System.Archive.Attributes;
 using GalForUnity.System.Archive.Behavior;
 using GalForUnity.System.Archive.Data;
 using GalForUnity.System.Archive.Data.Savables;
@@ -38,6 +39,7 @@ namespace GalForUnity.Model {
 		
 		//姓名 
 		[Rename(nameof(name))]
+		[SaveFlag]
 		[SerializeField]
 		private new string name = "";
 
@@ -47,9 +49,17 @@ namespace GalForUnity.Model {
 		[SerializeField]
 		private Sprite roleSpriteMap;
 		
+		public Color Color{
+			get => color;
+			set => SetColor(color = _serializableColor = value);
+		}
+		
 		[SerializeField]
 		[Rename(nameof(color))]
 		private Color color=new Color();
+		
+		[SaveFlag]
+		private SerializableVector _serializableColor;
 
 		public Sprite RoleSpriteMap{
 			get => roleSpriteMap;
@@ -81,23 +91,20 @@ namespace GalForUnity.Model {
 			spriteRenderer.color = color;
 			_spriteRenderer = spriteRenderer;
 		}
-
-		private void Awake(){
-			Debug.Log("Awake");
-		}
-
+		
 		/// <summary>
 		///角色的数值
 		/// </summary>
 		[Rename(nameof(roleData))]
+		[NonSerialized]
 		public RoleData roleData;
 
 		
-		public RoleData Parse(List<RoleData.RoleDataItem> roleDataItems){
+		public RoleData Parse(List<RoleDataItem> roleDataItems){
 			return roleData.Parse(roleDataItems);
 		}
 
-		public RoleModel Add(List<RoleData.RoleDataItem> roleDataItems){
+		public RoleModel Add(List<RoleDataItem> roleDataItems){
 			roleData=Parse(roleDataItems);
 			return this;
 		}
@@ -106,14 +113,14 @@ namespace GalForUnity.Model {
 			return this;
 		}
 		
-		public static List<RoleData.RoleDataItem> operator +(RoleModel roleModel1, RoleModel roleModel){
+		public static List<RoleDataItem> operator +(RoleModel roleModel1, RoleModel roleModel){
 			// var roleModel1RoleData = roleModel.roleData + roleModel1.roleData;
 			return roleModel.roleData + roleModel1.roleData;
 		}
 
 		public void HighLight(bool isHighLight){
 			if(gameObject.activeSelf)
-				Color(isHighLight?HighLightColor:UnHighLightColor);
+				SetColor(isHighLight?HighLightColor:UnHighLightColor);
 		}
 		
 		public void Opacity(float opacity){
@@ -167,7 +174,8 @@ namespace GalForUnity.Model {
 			localAnimation.Play();
 		}
 		
-		public void Color(Color otherColor){
+		private void SetColor(Color otherColor){
+			Debug.Log(color);
 #if LIVE2D
 			var renderController = gameObject.GetComponent<CubismRenderController>();
 			if (renderController){
@@ -178,8 +186,14 @@ namespace GalForUnity.Model {
 			}
 #endif
 			Material material=null;
-			if (gameObject.TryGetComponent(out MeshRenderer meshRenderer)) material = meshRenderer.material;
-			if(!material&&gameObject.TryGetComponent(out SpriteRenderer spriteRenderer)) material = spriteRenderer.material;
+			if (gameObject.TryGetComponent(out MeshRenderer meshRenderer)){
+				material = meshRenderer.material;
+			}
+
+			if (!material && gameObject.TryGetComponent(out SpriteRenderer spriteRenderer)){
+				material = spriteRenderer.material;
+				spriteRenderer.color = otherColor;
+			}
 			if (!(material is null)){
 				material.color = otherColor;
 			}
@@ -189,9 +203,15 @@ namespace GalForUnity.Model {
 			SavableSpriteRender = new SavableSpriteRender(_spriteRenderer);
 			base.GetObjectData(scriptData);
 		}
+		
+		public override void GetObjectData(){
+			base.GetObjectData();
+			_serializableColor = color;
+		}
 
 		public override void Recover(){
 			base.Recover();
+			Color = _serializableColor;
 		}
 	}
 }

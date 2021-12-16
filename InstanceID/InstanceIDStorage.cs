@@ -43,9 +43,13 @@ namespace GalForUnity.InstanceID{
         }
 
         public void Add(long instanceID, string path){
-            infos.Add(new IDStorageInfo() {
-                instanceID = instanceID, path = path
-            });
+            if(!path.Contains("Resource"))
+                Debug.LogError(GfuLanguage.ParseLog("This Resource object is not saved in the Resource directory and may not be loaded in the game:") +path);
+            if(!HasInstanceID(instanceID))
+                infos.Add(new IDStorageInfo() {
+                    instanceID = instanceID, path = path
+                });
+            else Debug.LogError("InstanceID重复");
         }
 
         public void Remove(long instanceID){ infos.RemoveAll((x) => x.instanceID == instanceID); }

@@ -9,13 +9,17 @@
 //
 //======================================================================
 
+using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-using UnityEngine;
+using System.Runtime.Serialization.Json;
 
 namespace GalForUnity.System.Archive{
+    [Serializable]
     public class SerializeSelfable{
         public virtual void Save(string fileName){
+            
             BinaryFormatter binaryFormatter=new BinaryFormatter();
             // binaryFormatter.Serialize();
             FileStream fileStream = null;
@@ -23,7 +27,8 @@ namespace GalForUnity.System.Archive{
                 fileStream = File.Create(fileName);
             }
             fileStream = fileStream??File.OpenWrite(fileName);
-            binaryFormatter.Serialize(fileStream,JsonUtility.ToJson(this));
+            // JsonUtility.ToJson(this)
+            binaryFormatter.Serialize(fileStream,this);
             fileStream.Close();
         }
 
@@ -31,8 +36,14 @@ namespace GalForUnity.System.Archive{
             BinaryFormatter binaryFormatter=new BinaryFormatter();
             if (File.Exists(fileName)){
                 FileStream fileStream = File.OpenRead(fileName);
-                var deserialize = (string) binaryFormatter.Deserialize(fileStream);
-                JsonUtility.FromJsonOverwrite(deserialize,this);
+                var deserialize = binaryFormatter.Deserialize(fileStream);
+                var bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+                var fieldInfos = this.GetType().GetFields(bindingFlags);
+                var type = deserialize.GetType();
+                foreach (var fieldInfo in fieldInfos){
+                    fieldInfo.SetValue(this,type.GetField(fieldInfo.Name,bindingFlags)?.GetValue(deserialize));
+                }
+                // JsonUtility.FromJsonOverwrite(deserialize,this);
                 fileStream.Close();
             }
         }

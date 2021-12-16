@@ -103,7 +103,6 @@ namespace GalForUnity.System.Archive.Data{
             if (InstanceIDAddresser.GetInstance().Get(ObjectAddressExpression, out var obj)){
                 if (obj is SavableBehaviour savableBehaviour){
                     savableBehaviour.Recover(this);
-                    savableBehaviour.Recover();
                 } else{
                     if (obj is MonoBehaviour monoBehaviour){
                         JsonUtility.FromJsonOverwrite(json,obj);
@@ -120,7 +119,6 @@ namespace GalForUnity.System.Archive.Data{
                 var fields = obj.GetType().GetFields<Savable>();
                 foreach (var fieldInfo in fields){
                     Savable savable=(Savable)fieldInfo.GetValue(obj);
-                    if(!savable.Recovered) savable.Recover();
                 }
             } else{
                 //如果没有查找到这个组件或者对象,代表这个对象存档前有这个组件，但是现在没有这个组件，重新构建表达式创建这个组件

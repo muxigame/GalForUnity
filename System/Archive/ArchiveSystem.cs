@@ -11,6 +11,7 @@
 
 using System;
 using System.Threading;
+using GalForUnity.Attributes;
 using GalForUnity.System.Archive.UI;
 using GalForUnity.System.Event;
 using UnityEngine;
@@ -22,14 +23,19 @@ namespace GalForUnity.System.Archive{
     // [CreateAssetMenu(fileName = "Archive",menuName = "GalForUnity/Archive")]
     public class ArchiveSystem : GfuMonoInstanceManager<ArchiveSystem>{
 
+        [Rename(nameof(scrollRect))]
         public ScrollRect scrollRect;
+        [Rename(nameof(archiveSlot))]
         public ArchiveSlot archiveSlot;
+        [Rename(nameof(renderCamera))]
         public Camera renderCamera;
         [SerializeField]
+        [Rename(nameof(archiveSet))]
         private ArchiveSet archiveSet;
         public ArchiveSet ArchiveSet=>archiveSet;
         [SerializeField]
-        public ArchiveEnvironmentConfig archiveEnvironmentConfig;
+        [Rename(nameof(archiveEnvironmentConfig))]
+        public ArchiveEnvironmentConfig archiveEnvironmentConfig=ArchiveEnvironmentConfig.GetInstance();
         // public ArchiveSet ArchiveSet=>ArchiveSet.Instance;
 
         public UnityEvent<ArchiveEventType> archiveEvent=new UnityEvent<ArchiveEventType>();
@@ -56,7 +62,7 @@ namespace GalForUnity.System.Archive{
 
         private void Awake(){
             archiveSet = ArchiveSet.GetInstance();
-            archiveEnvironmentConfig=ArchiveEnvironmentConfig.GetInstance();
+            // archiveEnvironmentConfig=ArchiveEnvironmentConfig.GetInstance();
             var archiveDirectory = archiveEnvironmentConfig.ArchiveDirectory;
             if (ArchiveSystem.GetInstance() != this){
                 var obj= gameObject; //直接在Mono代理里面写Destroy(gameObject);是不可行的，因为访问不到，组件被销毁的话是不能通过组件访问游戏对象的
@@ -75,6 +81,10 @@ namespace GalForUnity.System.Archive{
         public int ArchiveCount => archiveSet.Count;
 
 
+        /// <summary>
+        /// 实例化存档槽的NGUI，并且调用其ArchiveSlot.Init()方法
+        /// </summary>
+        /// <param name="archiveConfig"></param>
         public void AddArchiveSlotUI(ArchiveConfig archiveConfig){
             var newArchiveSlot = GameObject.Instantiate(archiveSlot, scrollRect.content, false);
             newArchiveSlot.Init(archiveConfig);
@@ -283,16 +293,18 @@ namespace GalForUnity.System.Archive{
         }
 
         /// <summary>
-        /// 刷新存档槽的显示
+        /// 刷新存档槽的显示,如果存档槽不存在则不会执行
         /// </summary>
         public void RefreshAll(){
-            for (int i = scrollRect.content.childCount - 1; i >= 0; i--){
-                Destroy(scrollRect.content.GetChild(i).gameObject);
+            if (scrollRect){
+                for (int i = scrollRect.content.childCount - 1; i >= 0; i--){
+                    Destroy(scrollRect.content.GetChild(i).gameObject);
+                }
+                for (var i = 0; i < archiveSet.Count; i++){
+                    AddArchiveSlotUI(archiveSet[i]);
+                }
+                archiveEvent?.Invoke(ArchiveEventType.RefreshOver); //完成刷新后发送回调数据
             }
-            for (var i = 0; i < archiveSet.Count; i++){
-                AddArchiveSlotUI(archiveSet[i]);
-            }
-            archiveEvent?.Invoke(ArchiveEventType.RefreshOver);//完成刷新后发送回调数据
         }
         
         /// <summary>

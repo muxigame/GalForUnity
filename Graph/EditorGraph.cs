@@ -427,13 +427,13 @@ namespace GalForUnity.Graph{
             if (graphData == null) throw new ArgumentException("A graph type that is not allowed!");
             // graphData.Nodes = listNode;
             if (!this.graphData || !AssetDatabase.Contains(this.graphData)){
-                graphData.Parse(listNode, scale, graphData.instanceID);
+                graphData.Parse(listNode, scale, graphData.InstanceID);
                 AssetDatabase.CreateAsset(graphData, path);
                 graphData.Save(path);
                 AssetDatabase.ImportAsset(path);
             } else{
                 this.graphData.Delete(path);
-                this.graphData.Parse(listNode, scale, this.graphData.instanceID);
+                this.graphData.Parse(listNode, scale, this.graphData.InstanceID);
                 this.graphData.Save(path);
                 AssetDatabase.Refresh();
             }

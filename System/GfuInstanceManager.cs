@@ -44,7 +44,7 @@ namespace GalForUnity.System{
 
 #region IDisposable Support
 
-        public bool disposedValue = false; // 要检测冗余调用
+        protected bool disposedValue = false; // 要检测冗余调用
 
         protected virtual void Dispose(bool disposing){ }
 

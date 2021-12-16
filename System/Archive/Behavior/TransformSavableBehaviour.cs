@@ -12,7 +12,9 @@
 
 using System;
 using GalForUnity.System.Address.Addresser;
+using GalForUnity.System.Archive.Attributes;
 using GalForUnity.System.Archive.Data;
+using GalForUnity.System.Archive.Data.Savables;
 using UnityEngine;
 
 namespace GalForUnity.System.Archive.Behavior{
@@ -21,20 +23,25 @@ namespace GalForUnity.System.Archive.Behavior{
     /// </summary>
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class TransformSavableBehaviour:SavableBehaviour{
-        public GfuTransformData gfuTransformData;
+
+        [SaveFlag]
+        [SerializeField]
+        [HideInInspector]
+        private GfuTransformData gfuTransformData;
         
         [Serializable]
         public class GfuTransformData:Savable{
             public GfuTransformData(Transform transform){
                 _transform = transform;
             }
+            [NonSerialized]
             private Transform _transform;
             [SerializeField]
-            private Vector3 position;
+            private SerializableVector position;
             [SerializeField]
-            private Vector3 rotate;
+            private SerializableVector rotate;
             [SerializeField]
-            private Vector3 scale;
+            private SerializableVector scale;
 
             public override void Save(){
                 address = InstanceIDAddresser.GetInstance().Parse(_transform);
@@ -45,18 +52,19 @@ namespace GalForUnity.System.Archive.Behavior{
 
             public override void Recover(){
                 base.Recover();
-                if (InstanceIDAddresser.GetInstance().Get(address,out object obj)){
-                    _transform = (Transform) obj;
-                    _transform.position = position;
-                    _transform.eulerAngles = rotate;
-                    _transform.localScale = scale;
+                if (!string.IsNullOrEmpty(address)){
+                    if (InstanceIDAddresser.GetInstance().Get(address,out object obj)){
+                        _transform = (Transform) obj;
+                        _transform.position = position;
+                        _transform.eulerAngles = rotate;
+                        _transform.localScale = scale;
+                    }
                 }
             }
         }
 
-        public override void GetObjectData(ScriptData scriptData){
-            gfuTransformData=new GfuTransformData(transform);//在父类序列化自身之前保存transform中的数据
-            base.GetObjectData(scriptData);
+        public override void GetObjectData(){
+            gfuTransformData=new GfuTransformData(transform); //在父类序列化自身之前保存transform中的数据
         }
 
         public override void Recover(){

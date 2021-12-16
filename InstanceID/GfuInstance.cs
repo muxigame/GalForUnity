@@ -57,14 +57,15 @@ namespace GalForUnity.InstanceID{
             if (MemoryInstanceID != -1){
                 instanceID = MemoryInstanceID;
             }
-
-            if (InstanceID < 0 && GameSystem.GetInstance().currentInstanceIDStorage.HasInstanceID(instanceID) && _instanceID == 0){ //如果硬盘中中存在相同ID，而且自身ID是负的说明这是预制体的拷贝
-                if (MemoryInstanceID == -1){
-                    if (transform.GetComponentInChildren<SafeInstanceID>().name == "" + instanceID){
-                        MemoryInstanceID = instanceID = Init();
+            if(GameSystem.GetInstance().currentInstanceIDStorage)
+                
+                if (InstanceID < 0 && GameSystem.GetInstance().currentInstanceIDStorage.HasInstanceID(instanceID) && _instanceID == 0){ //如果硬盘中中存在相同ID，而且自身ID是负的说明这是预制体的拷贝
+                    if (MemoryInstanceID == -1){
+                        if (transform.GetComponentInChildren<SafeInstanceID>().name == "" + instanceID){
+                            MemoryInstanceID = instanceID = Init();
+                        }
                     }
                 }
-            }
 
             if (_instanceID == 0 && MemoryInstanceID == -1 && GfuInstances.ContainsKey(instanceID)){
                 if (transform.GetComponentInChildren<SafeInstanceID>().name == "" + instanceID){
@@ -176,7 +177,7 @@ namespace GalForUnity.InstanceID{
             if (type.IsSubclassOf(typeof(GraphData)) || type == typeof(GraphData)){
                 var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
                 foreach (var graphData in graphDatas){
-                    if (graphData.instanceID == gfuInstanceID) return graphData;
+                    if (graphData.InstanceID == gfuInstanceID) return graphData;
                 }
             }
             return null;
@@ -195,7 +196,7 @@ namespace GalForUnity.InstanceID{
             }
             var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
             foreach (var graphData in graphDatas){
-                if (graphData.instanceID == gfuInstanceID) return graphData;
+                if (graphData.InstanceID == gfuInstanceID) return graphData;
             }
             return null;
         }

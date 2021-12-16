@@ -18,6 +18,7 @@ using GalForUnity.Graph.Data.Property;
 using GalForUnity.Model;
 using GalForUnity.Model.Plot;
 using GalForUnity.System;
+using GalForUnity.System.Archive.Attributes;
 using GalForUnity.System.Archive.Behavior;
 using GalForUnity.System.Archive.Data;
 using GalForUnity.System.Event;
@@ -68,7 +69,8 @@ namespace GalForUnity.Controller{
         public PlotModelList ReadyExecutePlotModelSet;
 
         [SerializeField]
-        [HideInInspector]
+        // [HideInInspector]
+        [SaveFlag]
         private GraphCallChain _callChain;
 
         /// <summary>
@@ -219,15 +221,14 @@ namespace GalForUnity.Controller{
             return true;
         }
 
-        public override void GetObjectData(ScriptData scriptData){
+        public override void GetObjectData(){
             _callChain = CurrentGraph.GetGraphCallChain();
-            base.GetObjectData(scriptData);
         }
 
         public override void Recover(){
             var callInfo = _callChain.Peek();
-            if(callInfo.callerGraphData is PlotItemGraphData plotItemGraphData) CurrentGraph = new PlotItemGraph(_callChain);
-            if(callInfo.callerGraphData is PlotFlowGraphData plotFlowGraphData) CurrentGraph = new PlotFlowGraph(_callChain);
+            if(callInfo.CallerGraphData is PlotItemGraphData plotItemGraphData) CurrentGraph = new PlotItemGraph(_callChain);
+            if(callInfo.CallerGraphData is PlotFlowGraphData plotFlowGraphData) CurrentGraph = new PlotFlowGraph(_callChain);
         }
     }
 }

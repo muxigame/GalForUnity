@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace GalForUnity.Editor
 {
-    [CustomPropertyDrawer(typeof(RoleData.RoleDataItem))] 
+    [CustomPropertyDrawer(typeof(RoleDataItem))] 
     public class ReorderableListDrawer : PropertyDrawer
     {
 

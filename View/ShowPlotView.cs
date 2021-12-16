@@ -11,8 +11,11 @@
 
 using GalForUnity.Attributes;
 using GalForUnity.Controller;
+using GalForUnity.Model;
 using GalForUnity.Model.Scene;
 using GalForUnity.System;
+using GalForUnity.System.Address.Addresser;
+using GalForUnity.System.Archive.Attributes;
 using GalForUnity.System.Archive.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -42,10 +45,21 @@ namespace GalForUnity.View{
         [Rename(nameof(speakView))]
         [Tooltip("请放置Text或其子类，如果为空，自动创建默认视图")]
         public Text speakView;
-        [Rename(nameof(backgroundDistance))]
+        [Rename(nameof(BackgroundDistance))]
         [SerializeField]
         [Tooltip("指示背景图片距离主相机的距离")]
-        public float backgroundDistance=100;
+        [SaveFlag]
+        private float backgroundDistance=100;
+
+        public float BackgroundDistance{
+            get => backgroundDistance;
+            set{
+                backgroundDistance = value;
+                var transform1 = Camera.main.transform;
+                backgroundView.transform.position = transform1.position + transform1.forward * BackgroundDistance;
+            }
+        }
+        
         [FormerlySerializedAs("BackgroundView")] 
         [Rename(nameof(backgroundView))]
         [SerializeField]
@@ -63,13 +77,18 @@ namespace GalForUnity.View{
         public Canvas parentCanvas;
 
         [SerializeField]
+        [SaveFlag]
         private string roleName;
         [SerializeField]
+        [SaveFlag]
         private string speak;
         [SerializeField]
-        private AudioClip audioClip;
+        [SaveFlag]
+        private string sceneModelAddress;
         [SerializeField]
-        private Sprite background;
+        [SaveFlag]
+        private string roleModelAddress;
+
 
         private void Start(){
             InitialView();
@@ -99,7 +118,7 @@ namespace GalForUnity.View{
         public virtual void ShowBackground(Sprite background){
             if (ReferenceEquals(background, null)) return;
             if (ReferenceEquals(backgroundView, null)) return;
-            backgroundView.sprite=this.background=background;
+            backgroundView.sprite=background;
         }
         public virtual void ShowSceneModel(SceneModel sceneModel){
             if(!sceneModel) return;
@@ -109,7 +128,7 @@ namespace GalForUnity.View{
         public virtual void PlayAudioClip(AudioClip audioClip){
             if (ReferenceEquals(audioClip, null)) return;
             if (audioSource) return;
-            audioSource.clip =this.audioClip= audioClip;
+            audioSource.clip = audioClip;
             audioSource.Play();
         }
 
@@ -160,8 +179,11 @@ namespace GalForUnity.View{
                 backGroundObj.name = "Background";
             }
 
-            backgroundView.transform.forward = Camera.main.transform.forward;
-            backgroundView.transform.position = Camera.main.transform.position + Camera.main.transform.forward * backgroundDistance;
+            if (backgroundView&&Camera.main){
+                backgroundView.transform.forward = Camera.main.transform.forward;
+                backgroundView.transform.position = Camera.main.transform.position + Camera.main.transform.forward * BackgroundDistance;
+            }
+            
             
             var optionController = InitialSystemComponent<OptionController>();
             optionController.transform.SetParent(parentCanvas.transform);
@@ -195,6 +217,11 @@ namespace GalForUnity.View{
             scriptData.priority = -1;
         }
 
+        public override void GetObjectData(){
+            sceneModelAddress = InstanceIDAddresser.GetInstance().Parse(GameSystem.Data.CurrentSceneModel);
+            roleModelAddress = InstanceIDAddresser.GetInstance().Parse(GameSystem.Data.CurrentRoleModel);
+        }
+
         /// <summary>
         /// TODO 恢复视图
         /// </summary>
@@ -202,8 +229,14 @@ namespace GalForUnity.View{
         public override void Recover(){
             if(nameView) nameView.text = roleName;
             if(speakView) speakView.text = speak;
-            PlayAudioClip(audioClip);
-            ShowBackground(background);
+            if (InstanceIDAddresser.GetInstance().Get(sceneModelAddress, out object obj)){
+                var sceneModel = obj as SceneModel;
+                GameSystem.Data.SceneController.GoToScene(sceneModel);
+            }
+            if (InstanceIDAddresser.GetInstance().Get(roleModelAddress, out object role)){
+                GameSystem.Data.CurrentRoleModel = (RoleModel) role;
+            }
+            
         }
     }
 }

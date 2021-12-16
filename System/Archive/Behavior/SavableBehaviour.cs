@@ -24,26 +24,33 @@ namespace GalForUnity.System.Archive.Behavior{
         [HideInInspector]
         // protected Savable savableData;
         public virtual void GetObjectData(ScriptData scriptData){
-            var fieldInfos = GetType().GetFields<Savable>();
-            foreach (var fieldInfo in fieldInfos){
-                var value = (Savable)fieldInfo.GetValue(this);
-                value.Save();
+            GetObjectData();
+            if (scriptData != null){
+                var fieldInfos = GetType().GetFields<Savable>();
+                foreach (var fieldInfo in fieldInfos){
+                    var value = (Savable)fieldInfo.GetValue(this);
+                    value.Save();
+                }
+                scriptData.json = JsonUtility.ToJson(this);
+                scriptData.ObjectAddressExpression = InstanceIDAddresser.GetInstance().Parse(this);
+                scriptData.activeSelf = enabled;
             }
-            scriptData.json = JsonUtility.ToJson(this);
-            scriptData.ObjectAddressExpression = InstanceIDAddresser.GetInstance().Parse(this);
-            scriptData.activeSelf = enabled;
         }
 
+        public virtual void GetObjectData(){}
         public virtual void Recover(ScriptData scriptData){
-            if (InstanceIDAddresser.GetInstance().Get(scriptData.ObjectAddressExpression, out var obj)){
-                JsonUtility.FromJsonOverwrite(scriptData.json,obj);
-                if (obj is MonoBehaviour monoBehaviour){
-                    monoBehaviour.enabled=scriptData.activeSelf;
+            if (scriptData != null){
+                if (InstanceIDAddresser.GetInstance().Get(scriptData.ObjectAddressExpression, out var obj)){
+                    JsonUtility.FromJsonOverwrite(scriptData.json,obj);
+                    if (obj is MonoBehaviour monoBehaviour){
+                        monoBehaviour.enabled=scriptData.activeSelf;
+                    }
                 }
             }
+            Recover();
         }
 
-        public abstract void Recover();
+        public virtual void Recover(){}
     }
 }
 

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using GalForUnity.InstanceID;
-using GalForUnity.System.Archive.Data;
+using GalForUnity.System.Archive.SaveAlgorithm;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,27 +12,26 @@ namespace GalForUnity.System.Archive{
     public class ArchiveItem : SerializeSelfable{
         [SerializeField] public long instanceID;
         [NonSerialized] public Texture2D Texture2D;
-        [NonSerialized] public bool parsed=false;
-        [SerializeField] public int sceneIndex;
-        [SerializeField] public List<ScriptData> scriptData = new List<ScriptData>();
-
-        public ArchiveItem(Transform transform, Scene scene){
-            GfuRunOnMono.GetInstance().StartCoroutine(SaveHierarchy(transform));
-            GfuRunOnMono.GetInstance().StartCoroutine(SaveMonoScript(transform, 0));
-            sceneIndex = scene.buildIndex;
-        }
-
-        public ArchiveItem(ArchiveConfig archiveConfig){ Init(archiveConfig); }
+        
+        public SavableAlgorithm savableAlgorithm;
 
         /// <summary>
-        /// 初始化存档，将存档读取到内存，但是不加载
+        /// 该构造一般由存档方法调用，负责解析场景
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <param name="scene"></param>
+        public ArchiveItem(Transform transform, Scene scene){
+            savableAlgorithm=SavableAlgorithm.Create(ArchiveEnvironmentConfig.GetInstance().archiveAlgorithm,transform,scene);
+        }
+        /// <summary>
+        /// 初始化存档，将存档读取到内存，但是不加载,该构造一般由加载存档的方法调用
         /// </summary>
         /// <param name="archiveConfig">存档的配置信息</param>
-        public void Init(ArchiveConfig archiveConfig){
+        public ArchiveItem(ArchiveConfig archiveConfig){ 
+            savableAlgorithm=SavableAlgorithm.Create(ArchiveEnvironmentConfig.GetInstance().archiveAlgorithm);
             LoadPhoto(archiveConfig);
-            //base.Load(archiveConfig.ArchiveDirectory + archiveConfig.ArchiveFileName + archiveConfig.ArchiveSuffix);
         }
-
+        
         /// <summary>
         /// 依据指定的信息保存存档
         /// </summary>
@@ -48,9 +44,10 @@ namespace GalForUnity.System.Archive{
             new ArchiveThreadTool().Wait((out bool isExecuted) => {//不进行等待的话可能会出现存档存一半的问题，因为解析mono层级时利用协程异步进行的，如果同步进行可能卡帧，也不可以放到线程里解析，
                                                                    //因为解析mono类型需要在主线程操作，暂时不考虑通过Unity作业系统实现
                 isExecuted = false;
-                if (parsed){
+                if (savableAlgorithm.parsed){
+                    savableAlgorithm.Save(dir + fileName + archiveSuffix);
                     SavePhoto(dir, fileName, photoSuffix);
-                    base.Save(dir        + fileName + archiveSuffix);
+                    // base.Save(dir        + fileName + archiveSuffix);
                     Debug.Log("存档已经保存到：" + dir + fileName + archiveSuffix);
                     Debug.Log("提示：编辑期状态下的存档切换场景或者重启Unity后无效，打包运行后可切换场景，但是移动文件位置后依旧会导致文件找不到的异常");
                     ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ArchiveSaveOver);
@@ -82,37 +79,9 @@ namespace GalForUnity.System.Archive{
         public void Load(string dir, string fileName, string archiveSuffix, string photoSuffix){
             new ArchiveThreadTool().WaitForMono((out bool b) => {
                 ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ArchiveLoadStart);
-                if (scriptData == null || scriptData.Count == 0) base.Load(dir + fileName + archiveSuffix);
                 if (!Texture2D) LoadPhoto(dir, fileName, photoSuffix);
-                //如果实在Edit模式不会尝试加载场景，因为Edit中切换场景会导致存档无效，游戏中则不会
-                void InitOnScene(){
-                    scriptData.Sort((x, y) => -x.priority.CompareTo(y.priority));
-                    foreach (var saveable in scriptData){
-                        saveable.Recover();
-                    }
-                    ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ArchiveLoadOver); 
-                }
-#if !UNITY_EDITOR
-            void InitOnSceneLoaded(Scene scene, LoadSceneMode loadMode){
-                ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.SceneLoadOver);
-                scriptData.Sort((x, y) => -x.priority.CompareTo(y.priority));
-                foreach (var saveable in scriptData){
-                    saveable.Recover();
-                }
-                ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ArchiveLoadOver);
-                if(scene != default) SceneManager.sceneLoaded -= InitOnSceneLoaded;
-            }
-            if (sceneIndex != SceneManager.GetActiveScene().buildIndex){
-                SceneManager.sceneLoaded += InitOnSceneLoaded;
-                var asyncOperation = ArchiveEnvironmentConfig.GetInstance().asyncOperation = SceneManager.LoadSceneAsync(sceneIndex);
-                ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.SceneLoadStart); 
-            } else{
-                InitOnScene();
-            }
-            // asyncOperation.allowSceneActivation = false;//如果在Edit模式就不加载场景了，因为这会初始化InstanceID导致存档不可用，Unity打包后使用的是FileID，只要文件不移动位置不会造成引用问题
-#else
-                InitOnScene();
-#endif
+                savableAlgorithm.Load(dir + fileName + archiveSuffix);
+                // savableAlgorithm.Load(dir + fileName + archiveSuffix);
                 b = true;
             });
         }
@@ -239,35 +208,6 @@ namespace GalForUnity.System.Archive{
             fs.Dispose();
         }
 
-        private IEnumerator SaveHierarchy(Transform transform){
-            if (transform.TryGetComponent(out GfuInstance gfuInstance)){
-                var savable = new ScriptData(transform.gameObject);
-                scriptData.Add(savable);
-                savable.priority = Int32.MaxValue;
-            }
-
-            for (int i = 0; i < transform.childCount; i++){
-                yield return SaveHierarchy(transform.GetChild(i));
-            }
-        }
-
-        private IEnumerator SaveMonoScript(Transform transform, int priority){
-            var components = transform.GetComponents<MonoBehaviour>();
-
-            foreach (var component in components){
-                if (component.gameObject.hideFlags == HideFlags.HideInHierarchy | component.gameObject.hideFlags == HideFlags.HideInInspector) continue;
-                var savable = new ScriptData(component);
-                savable.priority = savable.priority == Int32.MinValue ? priority : savable.priority;
-                if (!string.IsNullOrEmpty(savable.ObjectAddressExpression)){
-                    scriptData.Add(savable);
-                }
-            }
-
-            for (int i = 0; i < transform.childCount; i++){
-                yield return SaveMonoScript(transform.GetChild(i), priority - 10);
-            }
-
-            if (priority == 0) parsed = true;
-        }
+        
     }
 }

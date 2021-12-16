@@ -49,7 +49,7 @@ namespace GalForUnity.Graph.Operation{
                 float opacity = (float) InputData[2].value;
                 Color color =  InputData[3].value as Color? ?? (Vector4)InputData[3].value;
                 color.a = opacity;
-                roleModel.Color(color);
+                roleModel.Color=color;
                 var gameObject = roleModel.gameObject;
                 if (gameObject.activeSelf == false){
                     if ((RoleNode.RoleOperationType)ContainerData[1].value == RoleNode.RoleOperationType.ToStage){
@@ -92,7 +92,7 @@ namespace GalForUnity.Graph.Operation{
                     // Debug.LogError(InputData[3].value);
                     // Debug.LogError(opacity);
                     color.a = opacity;
-                    roleModel.Color(color);
+                    roleModel.Color=color;
                 }
             }else{
                 Debug.LogError("a unknown paramException,maybe \"ContainerData = null\" or \"ContainerData.Count < 2\"");
@@ -119,7 +119,7 @@ namespace GalForUnity.Graph.Operation{
                     float opacity = (float) InputData[2].value;
                     Color color =  InputData[3].value as Color? ?? (Vector4)InputData[3].value;
                     color.a = opacity;
-                    roleModel.Color(color);
+                    roleModel.Color=color;
                 }
             }else{
                 Debug.LogError("a unknown paramException,maybe \"ContainerData = null\" or \"ContainerData.Count < 2\"");
