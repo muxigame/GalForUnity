@@ -76,7 +76,7 @@ namespace GalForUnity.Model {
 		}
 
 		private void OnEnable(){
-			roleData = GetComponent<RoleData>();
+			RoleData = GetComponent<RoleData>();
 #if LIVE2D
 			if(!gameObject.GetComponent<CubismMotionController>()
 #if UNITY_EDITOR
@@ -95,27 +95,35 @@ namespace GalForUnity.Model {
 		/// <summary>
 		///角色的数值
 		/// </summary>
-		[Rename(nameof(roleData))]
+		[Rename(nameof(RoleData))]
 		[NonSerialized]
 		public RoleData roleData;
 
+		public RoleData RoleData{
+			get{
+				if (!roleData) roleData = GetComponent<RoleData>();
+				return roleData;
+			}
+			set => roleData = value;
+		}
+
 		
 		public RoleData Parse(List<RoleDataItem> roleDataItems){
-			return roleData.Parse(roleDataItems);
+			return RoleData.Parse(roleDataItems);
 		}
 
 		public RoleModel Add(List<RoleDataItem> roleDataItems){
-			roleData=Parse(roleDataItems);
+			RoleData=Parse(roleDataItems);
 			return this;
 		}
 		public RoleModel Add(RoleData roleDataItems){
-			roleData=Parse(roleData+roleDataItems);
+			RoleData=Parse(RoleData+roleDataItems);
 			return this;
 		}
 		
 		public static List<RoleDataItem> operator +(RoleModel roleModel1, RoleModel roleModel){
 			// var roleModel1RoleData = roleModel.roleData + roleModel1.roleData;
-			return roleModel.roleData + roleModel1.roleData;
+			return roleModel.RoleData + roleModel1.RoleData;
 		}
 
 		public void HighLight(bool isHighLight){

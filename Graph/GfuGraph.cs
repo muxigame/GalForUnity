@@ -179,7 +179,7 @@ namespace GalForUnity.Graph{
             if (nodeObj != null){
                 nodeObj.OnExecuted = Execute;
                 // GameSystem.GraphData.currentPlotItemGraphData = this;
-                GameSystem.Data.CurrentRoleModel.roleData = nodeObj.Execute(GameSystem.Data.CurrentRoleModel.roleData);
+                GameSystem.Data.CurrentRoleModel.RoleData = nodeObj.Execute(GameSystem.Data.CurrentRoleModel.RoleData);
             } else{
                 GfuRunOnMono.LateUpdate(Int32.MaxValue, () => {
                     graphData.isPlay = isPlay = false;
@@ -210,7 +210,7 @@ namespace GalForUnity.Graph{
                     if (gfuNode==null) throw new NullReferenceException($"There is no default node to connect port {index} next");
                     gfuNode.OnExecuted = Execute;
                     //TODO 可以在这里显示剧情进度
-                    GameSystem.Data.CurrentRoleModel.roleData = gfuNode.Execute(GameSystem.Data.CurrentRoleModel.roleData);
+                    GameSystem.Data.CurrentRoleModel.RoleData = gfuNode.Execute(GameSystem.Data.CurrentRoleModel.RoleData);
                 });
             } else{
                 throw new NullReferenceException("There is no default node to connect to the default port next");

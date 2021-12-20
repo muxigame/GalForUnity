@@ -155,7 +155,7 @@ namespace GalForUnity.Controller{
         
         private void Date(){
             foreach (var plotModel in PlotModels["date"]){
-                if (plotModel.Check(GameSystem.Data.CurrentRoleModel.roleData, GameSystem.Data.CurrentSceneModel)){
+                if (plotModel.Check(GameSystem.Data.CurrentRoleModel.RoleData, GameSystem.Data.CurrentSceneModel)){
                     ReadyExecutePlotModelSet.Add(plotModel);
                 }
             }
@@ -164,7 +164,7 @@ namespace GalForUnity.Controller{
         private bool Plot(PlotModel model, RoleModel roleModel){
             foreach (var plotModel in PlotModels["plot"]){
                 if (plotModel != model && plotModel.plotRequire.triggerPlot == model){
-                    if (plotModel.plotRequire.NormalCheck(GameSystem.Data.CurrentRoleModel.roleData, GameSystem.Data.CurrentSceneModel)){
+                    if (plotModel.plotRequire.NormalCheck(GameSystem.Data.CurrentRoleModel.RoleData, GameSystem.Data.CurrentSceneModel)){
                         CanRepetitionCheck(plotModel);
                         if (plotModel.plotRequire.triggerType == TriggerType.before){
                             ReadyExecutePlotModelSet.Insert(0, plotModel);

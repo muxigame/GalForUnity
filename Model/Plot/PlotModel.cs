@@ -83,12 +83,12 @@ namespace GalForUnity.Model.Plot {
         }
         public bool CheckWhthExecuteList(RoleModel roleModel, SceneModel sceneModel){
             if (_gameTime == GameSystem.Data.CurrentTime) return false;
-            if (!plotRequire.Check(roleModel.roleData, sceneModel)) return false;
+            if (!plotRequire.Check(roleModel.RoleData, sceneModel)) return false;
             EventCenter.GetInstance().PlotRequireCheckOkEvent.Invoke(this, roleModel); //触发剧情前提条件验证完成事件
             ToExecuteList();
             //如果剧情是不可重复的
             if(!plotRequire.repeatability) DailyStateChecker.GetInstance().CancelRegister(sceneModel,plotRequire);
-            else if(!plotRequire.Check(roleModel.roleData, sceneModel)) DailyStateChecker.GetInstance().CancelRegister(sceneModel,plotRequire);
+            else if(!plotRequire.Check(roleModel.RoleData, sceneModel)) DailyStateChecker.GetInstance().CancelRegister(sceneModel,plotRequire);
             return true;
         }
         /// <summary>
