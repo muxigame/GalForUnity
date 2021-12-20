@@ -143,7 +143,8 @@ namespace GalForUnity.System.Archive{
             {typeof(RoleController),-10},
             {typeof(SceneController),-10},
             {typeof(ShowPlotView),-10},
-            {typeof(PlotFlowController),-20},
+            {typeof(OptionController),-20},
+            {typeof(PlotFlowController),-100},
         };
 
         /// <summary>

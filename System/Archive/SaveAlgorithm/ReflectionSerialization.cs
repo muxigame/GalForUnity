@@ -43,8 +43,8 @@ namespace GalForUnity.System.Archive.SaveAlgorithm{
 
             HashSet<SavableBehaviour> hashSet=new HashSet<SavableBehaviour>();
             List<SavableBehaviour> list=new List<SavableBehaviour>();
+            var recoverPriority = ArchiveEnvironmentConfig.GetInstance().recoverPriority;
             ComponentValues.Sort((x,y) => {
-                var recoverPriority = ArchiveEnvironmentConfig.GetInstance().recoverPriority;
                 int xp = x.priority;
                 int yp = y.priority;
                 var typeX = x.Value().GetType();

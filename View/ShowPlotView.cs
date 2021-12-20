@@ -218,8 +218,10 @@ namespace GalForUnity.View{
         }
 
         public override void GetObjectData(){
-            sceneModelAddress = InstanceIDAddresser.GetInstance().Parse(GameSystem.Data.CurrentSceneModel);
-            roleModelAddress = InstanceIDAddresser.GetInstance().Parse(GameSystem.Data.CurrentRoleModel);
+            var dataCurrentSceneModel = GameSystem.Data.CurrentSceneModel;
+            var dataCurrentRoleModel = GameSystem.Data.CurrentRoleModel;
+            if(dataCurrentSceneModel) sceneModelAddress = InstanceIDAddresser.GetInstance().Parse(dataCurrentSceneModel);
+            if(dataCurrentRoleModel) roleModelAddress = InstanceIDAddresser.GetInstance().Parse(dataCurrentRoleModel);
             speak = speakView.text;
             roleName = nameView.text;
         }
@@ -231,11 +233,11 @@ namespace GalForUnity.View{
         public override void Recover(){
             if(nameView) nameView.text = roleName;
             if(speakView) speakView.text = speak;
-            if (InstanceIDAddresser.GetInstance().Get(sceneModelAddress, out object obj)){
+            if (!string.IsNullOrEmpty(sceneModelAddress) &&InstanceIDAddresser.GetInstance().Get(sceneModelAddress, out object obj)){
                 var sceneModel = obj as SceneModel;
                 GameSystem.Data.SceneController.GoToScene(sceneModel);
             }
-            if (InstanceIDAddresser.GetInstance().Get(roleModelAddress, out object role)){
+            if (!string.IsNullOrEmpty(roleModelAddress)&&InstanceIDAddresser.GetInstance().Get(roleModelAddress, out object role)){
                 GameSystem.Data.CurrentRoleModel = (RoleModel) role;
             }
             
