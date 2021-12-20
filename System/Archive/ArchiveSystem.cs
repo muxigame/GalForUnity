@@ -67,8 +67,14 @@ namespace GalForUnity.System.Archive{
             if (ArchiveSystem.GetInstance() != this){
                 Destroy(gameObject);
             } else DontDestroyOnLoad(gameObject);
-            if(archiveSet.Count==0) archiveSet.LoadConfig();
-            if(archiveSet==null) archiveSet.configs=new List<ArchiveConfig>();
+
+            try{
+                archiveSet.LoadConfig();
+            } catch (Exception e){
+                if(archiveSet!=null) archiveSet.configs=new List<ArchiveConfig>();
+                else archiveSet=new ArchiveSet();
+                Debug.LogError(e);
+            }
         }
 
         ~ArchiveSystem(){

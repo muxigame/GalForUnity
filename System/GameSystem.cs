@@ -65,7 +65,6 @@ namespace GalForUnity.System{
 			return "GalForUnity";
 		}
 		
-		
 		private void OnEnable(){
 #if UNITY_EDITOR
 			BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
@@ -311,19 +310,21 @@ namespace GalForUnity.System{
 			
 		}
 #if UNITY_EDITOR
-		//
-		// [PostProcessScene(2)]
-		// public static void OnBuild(){
-		// 	// var gameSystem = GameSystem.GetInstance();
-		// 	// gameSystem.AutoAddGfuCompoenent(gameSystem.transform);
-		// 	// gameSystem.TraverseTheSubclass(gameSystem.transform);
-		// }
+		/// <summary>
+		/// 在编译时检查GalForUnity中的所有的可保存组件是否都包含GfuInstance组件
+		/// </summary>
+		[PostProcessScene(2)]
+		private static void OnBuild(){
+			var gameSystem = GameSystem.GetInstance();
+			gameSystem.AutoAddGfuCompoenent(gameSystem.transform);
+			gameSystem.TraverseTheSubclass(gameSystem.transform);
+		}
 		
 		void TraverseTheSubclass(Transform transform){
 			foreach (var subCalss in transform){
 				var calss = (Transform) subCalss;
 				AutoAddGfuCompoenent(calss);
-				// TraverseTheSubclass(calss);
+				TraverseTheSubclass(calss);
 			}
 		}
 		/// <summary>

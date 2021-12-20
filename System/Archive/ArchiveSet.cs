@@ -10,6 +10,7 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using GalForUnity.Attributes;
@@ -179,6 +180,14 @@ namespace GalForUnity.System.Archive{
             ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ConfigReadStart);
             var archiveConfigs = configs.ToArray();
             base.Load(str);
+#if UNITY_EDITOR
+            if(configs == null) throw new FileLoadException("配置文件存在，但是序列化出错");
+#else
+            if(configs == null) {
+                Debug.LogError("配置文件存在，但是序列化出错");
+                configs=new List<ArchiveConfig>();
+            }
+#endif
             for (var i = 0; i < configs.Count; i++){
                 if(i>=archiveConfigs.Length) configs[i].ArchiveItem = new ArchiveItem(configs[i]);
                 else if (configs[i].ArchiveFileName == archiveConfigs[i].ArchiveFileName){ //如果当前项没有更新的话，复制内存中的副本，否则初始化存档项从本地加载

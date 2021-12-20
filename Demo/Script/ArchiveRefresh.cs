@@ -24,10 +24,6 @@ namespace GalForUnity.Demo.Script{
             ArchiveSystem.GetInstance().archiveEvent.AddListener(RefreshButtonAndArchiveSlot);
         }
 
-        private void Start(){
-            LoadConfig();
-        }
-
         //由刷新完成事件调用和保存完成事件调用
         void RefreshButtonAndArchiveSlot(ArchiveSystem.ArchiveEventType archiveEventType){
             if(archiveEventType == ArchiveSystem.ArchiveEventType.RefreshOver)

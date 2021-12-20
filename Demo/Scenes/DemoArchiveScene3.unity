@@ -270,7 +270,7 @@ MonoBehaviour:
       month: 11
       day: 29
     currentRoleModel: {fileID: 2068287646}
-    currentSceneModel: {fileID: 0}
+    currentSceneModel: {fileID: 2089196137}
     SceneController: {fileID: 331803054}
     RoleController: {fileID: 1078007876}
     PlotFlowController: {fileID: 1814173486}
@@ -661,7 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8cc4962315b50d46b634e0e85ecc8b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instanceID: 4751049562292573915
+  instanceID: 4924584847017953185
 --- !u!1 &398169913
 GameObject:
   m_ObjectHideFlags: 0
@@ -1827,7 +1827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ccfa2e4218afca47a7aa0029204f95e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollRect: {fileID: 0}
+  scrollRect: {fileID: 504068465}
   archiveSlot: {fileID: 1833739683014111278, guid: 1309f80f3f7777b40bdfcb08173a5a15, type: 3}
   renderCamera: {fileID: 0}
   archiveSet:
