@@ -220,6 +220,8 @@ namespace GalForUnity.View{
         public override void GetObjectData(){
             sceneModelAddress = InstanceIDAddresser.GetInstance().Parse(GameSystem.Data.CurrentSceneModel);
             roleModelAddress = InstanceIDAddresser.GetInstance().Parse(GameSystem.Data.CurrentRoleModel);
+            speak = speakView.text;
+            roleName = nameView.text;
         }
 
         /// <summary>
