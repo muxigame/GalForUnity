@@ -54,7 +54,7 @@ namespace GalForUnity.System.Archive{
         [SerializeField]
         [Rename(nameof(archiveAlgorithm))]
         [Tooltip("当这个值为False时，存档系统不会尝试保存层级信息，但是已保存层级的存档仍能正常解析")]
-        public ArchiveAlgorithmType archiveAlgorithm=ArchiveAlgorithmType.UnityJson;
+        public ArchiveAlgorithmType archiveAlgorithm=ArchiveAlgorithmType.ReflectionSerialization;
         /// <summary>
         /// 当这个值为False时，存档系统不会尝试保存层级信息，但是已保存层级的存档仍能正常解析
         /// </summary>

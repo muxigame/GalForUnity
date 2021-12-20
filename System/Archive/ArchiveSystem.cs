@@ -62,22 +62,21 @@ namespace GalForUnity.System.Archive{
 
         private void Awake(){
             archiveSet = ArchiveSet.GetInstance();
-            // archiveEnvironmentConfig=ArchiveEnvironmentConfig.GetInstance();
             var archiveDirectory = archiveEnvironmentConfig.ArchiveDirectory;
             if (ArchiveSystem.GetInstance() != this){
-                var obj= gameObject; //直接在Mono代理里面写Destroy(gameObject);是不可行的，因为访问不到，组件被销毁的话是不能通过组件访问游戏对象的
-                // Destroy(this);       //如果直接删gameObject，那么所有实例中的archive将会丢失引用，scrollRect等mono类不会，或许是因为他们是序列化保存的原因，暂时未查明原因，
-                // GfuRunOnMono.LateUpdate(() => {
-                //      // 考虑改进，但是请不要因为会丢引用就去访问文件，这比较耗时。
-                // });
-                Destroy(obj);
+                Destroy(gameObject);
             } else DontDestroyOnLoad(gameObject);
+            if(archiveSet.Count==0) archiveSet.LoadConfig();
         }
 
         ~ArchiveSystem(){
             //archiveEvent.RemoveAllListeners();
         }
-        
+
+        protected override string OnRename(){
+            return "ArchiveSystem";
+        }
+
         public int ArchiveCount => archiveSet.Count;
 
 
