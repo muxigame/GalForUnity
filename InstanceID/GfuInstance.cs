@@ -25,65 +25,102 @@ using Object = UnityEngine.Object;
 
 namespace GalForUnity.InstanceID{
     [DisallowMultipleComponent]
-    public class GfuInstance : MonoBehaviour{
+    public class GfuInstance : MonoBehaviour,ISerializationCallbackReceiver {
         [SerializeField] public long instanceID = -1;
         private long InstanceID => this.GetInstanceID();
 
         private long MemoryInstanceID{
             get{
-                if (!memory.ContainsKey(InstanceID)) return -1;
-                return memory[InstanceID];
+                if (!Memory.ContainsKey(InstanceID)) return -1;
+                return Memory[InstanceID];
             }
-            set => memory[InstanceID] = value;
+            set => Memory[InstanceID] = value;
         }
 
         private long _instanceID;
 
 
         public static Dictionary<long, GfuInstance> GfuInstances = new Dictionary<long, GfuInstance>();
-        public static readonly Dictionary<long, long> memory = new Dictionary<long, long>();
+        private static readonly Dictionary<long, long> Memory = new Dictionary<long, long>();
 
+        // public GfuInstance(){
+        //     Debug.Log("GfuInstance");
+        // }
+        //     
+        
+
+        
         private void Reset(){
-            // if (instanceID == -1){
-            //     Init(); //唯一的InstanceID
-            // }
+            // Debug.Log("Set"+name);
+            if (MemoryInstanceID != -1) instanceID = MemoryInstanceID;
+            else
+            if (instanceID == -1){
+                Init(); //唯一的InstanceID
+            }
+        }
+        public void OnBeforeSerialize(){
+             // Debug.Log("OnBeforeSerialize" +name);
+            if(MemoryInstanceID==-1)
+                if (instanceID != -1)
+                    MemoryInstanceID = instanceID;
         }
 
+        public void OnAfterDeserialize(){
+            if (GfuInstances.ContainsKey(instanceID)&&MemoryInstanceID ==-1){
+                Init();
+            }
+        }
+        
         private void OnValidate(){
+            // Debug.Log("OnValidate" +name);
 #if UNITY_EDITOR
             if (!this) return;
 
             hideFlags = HideFlags.None;
-
-            if (MemoryInstanceID != -1){
-                instanceID = MemoryInstanceID;
-            }
             if(GameSystem.GetInstance().currentInstanceIDStorage)
-                
                 if (InstanceID < 0 && GameSystem.GetInstance().currentInstanceIDStorage.HasInstanceID(instanceID) && _instanceID == 0){ //如果硬盘中中存在相同ID，而且自身ID是负的说明这是预制体的拷贝
                     if (MemoryInstanceID == -1){
-                        if (transform.GetComponentInChildren<SafeInstanceID>().name == "" + instanceID){
-                            MemoryInstanceID = instanceID = Init();
-                        }
+                        Init();
+                        GfuInstances.Add(instanceID, this);
+                        return;
+                        // if (transform.GetComponentInChildren<SafeInstanceID>().name == "" + instanceID){
+                        //     
+                        // }
                     }
                 }
-
-            if (_instanceID == 0 && MemoryInstanceID == -1 && GfuInstances.ContainsKey(instanceID)){
-                if (transform.GetComponentInChildren<SafeInstanceID>().name == "" + instanceID){
-                    MemoryInstanceID = instanceID = Init();
-                }
+            if (MemoryInstanceID != -1){
+                instanceID = MemoryInstanceID;
+                return;
+            } else{
+                
             }
 
-
-            if (instanceID == -1){
-                MemoryInstanceID = instanceID = Init();
-            }
-
-            if (MemoryInstanceID == -1){ //如果内存ID是空的则赋值
+            if (instanceID == 0){
+                Init();
+                GfuInstances.Add(instanceID, this);
                 MemoryInstanceID = instanceID;
             }
-
-            SafeInstanceID();
+               
+            // return;
+            
+            
+            //
+            // if (_instanceID == 0 && MemoryInstanceID == -1 && GfuInstances.ContainsKey(instanceID)){
+            //     if (transform.GetComponentInChildren<SafeInstanceID>().name == "" + instanceID){
+            //         MemoryInstanceID = instanceID = Init();
+            //     }
+            // }
+            //
+            //
+            // if (instanceID == -1){
+            //     MemoryInstanceID = instanceID = Init();
+            // }
+            //
+            // if (MemoryInstanceID == -1){ //如果内存ID是空的则赋值
+            //     MemoryInstanceID = instanceID;
+            // }
+            //
+            // SafeInstanceID();
 
             _instanceID = instanceID;
             if (!GfuInstances.ContainsKey(instanceID)) GfuInstances.Add(instanceID, this); //添加入字典，保证加载速度
