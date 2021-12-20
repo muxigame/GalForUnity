@@ -77,7 +77,7 @@ namespace GalForUnity.InstanceID{
             if (!this) return;
 
             hideFlags = HideFlags.None;
-            if(GameSystem.GetInstance().currentInstanceIDStorage)
+            if(GameSystem.GetInstance()?.currentInstanceIDStorage)
                 if (InstanceID < 0 && GameSystem.GetInstance().currentInstanceIDStorage.HasInstanceID(instanceID) && _instanceID == 0){ //如果硬盘中中存在相同ID，而且自身ID是负的说明这是预制体的拷贝
                     if (MemoryInstanceID == -1){
                         Init();

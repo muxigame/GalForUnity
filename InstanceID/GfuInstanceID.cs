@@ -19,9 +19,7 @@ namespace GalForUnity.InstanceID{
     [Serializable]
     public abstract class GfuInstanceID:ScriptableObject,IInstanceID{
         // Start is called before the first frame update
-        private void OnEnable(){
-            RegisterInstanceID();
-        }
+
         [SerializeField]
         protected long instanceID;
         public long InstanceID{
@@ -31,15 +29,24 @@ namespace GalForUnity.InstanceID{
             }
             set=>instanceID=value;
         }
-
+        
+#if UNITY_EDITOR
+        /// 编译完成后ScriptObject的OnEnable调用早于场景中的对象调用<see cref="RegisterInstanceID"/>
+        /// 因此使用GfuRunOnMono延迟执行
+        private void OnEnable(){
+            GfuRunOnMono.Update(RegisterInstanceID);
+        }
+#endif 
         public void RegisterInstanceID(){
-            var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
+#if UNITY_EDITOR
+            var currentInstanceIDStorage = GameSystem.GetInstance()?.currentInstanceIDStorage;//这会造成这行代码获取不到值
             if (!currentInstanceIDStorage){
                 Debug.LogError("ID寄存器不存在");
                 return;
             }
             if(!currentInstanceIDStorage.HasInstanceID(instanceID))
                 currentInstanceIDStorage.Add(instanceID,AssetDatabase.GetAssetPath(this));
+#endif
         }
     }
 }

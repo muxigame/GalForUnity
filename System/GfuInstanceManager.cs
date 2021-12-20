@@ -14,6 +14,7 @@ using GalForUnity.System.Archive.Behavior;
 using UnityEditor;
 #endif
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace GalForUnity.System{
     /// <summary>
@@ -66,24 +67,25 @@ namespace GalForUnity.System{
         private static object Lock = new object();
         private static volatile T instance;
         protected GfuSavableMonoInstanceManager(){
-            if(!instance) instance = (T)this;
+            if(instance==null) instance = (T)this;
         }
 
         /// <summary>
         /// 获得类实例，无需担心空指针问题
         /// </summary>
         /// <returns></returns>
+        /// 需要注意的是如果删除Application.isPlaying，那么这个类会导致无法编译，编译卡死
         public static T GetInstance(){
-            if (!instance){
+            if (instance==null){
                 lock (Lock){
-                    if (!instance){
-                        instance = FindObjectOfType<T>(); //避免子类必须为可new类型，所以这里使用工厂
+                    if (instance == null){
+                        instance = Object.FindObjectOfType<T>();
                     }
-
-                    if (!instance){
-                        instance = new GameObject().AddComponent<T>();
-                        instance.gameObject.name = instance.OnRename();
-                    }
+                    if (Application.isPlaying)
+                        if (instance == null){
+                            instance = new GameObject().AddComponent<T>();
+                            instance.gameObject.name = instance.OnRename();
+                        }
                 }
             }
             return instance;
@@ -126,8 +128,9 @@ namespace GalForUnity.System{
         private static object Lock = new object();
         private static volatile T instance;
         protected GfuMonoInstanceManager(){
-            if(!instance) instance = (T)this;
+            if(instance ==null) instance = (T)this;
         }
+        
         /// <summary>
         /// 获得类实例，无需担心空指针问题
         /// </summary>
@@ -136,13 +139,13 @@ namespace GalForUnity.System{
             if (instance == null){
                 lock (Lock){
                     if (instance == null){
-                        instance = FindObjectOfType<T>(); //避免子类必须为可new类型，所以这里使用工厂
+                        instance = Object.FindObjectOfType<T>(); 
                     }
-
-                    if (instance == null){
-                        instance = new GameObject().AddComponent<T>();
-                        instance.gameObject.name = instance.OnRename();
-                    }
+                    if (Application.isPlaying)
+                         if (instance == null){
+                             instance = new GameObject().AddComponent<T>();
+                             instance.gameObject.name = instance.OnRename();
+                         }
                 }
             }
             return instance;

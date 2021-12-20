@@ -10,6 +10,7 @@
 //======================================================================
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using GalForUnity.Attributes;
 using GalForUnity.System.Archive.UI;
@@ -67,6 +68,7 @@ namespace GalForUnity.System.Archive{
                 Destroy(gameObject);
             } else DontDestroyOnLoad(gameObject);
             if(archiveSet.Count==0) archiveSet.LoadConfig();
+            if(archiveSet==null) archiveSet.configs=new List<ArchiveConfig>();
         }
 
         ~ArchiveSystem(){

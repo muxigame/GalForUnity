@@ -21,6 +21,7 @@ using GalForUnity.System.Archive.Behavior;
 using GalForUnity.System.Archive.Data;
 using GalForUnity.View;
 #if UNITY_EDITOR
+using UnityEditor.Callbacks;
 using UnityEditor;
 #endif
 using UnityEngine;
@@ -63,7 +64,8 @@ namespace GalForUnity.System{
 		protected override string OnRename(){
 			return "GalForUnity";
 		}
-
+		
+		
 		private void OnEnable(){
 #if UNITY_EDITOR
 			BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
@@ -101,8 +103,8 @@ namespace GalForUnity.System{
 		public static SystemData Data{
 			get{
 				if (_systemData == null){
-					if (GetInstance().systemData != null){
-						_systemData = GetInstance().systemData;
+					if (FindObjectOfType<GameSystem>()?.systemData != null){
+						_systemData = FindObjectOfType<GameSystem>().systemData;
 					} else{
 						_systemData = new SystemData();
 					}
@@ -119,10 +121,10 @@ namespace GalForUnity.System{
 		public static GraphSystem.GraphSystemData GraphData{
 			get{
 				if (_graphSystem == null){
-					if (GraphSystem.GetInstance()?.GraphData != null){
-						_graphSystem = GraphSystem.GetInstance().GraphData;
+					if (FindObjectOfType<GraphSystem>()?.GraphData != null){
+						_graphSystem = FindObjectOfType<GraphSystem>().GraphData;
 					} else{
-						_graphSystem = GraphSystem.GetInstance().GraphData;
+						_graphSystem = new GraphSystem.GraphSystemData();
 					}
 				}
 				CheckWindow();
@@ -131,7 +133,7 @@ namespace GalForUnity.System{
 
 			set{
 				Debug.Log(value);
-				GameObject.FindObjectOfType<GraphSystem>().GraphData = value;
+				GameObject.FindObjectOfType<GraphSystem>().GraphData = _graphSystem = value;
 			}
 		}
 		
@@ -309,14 +311,26 @@ namespace GalForUnity.System{
 			
 		}
 #if UNITY_EDITOR
+		//
+		// [PostProcessScene(2)]
+		// public static void OnBuild(){
+		// 	// var gameSystem = GameSystem.GetInstance();
+		// 	// gameSystem.AutoAddGfuCompoenent(gameSystem.transform);
+		// 	// gameSystem.TraverseTheSubclass(gameSystem.transform);
+		// }
+		
 		void TraverseTheSubclass(Transform transform){
 			foreach (var subCalss in transform){
 				var calss = (Transform) subCalss;
 				AutoAddGfuCompoenent(calss);
-				TraverseTheSubclass(calss);
+				// TraverseTheSubclass(calss);
 			}
 		}
-		//为含有可保存的组件的添加GfuInstance
+		/// <summary>
+		/// 为可保存的组件的添加GfuInstance,
+		/// 即该组件在SavableConfig中添加或者继承了Savable
+		/// </summary>
+		/// <param name="transform"></param>
 		void AutoAddGfuCompoenent(Transform transform){
 			var components = transform.GetComponents<MonoBehaviour>();
 			foreach (var component in components){
@@ -327,7 +341,7 @@ namespace GalForUnity.System{
 					if(gfuInstance)AutoParent(component.transform);
 					break;
 				}
-				if(gfuInstance)AutoParent(component.transform);
+				if(gfuInstance) AutoParent(component.transform);
 			}
 		}
 		//为含有GfuInstance组件的所有父组件添加GfuInstance
@@ -341,7 +355,7 @@ namespace GalForUnity.System{
 		}
 		
 #endif
-
+		
 		//存档系统支持
 		public void Save(int index) => ArchiveSystem.GetInstance().SaveAsync(index);
 		public void Save() => ArchiveSystem.GetInstance().SaveAsync(0);
