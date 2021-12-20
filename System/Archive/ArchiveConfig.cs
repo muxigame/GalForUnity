@@ -10,6 +10,8 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using GalForUnity.System.Archive.UI;
 using UnityEngine;
 
@@ -19,7 +21,31 @@ namespace GalForUnity.System.Archive{
     /// 不应该是一个可配置的类，而是一个自动配置的类
     /// </summary>
     [Serializable]
-    public class ArchiveConfig{
+    public class ArchiveConfig:ISerializable{
+        
+        public ArchiveConfig(string name){
+            archiveFileName = name;
+            archiveTime = ArchiveEnvironmentConfig.GetInstance().Time;
+            _configs.Add(this);
+        }
+        public ArchiveConfig(ArchiveItem archiveItem,int index=-1){
+            if(index <0)ArchiveSet.GetInstance().configs.Add(this);
+            else ArchiveSet.GetInstance().configs[index]=this;
+            _archiveItem=archiveItem;
+            archiveTime = ArchiveEnvironmentConfig.GetInstance().Time;
+            archiveFileName = ArchiveEnvironmentConfig.GetInstance().archiveDefaultName +ArchiveIndex;
+        }
+        public static ArchiveConfig Create(string name){
+            var archiveConfig = new ArchiveConfig(name);
+            _configs.Add(archiveConfig);
+            return archiveConfig;
+        }
+        
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected ArchiveConfig(SerializationInfo info, StreamingContext context){
+            archiveFileName=info.GetString(nameof(archiveFileName));
+            archiveTime=info.GetString(nameof(archiveTime));
+        }
         
         [SerializeField]
         private string archiveFileName;
@@ -63,23 +89,6 @@ namespace GalForUnity.System.Archive{
 
         private static List<ArchiveConfig> _configs =ArchiveSet.GetInstance().configs;
         
-        public ArchiveConfig(string name){
-            archiveFileName = name;
-            archiveTime = ArchiveEnvironmentConfig.GetInstance().Time;
-            _configs.Add(this);
-        }
-        public ArchiveConfig(ArchiveItem archiveItem,int index=-1){
-            if(index<0)ArchiveSet.GetInstance().configs.Add(this);
-            else ArchiveSet.GetInstance().configs[index]=this;
-            _archiveItem=archiveItem;
-            archiveTime = ArchiveEnvironmentConfig.GetInstance().Time;
-            archiveFileName = ArchiveEnvironmentConfig.GetInstance().archiveDefaultName+ArchiveIndex;
-        }
-        public static ArchiveConfig Create(string name){
-            var archiveConfig = new ArchiveConfig(name);
-            _configs.Add(archiveConfig);
-            return archiveConfig;
-        }
         /// <summary>
         /// 存档配置的总数，可以理解为存档槽的总数
         /// </summary>
@@ -88,7 +97,10 @@ namespace GalForUnity.System.Archive{
         /// 存档的索引号
         /// </summary>
         public int ArchiveIndex=>_configs.IndexOf(this);
-
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context){
+            info.AddValue(nameof(archiveTime),archiveTime);
+            info.AddValue(nameof(archiveFileName),archiveFileName);
+        }
 
         public void Save(){
             if (string.IsNullOrEmpty(archiveFileName)){

@@ -56,7 +56,7 @@ namespace GalForUnity.System{
 			if (type != null){
 				if (!symbols.Contains("LIVE2D")){
 					string str = "";
-					str = !string.IsNullOrEmpty(symbols) ? ";" : "" + "LIVE2D";
+					str = string.IsNullOrEmpty(symbols) ? "LIVE2D;" : symbols+";" + "LIVE2D;";
 					PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, str);
 				}
 			}else{

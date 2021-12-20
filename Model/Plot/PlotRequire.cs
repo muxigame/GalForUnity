@@ -192,6 +192,7 @@ namespace GalForUnity.Model.Plot {
 		}
 		private bool RoleDataCheck(RoleData roleModel) {
 			if (!roleModel){
+				Debug.Log(roleModel);
 				Debug.Log("The role data is empty, please assign a value to the role data of the game system");
 				return true;
 			}

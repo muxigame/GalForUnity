@@ -10,6 +10,8 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using GalForUnity.Attributes;
 using UnityEngine;
 
@@ -17,6 +19,12 @@ using UnityEngine;
 namespace GalForUnity.System.Archive{
     [Serializable]
     public class ArchiveSet :SerializeSelfable{
+        public ArchiveSet(){ }
+       
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        protected ArchiveSet(SerializationInfo info, StreamingContext context){
+            configs=(List<ArchiveConfig>) info.GetValue(nameof(configs),typeof(List<ArchiveConfig>));
+        }
         
         private static ArchiveSet _archive;
 
@@ -31,6 +39,14 @@ namespace GalForUnity.System.Archive{
         [SerializeField]
         [Rename(nameof(configs))]
         public List<ArchiveConfig> configs=new List<ArchiveConfig>();
+        /// <summary>
+        /// 允许对象进行序列化
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context){
+            info.AddValue(nameof(configs),configs);
+        }
 
         public int Count => configs.Count;
         /// <summary>
@@ -175,5 +191,6 @@ namespace GalForUnity.System.Archive{
             // });
             ArchiveSystem.GetInstance().archiveEvent?.Invoke(ArchiveSystem.ArchiveEventType.ConfigReadOver); //完成刷新后发送回调数据
         }
+        
     }
 }
