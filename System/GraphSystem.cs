@@ -30,7 +30,7 @@ using PlotItemGraphData = GalForUnity.Graph.Data.Property.PlotItemGraphData;
 namespace GalForUnity.System{
     [Serializable]
     [ExecuteInEditMode]
-    public class GraphSystem : MonoBehaviour
+    public class GraphSystem : GfuMonoInstanceManager<GraphSystem>
     {
         private void OnValidate(){
             // hideFlags = HideFlags.NotEditable;

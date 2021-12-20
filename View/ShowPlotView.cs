@@ -29,7 +29,7 @@ namespace GalForUnity.View{
     /// 剧情视图类，负责将剧情的内容展示出来
     /// </summary>
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-    public class ShowPlotView : GfuSavableMonoInstanceManager<OptionController>{
+    public class ShowPlotView : GfuSavableMonoInstanceManager<ShowPlotView>{
         [FormerlySerializedAs("OptionController")]
         [SerializeField]
         [Rename(nameof(optionController))]

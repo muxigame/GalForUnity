@@ -415,8 +415,8 @@ namespace GalForUnity.System{
         }
         public string Value{
             get{
-                if (GameSystem.StaticData==null) return English;
-                switch (GameSystem.StaticData.Language){
+                if (GameSystem.Data==null) return English;
+                switch (GameSystem.Data.Language){
                     case GfuLanguage.LanguageEnum.Chinese: return Chinese;
                     case GfuLanguage.LanguageEnum.English: return English;
                     // case GfuLanguage.LanguageEnum.Japanese: return Japanese;

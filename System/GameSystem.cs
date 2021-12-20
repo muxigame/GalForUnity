@@ -43,7 +43,7 @@ namespace GalForUnity.System{
 		private static GraphSystem.GraphSystemData _graphSystem;
 		[Rename(nameof(systemData))]
 		[SerializeField]
-		public SystemData systemData=new SystemData();
+		public SystemData systemData;
 		[Rename(nameof(graphSystem))]
 		[SerializeField]
 		public GraphSystem graphSystem;
@@ -92,11 +92,9 @@ namespace GalForUnity.System{
 		/// </summary>
 		public static SystemData Data{
 			get{
-				
-				
 				if (_systemData == null){
-					if (GameObject.FindObjectOfType<GameSystem>()?.systemData != null){
-						_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
+					if (GetInstance().systemData != null){
+						_systemData = GetInstance().systemData;
 					} else{
 						_systemData = new SystemData();
 					}
@@ -113,9 +111,15 @@ namespace GalForUnity.System{
 		/// </summary>
 		public static GraphSystem.GraphSystemData GraphData{
 			get{
-				var graphSystemData = GameObject.FindObjectOfType<GraphSystem>().GraphData;
+				if (_graphSystem == null){
+					if (GraphSystem.GetInstance()?.GraphData != null){
+						_graphSystem = GraphSystem.GetInstance().GraphData;
+					} else{
+						_graphSystem = GraphSystem.GetInstance().GraphData;
+					}
+				}
 				CheckWindow();
-				return  graphSystemData;
+				return _graphSystem;
 			}
 
 			set{
@@ -124,26 +128,26 @@ namespace GalForUnity.System{
 			}
 		}
 		
-		/// <summary>
-		/// StaticData与Data有什么区别？，尽管他们都是静态变量，但是实际上都是伪静态，在真正的静态变量中访问是始终为NULL，但是Static是不用等待播放便可以访问的，言外之意便是ExecuteInEditor。
-		/// 而Data尽在Mono生命周期内可访问
-		/// </summary>
-		public static SystemData StaticData{
-			get{
-				if (_systemData == null){
-					_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
-				}
-
-				return _systemData;
-			}
-			set{
-				if (_systemData == null){
-					_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
-				}
-
-				_systemData = value;
-			}
-		}
+		// /// <summary>
+		// /// StaticData与Data有什么区别？，尽管他们都是静态变量，但是实际上都是伪静态，在真正的静态变量中访问是始终为NULL，但是Static是不用等待播放便可以访问的，言外之意便是ExecuteInEditor。
+		// /// 而Data尽在Mono生命周期内可访问
+		// /// </summary>
+		// public static SystemData StaticData{
+		// 	get{
+		// 		if (_systemData == null){
+		// 			_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
+		// 		}
+		//
+		// 		return _systemData;
+		// 	}
+		// 	set{
+		// 		if (_systemData == null){
+		// 			_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
+		// 		}
+		//
+		// 		_systemData = value;
+		// 	}
+		// }
 		
 		private void OnValidate(){
 // #if UNITY_EDITOR
@@ -153,7 +157,7 @@ namespace GalForUnity.System{
 		}
 		
 		private void Awake(){
-			StaticData = Data = systemData;
+			Data = systemData;
 			InitialGameSystem(true);
 			CheckWindow();
 		}

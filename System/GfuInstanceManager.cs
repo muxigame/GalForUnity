@@ -62,9 +62,12 @@ namespace GalForUnity.System{
     }
 
     public abstract class GfuSavableMonoInstanceManager<T> : SavableBehaviour, IDisposable
-        where T : MonoBehaviour /*new() 允许子类存在私有构造，并不会出现编译器错误，但运行时依旧会出现无法new的异常*/{
+        where T : GfuSavableMonoInstanceManager<T> /*new() 允许子类存在私有构造，并不会出现编译器错误，但运行时依旧会出现无法new的异常*/{
         private static object Lock = new object();
         private static volatile T instance;
+        protected GfuSavableMonoInstanceManager(){
+            instance = (T)this;
+        }
 
         /// <summary>
         /// 获得类实例，无需担心空指针问题
@@ -82,7 +85,6 @@ namespace GalForUnity.System{
                     }
                 }
             }
-
             return instance;
         }
 

@@ -190,14 +190,13 @@ namespace GalForUnity.Model.Plot {
 			if (duration < 0) return true;
 			return startTime <= gameTime && startTime + duration-new GameTime(0,0,1) >= gameTime;
 		}
-		private bool RoleDataCheck(RoleData roleModel) {
-			if (!roleModel){
-				Debug.Log(roleModel);
-				Debug.Log("The role data is empty, please assign a value to the role data of the game system");
+		private bool RoleDataCheck(RoleData roleData) {
+			if (!roleData){
+				Debug.LogError("The role data is empty, please assign a value to the role data of the game system");
 				return true;
 			}
 			if (!roleDataRequire) return true;
-			return roleDataRequire <= roleModel;
+			return roleDataRequire <= roleData;
 		}
 		private bool ModelCheck(SceneModel sceneModel){
 			if (sceneModels == null || sceneModels.Length == 0) return true;

@@ -34,6 +34,10 @@ namespace GalForUnity.InstanceID{
 
         public void RegisterInstanceID(){
             var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
+            if (!currentInstanceIDStorage){
+                Debug.LogError("ID寄存器不存在");
+                return;
+            }
             if(!currentInstanceIDStorage.HasInstanceID(instanceID))
                 currentInstanceIDStorage.Add(instanceID,AssetDatabase.GetAssetPath(this));
         }
