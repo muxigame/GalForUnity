@@ -66,7 +66,7 @@ namespace GalForUnity.System{
         private static object Lock = new object();
         private static volatile T instance;
         protected GfuSavableMonoInstanceManager(){
-            instance = (T)this;
+            if(!instance) instance = (T)this;
         }
 
         /// <summary>
@@ -74,13 +74,13 @@ namespace GalForUnity.System{
         /// </summary>
         /// <returns></returns>
         public static T GetInstance(){
-            if (instance == null){
+            if (!instance){
                 lock (Lock){
-                    if (instance == null){
+                    if (!instance){
                         instance = FindObjectOfType<T>(); //避免子类必须为可new类型，所以这里使用工厂
                     }
 
-                    if (instance == null){
+                    if (!instance){
                         instance = new GameObject().AddComponent<T>();
                     }
                 }
