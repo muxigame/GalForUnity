@@ -82,16 +82,31 @@ namespace GalForUnity.System{
 
                     if (!instance){
                         instance = new GameObject().AddComponent<T>();
+                        instance.gameObject.name = instance.OnRename();
                     }
                 }
             }
             return instance;
         }
+        
+        protected virtual void Reset(){
+            if (FindObjectsOfType<T>().Length > 1){
+                Invoke(nameof(Destroy), 0);
+            }
+        }
 
+        protected void Destroy(){
+            DestroyImmediate(this);
+#if UNITY_EDITOR
+            Selection.activeGameObject = FindObjectOfType<T>().gameObject;
+#endif
+        }
+        
 #region IDisposable Support
 
         protected virtual void Dispose(bool disposing){ }
 
+        protected virtual string OnRename(){ return "unnamed";}
         // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
         // ~InstanceManager()
         // {
@@ -107,10 +122,12 @@ namespace GalForUnity.System{
     
 
     public abstract class GfuMonoInstanceManager<T> : MonoBehaviour, IDisposable
-        where T : MonoBehaviour /*new() 允许子类存在私有构造，并不会出现编译器错误，但运行时依旧会出现无法new的异常*/{
+        where T : GfuMonoInstanceManager<T> /*new() 允许子类存在私有构造，并不会出现编译器错误，但运行时依旧会出现无法new的异常*/{
         private static object Lock = new object();
         private static volatile T instance;
-
+        protected GfuMonoInstanceManager(){
+            if(!instance) instance = (T)this;
+        }
         /// <summary>
         /// 获得类实例，无需担心空指针问题
         /// </summary>
@@ -124,12 +141,17 @@ namespace GalForUnity.System{
 
                     if (instance == null){
                         instance = new GameObject().AddComponent<T>();
+                        instance.gameObject.name = instance.OnRename();
                     }
                 }
             }
             return instance;
         }
 
+        protected virtual string OnRename(){
+            return "unnamed";
+        }
+        
         protected virtual void Reset(){
             if (FindObjectsOfType<T>().Length > 1){
                 Invoke(nameof(Destroy), 0);

@@ -21,7 +21,6 @@ using GalForUnity.System.Archive.Behavior;
 using GalForUnity.System.Archive.Data;
 using GalForUnity.View;
 #if UNITY_EDITOR
-using UnityEditor.Compilation;
 using UnityEditor;
 #endif
 using UnityEngine;
@@ -41,12 +40,30 @@ namespace GalForUnity.System{
 		private static SystemData _systemData;
 		[SerializeField]
 		private static GraphSystem.GraphSystemData _graphSystem;
+		
+		/// <summary>
+		/// 访问系统数据
+		/// </summary>
 		[Rename(nameof(systemData))]
 		[SerializeField]
 		public SystemData systemData;
+		/// <summary>
+		/// 访问图系统
+		/// </summary>
 		[Rename(nameof(graphSystem))]
 		[SerializeField]
 		public GraphSystem graphSystem;
+		
+		/// <summary>
+		/// 点击时间
+		/// </summary>
+		private float clickTime;
+
+
+		protected override string OnRename(){
+			return "GalForUnity";
+		}
+
 		private void OnEnable(){
 #if UNITY_EDITOR
 			BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
@@ -64,20 +81,11 @@ namespace GalForUnity.System{
 					PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, symbols.Replace("LIVE2D",""));
 				}
 			}
-			// if (!EditorApplication.isPlaying){
-			// 	
-			// }
-			// if(!currentSavableConfig)
-			// 	if (!string.IsNullOrEmpty(Data.currentSavableConfigPath))
-			// 		currentSavableConfig = AssetDatabase.LoadAssetAtPath<SavableConfig>(Data.currentSavableConfigPath);
 			AutoAddGfuCompoenent(transform);
 			TraverseTheSubclass(transform);
 #endif
-			
 		}
 		
-		// // Unity回调
-		private float clickTime;
 		private void Update(){
 			if (Input.GetMouseButtonDown(0)){
 				clickTime = Time.time;
@@ -99,7 +107,6 @@ namespace GalForUnity.System{
 						_systemData = new SystemData();
 					}
 				}
-
 				return _systemData;
 			}
 
@@ -127,27 +134,6 @@ namespace GalForUnity.System{
 				GameObject.FindObjectOfType<GraphSystem>().GraphData = value;
 			}
 		}
-		
-		// /// <summary>
-		// /// StaticData与Data有什么区别？，尽管他们都是静态变量，但是实际上都是伪静态，在真正的静态变量中访问是始终为NULL，但是Static是不用等待播放便可以访问的，言外之意便是ExecuteInEditor。
-		// /// 而Data尽在Mono生命周期内可访问
-		// /// </summary>
-		// public static SystemData StaticData{
-		// 	get{
-		// 		if (_systemData == null){
-		// 			_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
-		// 		}
-		//
-		// 		return _systemData;
-		// 	}
-		// 	set{
-		// 		if (_systemData == null){
-		// 			_systemData = GameObject.FindObjectOfType<GameSystem>()?.systemData;
-		// 		}
-		//
-		// 		_systemData = value;
-		// 	}
-		// }
 		
 		private void OnValidate(){
 // #if UNITY_EDITOR
@@ -190,8 +176,8 @@ namespace GalForUnity.System{
 			systemData.PlotFlowController = InitialSystemComponent<PlotFlowController>();
 			systemData.ShowPlotView = InitialSystemComponent<ShowPlotView>();
 			systemData.OptionController = InitialSystemComponent<OptionController>();
-			if (FindObjectOfType<GfuRunOnMono>() == null) gameObject.AddComponent<GfuRunOnMono>();
-			systemData.currentMonoProxy = gameObject.GetComponent<GfuRunOnMono>();
+			if (FindObjectOfType<GfuRunOnMono>() == null) systemData.currentMonoProxy = gameObject.AddComponent<GfuRunOnMono>();
+			else systemData.currentMonoProxy = gameObject.GetComponent<GfuRunOnMono>();
 			if(gameObject.GetComponent<GraphSystem>()==null) graphSystem = gameObject.AddComponent<GraphSystem>();
 			if (!currentInstanceIDStorage){
 				var findObjectsOfInstanceIDStorage = Resources.FindObjectsOfTypeAll<InstanceIDStorage>();
@@ -259,6 +245,7 @@ namespace GalForUnity.System{
 
 			[Rename(nameof(currentTime))] [SerializeField]
 			private GameTime currentTime = new GameTime();
+			
 
 			/// <summary>
 			/// 一般情况下记录着主角的角色模型，当有程序修该值，触发事件

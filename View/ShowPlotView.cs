@@ -75,16 +75,20 @@ namespace GalForUnity.View{
         [Tooltip("您可以指定视图显示的画布")]
         [Rename(nameof(parentCanvas))]
         public Canvas parentCanvas;
-
+        
+        [HideInInspector]
         [SerializeField]
         [SaveFlag]
         private string roleName;
+        [HideInInspector]
         [SerializeField]
         [SaveFlag]
         private string speak;
+        [HideInInspector]
         [SerializeField]
         [SaveFlag]
         private string sceneModelAddress;
+        [HideInInspector]
         [SerializeField]
         [SaveFlag]
         private string roleModelAddress;

@@ -19,8 +19,7 @@ using UnityEngine;
 
 namespace GalForUnity.Controller {
     // ReSharper disable all MemberCanBePrivate.Global
-    public class SceneController : MonoBehaviour
-    {
+    public class SceneController : GfuMonoInstanceManager<SceneController>{
         [Attributes.Title("场景集合")]
         [Rename("场景索引 ")]
         [Tooltip("场景控制器会自动寻找场景内的所有场景并附加，您也可以手动附加，来获得可控的索引，然后通过场景控制器的索引来访问场景对象")]
@@ -49,6 +48,7 @@ namespace GalForUnity.Controller {
                     if (sceneModel != this) sceneModel.transform.parent = transform;
                 }
             }
+            
         }
         /// <summary>
         /// 通过GfuInstanceID查找角色数据对象,该查找不通过GfuinstanceID系统，只查找SceneModel列表

@@ -34,6 +34,7 @@ namespace GalForUnity.System {
 			this.month = localTime.Month;
 			this.day = localTime.Day;
 		}
+
 		public GameTime(int year, int month, int day){
 			this.year = year;
 			this.month = month;

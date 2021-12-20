@@ -11,6 +11,7 @@
 
 using System;
 using GalForUnity.External;
+using GalForUnity.InstanceID;
 using GalForUnity.System.Address.Addresser;
 using GalForUnity.System.Archive.Data;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace GalForUnity.System.Archive.Behavior{
     /// SavableBehaviour继承自MonoBehaviour，提供可运行时保存数据的能力
     /// </summary>
     [Serializable]
+    [RequireComponent(typeof(GfuInstance))]
     public abstract class SavableBehaviour : MonoBehaviour{
         [SerializeField]
         [HideInInspector]

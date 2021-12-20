@@ -20,7 +20,7 @@ namespace GalForUnity.System{
     /// RunOnMono顾名思义，这个类能让你将一段代码放到Mono的生命周期里去执行
     /// </summary>
     [ExecuteAlways]
-    public class GfuRunOnMono : GfuMonoInstanceManager<MonoBehaviour>{
+    public class GfuRunOnMono : GfuMonoInstanceManager<GfuRunOnMono>{
         private static Dictionary<GfuMethodType, List<MonoAction>> DelegateType = new Dictionary<GfuMethodType, List<MonoAction>>();
         private static Dictionary<GfuMethodType, List<MonoAction>> AlwaysDelegateType = new Dictionary<GfuMethodType, List<MonoAction>>();
         // private static Action actions;
