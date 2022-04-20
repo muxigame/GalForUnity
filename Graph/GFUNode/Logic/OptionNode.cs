@@ -132,7 +132,7 @@ namespace GalForUnity.Graph.GFUNode.Logic{
                 outputContainer.Add(_outputPorts[currentIndex++].GetValue(this) as VisualElement);
             };
             Button button2 = new Button() {
-                text = GfuLanguage.Parse("Add"),
+                text = GfuLanguage.Parse("SUBTRACT"),
                 style = {
                     width = 80,
                 }
