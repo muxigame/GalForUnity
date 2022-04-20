@@ -131,7 +131,7 @@ namespace GalForUnity.View{
         }
         public virtual void PlayAudioClip(AudioClip audioClip){
             if (ReferenceEquals(audioClip, null)) return;
-            if (audioSource) return;
+            if (!audioSource) return;
             audioSource.clip = audioClip;
             audioSource.Play();
         }
