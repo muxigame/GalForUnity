@@ -11,12 +11,13 @@
 
 using System;
 using GalForUnity.Graph;
-using GalForUnity.Graph.Data;
-using GalForUnity.Graph.GFUNode.Base;
-using GalForUnity.Graph.GFUNode.Plot;
-using GalForUnity.Graph.Operation;
+using GalForUnity.Graph.AssetGraph;
+using GalForUnity.Graph.AssetGraph.Data;
+using GalForUnity.Graph.AssetGraph.GFUNode.Base;
+using GalForUnity.Graph.AssetGraph.GFUNode.Plot;
+using GalForUnity.Graph.AssetGraph.Operation;
 using UnityEngine;
-using GraphData = GalForUnity.Graph.Data.GraphData;
+using GraphData = GalForUnity.Graph.AssetGraph.Data.GraphData;
 
 namespace GalForUnity.Model.Plot{
     /// <summary>

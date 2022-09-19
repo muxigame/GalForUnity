@@ -33,7 +33,7 @@ namespace GalForUnity.Controller{
         public OptionViewType optionViewType;
         [RenameInEditor(nameof(customView))]
         public UnityEvent<GfuOptions> customView;
-
+        public UnityEvent<string> onSelect=new UnityEvent<string>();
         // [SerializeField]
         // private bool showing=false;
 
@@ -103,10 +103,13 @@ namespace GalForUnity.Controller{
             var gfuOptionsModel = optionGameObject.GetComponent<GfuOptionsModel>();
             gfuOptionsModel.GfuOptionData.text.text = gfuOptionData.optionContent;
             gfuOptionsModel.GfuOptionData.index = gfuOptionData.index;
-            button.onClick.AddListener(() => {
-                HideOption();
-                gfuOptions?.OnSelect(gfuOptionsModel.GfuOptionData.index);
-            });
+            void Listener()
+            {
+                onSelect.Invoke(gfuOptionsModel.GfuOptionData.text.text);
+                optionsPool.PutAll();
+                gfuOptions.OnSelect(gfuOptionsModel.GfuOptionData.index);
+            }
+            button.onClick.AddListener(Listener);
         }
 
 

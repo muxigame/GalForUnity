@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace GalForUnity.System{
     public class GfuObjectPool : MonoBehaviour{
@@ -62,6 +63,7 @@ namespace GalForUnity.System{
         public void PutAll(){
             foreach (var playingGameObject in playingGameObjects){
                 playingGameObject.SetActive(false);
+                playingGameObject.GetComponent<Button>()?.onClick.RemoveAllListeners();
             }
             for (var i = 0; i <playingGameObjects.Count; i++){
                 if (!readyGameObjects.Contains(playingGameObjects[i])){

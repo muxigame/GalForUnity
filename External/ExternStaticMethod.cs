@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using GalForUnity.Graph.Data;
+using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.InstanceID;
 #if UNITY_EDITOR
 using UnityEditor;

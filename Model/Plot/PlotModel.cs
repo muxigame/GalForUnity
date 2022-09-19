@@ -13,6 +13,7 @@ using System;
 using GalForUnity.Attributes;
 using GalForUnity.Controller;
 using GalForUnity.Graph;
+using GalForUnity.Graph.AssetGraph;
 using GalForUnity.InstanceID;
 using GalForUnity.Model.Scene;
 using GalForUnity.System;

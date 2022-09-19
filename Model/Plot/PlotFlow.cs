@@ -13,7 +13,8 @@ using System;
 using System.Collections.Generic;
 using GalForUnity.Attributes;
 using GalForUnity.Graph;
-using GalForUnity.Graph.Data.Property;
+using GalForUnity.Graph.AssetGraph;
+using GalForUnity.Graph.AssetGraph.Data.Property;
 using GalForUnity.InstanceID;
 using GalForUnity.System;
 using UnityEngine;
@@ -36,7 +37,7 @@ namespace GalForUnity.Model.Plot{
 		[SerializeField]
 		public List<PlotItem> plotItems = new List<PlotItem>();
 		[SerializeField]
-		public Graph.Data.Property.PlotItemGraphData PlotItemGraph;
+		public PlotItemGraphData PlotItemGraph;
 
 		private GfuGraph _gfuGraph;
 		

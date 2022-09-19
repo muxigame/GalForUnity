@@ -183,7 +183,7 @@ namespace GalForUnity.Model {
 		}
 		
 		private void SetColor(Color otherColor){
-			Debug.Log(color);
+			// Debug.Log(color);
 #if LIVE2D
 			var renderController = gameObject.GetComponent<CubismRenderController>();
 			if (renderController){

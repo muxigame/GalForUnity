@@ -11,7 +11,7 @@
 
 
 using GalForUnity.External;
-using GalForUnity.Graph.Data.Property;
+using GalForUnity.Graph.AssetGraph.Data.Property;
 using GalForUnity.InstanceID;
 using UnityEditor;
 using UnityEngine;

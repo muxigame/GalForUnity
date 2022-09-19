@@ -13,8 +13,9 @@ using System;
 using System.Collections.Generic;
 using GalForUnity.Attributes;
 using GalForUnity.Graph;
-using GalForUnity.Graph.Data;
-using GalForUnity.Graph.Data.Property;
+using GalForUnity.Graph.AssetGraph;
+using GalForUnity.Graph.AssetGraph.Data;
+using GalForUnity.Graph.AssetGraph.Data.Property;
 using GalForUnity.Model;
 using GalForUnity.Model.Plot;
 using GalForUnity.System;
@@ -27,7 +28,7 @@ using Live2D.Cubism.Framework.Motion;
 #endif
 using UnityEngine;
 using UnityEngine.Serialization;
-using GraphData = GalForUnity.Graph.Data.GraphData;
+using GraphData = GalForUnity.Graph.AssetGraph.Data.GraphData;
 
 namespace GalForUnity.Controller{
     // ReSharper disable all MemberCanBePrivate.Global
@@ -129,10 +130,10 @@ namespace GalForUnity.Controller{
         /// <exception cref="ArgumentException">剧情图不是一个已经支持的类型</exception>
         public void ExecuteGraph(GraphData graphData){
             currentGraphData = graphData;
-            if (currentGraphData is Graph.Data.Property.PlotItemGraphData){
+            if (currentGraphData is PlotItemGraphData){
                 CurrentGraph = new PlotItemGraph(graphData);
                 CurrentGraph.Play(this);
-            } else if (currentGraphData is Graph.Data.Property.PlotFlowGraphData){
+            } else if (currentGraphData is PlotFlowGraphData){
                 CurrentGraph = new PlotFlowGraph(graphData);
                 CurrentGraph.Play(this);
             } else{

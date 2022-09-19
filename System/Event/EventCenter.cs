@@ -12,9 +12,9 @@
 using System;
 using System.Collections.Generic;
 using GalForUnity.Graph;
-using GalForUnity.Graph.Data;
-using GalForUnity.Graph.GFUNode.Base;
-using GalForUnity.Graph.Operation;
+using GalForUnity.Graph.AssetGraph;
+using GalForUnity.Graph.AssetGraph.GFUNode.Base;
+using GalForUnity.Graph.AssetGraph.Operation;
 using GalForUnity.Model;
 using GalForUnity.Model.Plot;
 using GalForUnity.Model.Scene;

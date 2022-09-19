@@ -11,7 +11,7 @@
 
 using System.Runtime.Serialization;
 using GalForUnity.Graph;
-using GalForUnity.Graph.Data;
+using GalForUnity.Graph.AssetGraph;
 
 namespace GalForUnity.System.Archive.Data{
     public interface ISaveable:ISerializable,IRecoverable{

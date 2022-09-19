@@ -12,7 +12,7 @@
 using System;
 using GalForUnity.Attributes;
 using GalForUnity.Controller;
-using GalForUnity.Graph.Windows;
+using GalForUnity.Graph.AssetGraph.Windows;
 using GalForUnity.InstanceID;
 using GalForUnity.Model;
 using GalForUnity.Model.Scene;

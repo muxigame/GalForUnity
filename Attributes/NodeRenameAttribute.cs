@@ -10,7 +10,7 @@
 //======================================================================
 
 using System;
-using GalForUnity.Graph.GFUNode.Base;
+using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using UnityEngine;
 
 

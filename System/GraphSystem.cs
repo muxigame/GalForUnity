@@ -13,19 +13,17 @@ using System;
 using System.IO;
 using GalForUnity.Attributes;
 using GalForUnity.Graph;
-using GalForUnity.Graph.Data;
-using GalForUnity.Graph.Data.Property;
-using GalForUnity.Graph.GFUNode;
-using GalForUnity.Graph.GFUNode.Base;
-using GalForUnity.Graph.Windows;
+using GalForUnity.Graph.AssetGraph;
+using GalForUnity.Graph.AssetGraph.GFUNode.Base;
+using GalForUnity.Graph.AssetGraph.Windows;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine;
 using UnityEngine.Serialization;
-using GraphData = GalForUnity.Graph.Data.GraphData;
-using PlotFlowGraphData = GalForUnity.Graph.Data.Property.PlotFlowGraphData;
-using PlotItemGraphData = GalForUnity.Graph.Data.Property.PlotItemGraphData;
+using GraphData = GalForUnity.Graph.AssetGraph.Data.GraphData;
+using PlotFlowGraphData = GalForUnity.Graph.AssetGraph.Data.Property.PlotFlowGraphData;
+using PlotItemGraphData = GalForUnity.Graph.AssetGraph.Data.Property.PlotItemGraphData;
 
 namespace GalForUnity.System{
     [Serializable]
