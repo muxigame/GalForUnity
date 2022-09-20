@@ -25,6 +25,7 @@ using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace GalForUnity.External{
+    public interface IInstanceIDAble{}
     public static class ExternStaticMethod{
         public static int[] Fill(this int[] array1, int value){
             for (int i = 0, length = array1.Length; i < length; i++){
@@ -51,6 +52,7 @@ namespace GalForUnity.External{
         }
 
         public static long CreateInstanceID(this Object obj){ return BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0); }
+        public static long CreateInstanceID(this IInstanceIDAble obj){ return BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0); }
 
         public static T FindPrefabWithInstanceID<T>(this object t, int instanceID) where T : Object{ return (T) FindPrefabWithInstanceID(t, instanceID, typeof(T)); }
 

@@ -24,7 +24,7 @@ namespace GalForUnity.Graph.SceneGraph{
         private readonly GfuGraphAsset _sourceAsset;
         private GraphProvider _graphProvider;
 
-        public GalGraph(SceneGraph sceneGraph) : this(sceneGraph.graph, sceneGraph.nodeDatas){ }
+        public GalGraph(IGalGraph galGraph) : this(galGraph.GraphNode, galGraph.GraphData.nodeDatas){ }
 
         public GalGraph(GfuGraphAsset gfuGraphAsset, Dictionary<long, GfuNodeData> graphData) : this(gfuGraphAsset, graphData, new GraphProvider {
             Click = () => Input.GetMouseButtonDown(0)

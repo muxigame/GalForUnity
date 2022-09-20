@@ -17,6 +17,7 @@ using GalForUnity.Graph.AssetGraph;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.GFUNode.Plot;
 using GalForUnity.InstanceID;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -24,16 +25,15 @@ using UnityEngine.UIElements;
 namespace GalForUnity.Graph.SceneGraph{
     public class GfuSceneGraphView : GraphView{
         // public List<GfuConnectionAsset> Connection=new List<GfuConnectionAsset>();
-        private SceneGraphEditorWindow _sceneGraphEditorWindow;
-
-        public SceneGraphEditorWindow SceneGraphEditorWindow => _sceneGraphEditorWindow;
+        // private SceneGraphEditorWindow _sceneGraphEditorWindow;
+        //
+        // public SceneGraphEditorWindow SceneGraphEditorWindow => _sceneGraphEditorWindow;
         public Dictionary<long, GfuNode> Nodes = new Dictionary<long, GfuNode>();
 
-        public GfuSceneGraphView() : this(null){ }
+        public GfuSceneGraphView() : this(null,null){ }
 
-        public GfuSceneGraphView(SceneGraphEditorWindow sceneGraphEditorWindow){
-            _sceneGraphEditorWindow = sceneGraphEditorWindow;
-            var gfuGraphAsset = _sceneGraphEditorWindow.gfuGraphAsset;
+        public GfuSceneGraphView(GfuGraphAsset gfuGraphAsset,GraphData graphData){
+            // _sceneGraphEditorWindow = sceneGraphEditorWindow;
             InitEditorView();
             if (gfuGraphAsset == null || gfuGraphAsset.nodes == null || gfuGraphAsset.nodes.Count == 0){
                 var node = Activator.CreateInstance(typeof(MainNode)) as GfuNode;
@@ -42,26 +42,26 @@ namespace GalForUnity.Graph.SceneGraph{
                 return;
             }
 
-            var connection = new List<GfuConnectionAsset>();
+            var connection = new HashSet<GfuConnectionAsset>();
             foreach (var gfuNodeAsset in gfuGraphAsset.nodes){
                 InitNode(gfuNodeAsset);
                 if (gfuNodeAsset.HasInputPort)
                     foreach (var gfuPortAsset in gfuNodeAsset.inputPort){
                         if (!gfuPortAsset.HasConnection) continue;
-                        // connection.AddRange(gfuPortAsset.connections);
+                        gfuPortAsset.connections.ForEach(asset => connection.Add(asset));
                     }
 
                 if (gfuNodeAsset.HasOutputPort)
                     foreach (var gfuPortAsset in gfuNodeAsset.outputPort){
                         if (!gfuPortAsset.HasConnection) continue;
-                        connection.AddRange(gfuPortAsset.connections);
+                        gfuPortAsset.connections.ForEach(asset => connection.Add(asset));
                     }
             }
 
             foreach (var gfuConnectionAsset in connection) InitConnection(gfuConnectionAsset);
             foreach (var keyValuePair in Nodes){
-                var nodeByInstanceID = _sceneGraphEditorWindow.gfuGraphAsset.GetNodeByInstanceID(keyValuePair.Value.instanceID);
-                keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID,_sceneGraphEditorWindow.sceneGraph.GetNodeData(keyValuePair.Value.instanceID),null);
+                var nodeByInstanceID = gfuGraphAsset.GetNodeByInstanceID(keyValuePair.Value.instanceID);
+                keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID,graphData.GetNodeData(keyValuePair.Value.instanceID),null);
             }
         }
 
@@ -96,6 +96,10 @@ namespace GalForUnity.Graph.SceneGraph{
         public void InitConnection(GfuConnectionAsset gfuConnectionAsset){
             var inputPort = gfuConnectionAsset.input;
             var outputPort = gfuConnectionAsset.output;
+            if (inputPort == null || outputPort == null){
+                Debug.Log("1");
+                return;
+            }
             var visualElementInput = Nodes[inputPort.node.instanceID].inputContainer.ElementAt(inputPort.Index) as Port;
             var visualElementOutput = Nodes[outputPort.node.instanceID].outputContainer.ElementAt(outputPort.Index) as Port;
             var connectTo = visualElementInput?.ConnectTo(visualElementOutput);

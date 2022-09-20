@@ -15,8 +15,11 @@ using UnityEngine;
 
 namespace GalForUnity.Graph.SceneGraph{
     [Serializable]
-    public class GfuPortAsset:ScriptableObject{
+    public class GfuPortAsset{
+        [HideInInspector]
+        [SerializeReference]
         public GfuNodeAsset node;
+        [SerializeReference]
         public List<GfuConnectionAsset> connections;
         public PortType portType;
         public bool HasConnection => connections != null && connections.Count != 0;

@@ -382,7 +382,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 161989658}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49fa52b3bc9275a409abd4b66d91c560, type: 3}
+  m_Script: {fileID: 11500000, guid: 933e6aa0860543640a4120678f3e0387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &161989660
@@ -1336,7 +1336,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: aaa
+  m_Text: 124
 --- !u!222 &685407385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1628,7 +1628,7 @@ GameObject:
   - component: {fileID: 902290769}
   - component: {fileID: 902290770}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: GameObject2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1660,73 +1660,107 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eeea746a16e0e247b75544581960e54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graph: {fileID: 11400000, guid: 4c3fc92a29b0cc247946d30db8478674, type: 2}
-  allNodeData:
-  - instanceID: 5161337926344464271
-    objects: []
-    values: []
-  - instanceID: 5460223299528089739
-    objects:
-    - fieldName: Script
-      FieldValue: {fileID: 161989659}
-    values:
-    - fieldName: name
-      FieldValue: 123
-    - fieldName: speak
-      FieldValue: 124
-    - fieldName: isCanJump
-      FieldValue: True
-    - fieldName: isAutoHighLight
-      FieldValue: False
-  - instanceID: 5699618222673720625
-    objects: []
-    values: []
-  - instanceID: 5176339417964129455
-    objects: []
-    values:
-    - fieldName: storageExpanded
-      FieldValue: True
-  - instanceID: 5234062088640790644
-    objects: []
-    values:
-    - fieldName: ______PortData0
-      FieldValue: '{"x":0.0,"y":0.0,"z":0.0}'
-    - fieldName: ______PortData1
-      FieldValue: '{"x":0.0,"y":0.0,"z":0.0,"w":0.0}'
-    - fieldName: ______PortData2
-      FieldValue: '{"x":1.0,"y":1.0,"z":1.0}'
-    - fieldName: storageExpanded
-      FieldValue: True
-  - instanceID: 4699415092237764263
-    objects:
-    - fieldName: ______PortData0
-      FieldValue: {fileID: 504068464}
-    - fieldName: ______PortData1
-      FieldValue: {fileID: 0}
-    - fieldName: RoleModel
-      FieldValue: {fileID: 2068287646}
-    values:
-    - fieldName: ______PortData2
-      FieldValue: 9
-    - fieldName: ______PortData3
-      FieldValue: '{"r":1.0,"g":1.0,"b":1.0,"a":1.0}'
-    - fieldName: roleOperationType
-      FieldValue: '{"value__":1}'
-    - fieldName: storageExpanded
-      FieldValue: True
-  - instanceID: 5081990239547137517
-    objects: []
-    values:
-    - fieldName: ______PortData0
-      FieldValue: 0
-    - fieldName: ______PortData1
-      FieldValue: 0
-    - fieldName: ______PortData2
-      FieldValue: 0
-    - fieldName: ______PortData3
-      FieldValue: 0
-    - fieldName: storageExpanded
-      FieldValue: True
+  graphNode:
+    instanceID: 5721103434417959577
+    nodes:
+    - id: 0
+    - id: 1
+    - id: 2
+  graphData:
+    allNodeData:
+    - instanceID: 5505869651484364539
+      objects: []
+      values: []
+  references:
+    version: 1
+    00000000:
+      type: {class: GfuNodeAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        instanceID: 5505869651484364539
+        gfuNodeTypeCode: 0
+        position: {x: 324, y: 85, z: 0, w: 0}
+        inputPort: []
+        outputPort:
+        - id: 3
+    00000001:
+      type: {class: GfuNodeAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        instanceID: 5104859790776059173
+        gfuNodeTypeCode: 104
+        position: {x: 159, y: -533, z: 0, w: 0}
+        inputPort:
+        - id: 4
+        - id: 5
+        - id: 6
+        outputPort:
+        - id: 7
+    00000002:
+      type: {class: GfuNodeAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        instanceID: 5491013721416797229
+        gfuNodeTypeCode: 3
+        position: {x: 444, y: 61, z: 0, w: 0}
+        inputPort:
+        - id: 8
+        - id: 9
+        outputPort:
+        - id: 10
+    00000003:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 0
+        connections: []
+        portType: 1
+    00000004:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 1
+        connections: []
+        portType: 0
+    00000005:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 1
+        connections: []
+        portType: 0
+    00000006:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 1
+        connections: []
+        portType: 0
+    00000007:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 1
+        connections: []
+        portType: 1
+    00000008:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 2
+        connections: []
+        portType: 0
+    00000009:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 2
+        connections: []
+        portType: 0
+    0000000A:
+      type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        node:
+          id: 2
+        connections: []
+        portType: 1
 --- !u!1 &980913359
 GameObject:
   m_ObjectHideFlags: 0
@@ -2493,7 +2527,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: aaaa
+  m_Text: 123
 --- !u!222 &1466963893
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3565,75 +3599,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eeea746a16e0e247b75544581960e54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graph: {fileID: 11400000, guid: 6b37ec0714eebd542bb2bb062e60026f, type: 2}
-  allNodeData:
-  - instanceID: 5225751149015270927
-    objects:
-    - fieldName: nodeData
-      FieldValue: {fileID: 0}
-    values:
-    - fieldName: Exit
-      FieldValue: '{}'
-    - fieldName: OnExecuted
-      FieldValue: 
-    - fieldName: instanceID
-      FieldValue: 5225751149015270927
-    - fieldName: GfuGraph
-      FieldValue: 
-  - instanceID: 5349036566991370827
-    objects:
-    - fieldName: Script
-      FieldValue: {fileID: 161989659}
-    - fieldName: nodeData
-      FieldValue: {fileID: 0}
-    values:
-    - fieldName: Exit
-      FieldValue: '{}'
-    - fieldName: Operation
-      FieldValue: '{}'
-    - fieldName: name
-      FieldValue: 
-    - fieldName: speak
-      FieldValue: 
-    - fieldName: isCanJump
-      FieldValue: True
-    - fieldName: isAutoHighLight
-      FieldValue: False
-    - fieldName: Enter
-      FieldValue: '{}'
-    - fieldName: OnExecuted
-      FieldValue: 
-    - fieldName: instanceID
-      FieldValue: 5349036566991370827
-    - fieldName: GfuGraph
-      FieldValue: 
-  - instanceID: 5440357689727662913
-    objects:
-    - fieldName: Script
-      FieldValue: {fileID: 0}
-    - fieldName: nodeData
-      FieldValue: {fileID: 0}
-    values:
-    - fieldName: Exit
-      FieldValue: '{}'
-    - fieldName: Operation
-      FieldValue: '{}'
-    - fieldName: name
-      FieldValue: 
-    - fieldName: speak
-      FieldValue: 
-    - fieldName: isCanJump
-      FieldValue: True
-    - fieldName: isAutoHighLight
-      FieldValue: True
-    - fieldName: Enter
-      FieldValue: '{}'
-    - fieldName: OnExecuted
-      FieldValue: 
-    - fieldName: instanceID
-      FieldValue: 5440357689727662913
-    - fieldName: GfuGraph
-      FieldValue: 
+  graphNode:
+    instanceID: -1
+    nodes: []
+  graphData:
+    allNodeData: []
+  references:
+    version: 1
 --- !u!1 &1997482073
 GameObject:
   m_ObjectHideFlags: 0

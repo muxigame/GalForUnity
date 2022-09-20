@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using GalForUnity.Graph.AssetGraph.Attributes;
 using GalForUnity.Graph.AssetGraph.Tool;
+using UnityEditor;
 #if UNITY_EDITOR
 using GalForUnity.Graph.SceneGraph;
 using UnityEditor.Experimental.GraphView;
@@ -192,7 +193,8 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
                     }else if (node.parent is GfuSceneGraphView gfuSceneGraphView){
                         menuWindowProvider.attributeTargets = NodeAttributeTargets.All;
                         menuWindowProvider.OnSelectEntryHandler =
-                            new OnSearchProvider(gfuSceneGraphView, gfuSceneGraphView.SceneGraphEditorWindow, new NodeCreationContext(){screenMousePosition = position})
+                            // gfuSceneGraphView.SceneGraphEditorWindow
+                            new SearchProvider(gfuSceneGraphView, EditorWindow.focusedWindow , new NodeCreationContext(){screenMousePosition = position})
                                 .OnMenuSelectEntry ;
                     }
                     SearchWindow.Open(new SearchWindowContext(position), menuWindowProvider);

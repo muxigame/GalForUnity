@@ -17,8 +17,8 @@ namespace GalForUnity.Graph.SceneGraph{
         public static Dictionary<string, SceneGraph> SceneGraph = new Dictionary<string, SceneGraph>();
 
         public static void Register(SceneGraph sceneGraph){
-            if (!sceneGraph||!sceneGraph.graph) return;
-            var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(sceneGraph.graph));
+            if (!sceneGraph||!sceneGraph.GraphNode) return;
+            var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(sceneGraph));
             if (!GfuSceneGraphHandler.SceneGraph.ContainsKey(guid))
                 GfuSceneGraphHandler.SceneGraph.Add(guid, sceneGraph);
             else
@@ -26,7 +26,7 @@ namespace GalForUnity.Graph.SceneGraph{
         }
 
         public static void CancelRegister(SceneGraph gfuGraphAsset){
-            if (!gfuGraphAsset||!gfuGraphAsset.graph) return;
+            if (!gfuGraphAsset||!gfuGraphAsset.GraphNode) return;
             var guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(gfuGraphAsset));
             if (SceneGraph.ContainsKey(guid)) SceneGraph.Remove(guid);
         }
