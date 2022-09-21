@@ -245,8 +245,8 @@ namespace GalForUnity.System.Address{
             if (otherObject is MonoBehaviour monoBehaviour) return (monoBehaviour.GetComponent<GfuInstance>()?.instanceID ??0).ToString();
             if (otherObject is Component component) return (component.GetComponent<GfuInstance>()?.instanceID ??0).ToString();
             if (otherObject is GameObject gameObject) return (gameObject.GetComponent<GfuInstance>()?.instanceID ??0).ToString();
-            if (otherObject is GraphData graphData) return graphData.InstanceID.ToString();
-            if (otherObject is GfuGraph gfuGraph) return gfuGraph.graphData.InstanceID.ToString();
+            // if (otherObject is GraphData graphData) return graphData.InstanceID.ToString();
+            // if (otherObject is GfuGraph gfuGraph) return gfuGraph.graphData.InstanceID.ToString();
             if (otherObject is NodeData nodeData) return nodeData.instanceID.ToString();
             if (otherObject is GfuNode gfuNode) return gfuNode.nodeData.instanceID.ToString();
             return null;

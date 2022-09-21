@@ -26,7 +26,6 @@ namespace GalForUnity.Model.Plot {
     /// PlotModel即剧情模型，管理着剧情要求和剧情流，在某种意义上说是剧情本身，需要剧情细节请访问PlotFlow，需要知道剧情要求请访问PlotRequire，在引用上和PlotRequire是互相引用关系
     /// </summary>
     // [RequireComponent(typeof(PlotRequire))]
-    [RequireComponent(typeof(GfuInstance))]
     public class PlotModel : MonoBehaviour,IComparable {
         // ReSharper disable all MemberCanBePrivate.Global
         [Rename(nameof(plotRequire))]
@@ -36,10 +35,10 @@ namespace GalForUnity.Model.Plot {
         // [Rename("剧情流(已废弃)")] 
         // [Tooltip("默认挂载剧情流（PlotFlow），如果当前对象不存在剧情流，则会自动创建")]
         // public PlotFlow plotFlow;
-        [FormerlySerializedAs("PlotFlowGraph")]
-        [Rename(nameof(SceneGraph))] 
-        [Tooltip("当剧情流图存在时，默认执行剧情流图中的内容")]
-        public GfuSceneGraph SceneGraph;
+        // [FormerlySerializedAs("PlotFlowGraph")]
+        // [Rename(nameof(SceneGraph))] 
+        // [Tooltip("当剧情流图存在时，默认执行剧情流图中的内容")]
+        // public GfuSceneGraph SceneGraph;
         [Rename(nameof(actionModel))]
         [Tooltip("剧情结束完后，执行指定的操作")]
 #pragma warning disable 612
@@ -51,7 +50,7 @@ namespace GalForUnity.Model.Plot {
         /// 在开始时，向剧情酷注册本剧情，如果剧情列表的角色要求里存在null要求，则所有场景中，只要角色数据满足要求。都会触发本事件；
         /// </summary>
         void Start(){
-            if (!SceneGraph &&gameObject.TryGetComponent(out GfuSceneGraph gfuSceneGraph)) SceneGraph = gfuSceneGraph;
+            // if (!SceneGraph &&gameObject.TryGetComponent(out GfuSceneGraph gfuSceneGraph)) SceneGraph = gfuSceneGraph;
             plotRequire.plotModel  = this;
             if (plotRequire.sceneModels == null || plotRequire.sceneModels.Length == 0){
                 DailyStateChecker.GetInstance().RegisterPlotModel(SceneModel.NULL, this); //将空场景进行注册，所有场景均可以触发当前剧情

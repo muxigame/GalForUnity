@@ -38,7 +38,7 @@ namespace GalForUnity.Graph.SceneGraph{
             if (gfuGraphAsset == null || gfuGraphAsset.nodes == null || gfuGraphAsset.nodes.Count == 0){
                 var node = Activator.CreateInstance(typeof(MainNode)) as GfuNode;
                 AddElement(node);
-                Nodes.Add(GfuInstance.CreateInstanceID(), node);
+                Nodes.Add(new Guid().GetHashCode(), node);
                 return;
             }
 
@@ -64,9 +64,9 @@ namespace GalForUnity.Graph.SceneGraph{
                 keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID,graphData.GetNodeData(keyValuePair.Value.instanceID),null);
             }
         }
-
+        public class GfuBackground : GridBackground{ }
         public void InitEditorView(){
-            GridBackground gridBackground = new EditorGraph.GfuBackground();
+            GridBackground gridBackground = new GfuBackground();
             gridBackground.name = "GridBackground";
             Insert(0, gridBackground);
             SetupZoom(0.25f, 2.0f);

@@ -212,12 +212,12 @@ namespace GalForUnity.InstanceID{
                     return gfuInstance.GetComponent(type);
                 }
             }
-            if (type.IsSubclassOf(typeof(GraphData)) || type == typeof(GraphData)){
-                var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
-                foreach (var graphData in graphDatas){
-                    if (graphData.InstanceID == gfuInstanceID) return graphData;
-                }
-            }
+            // if (type.IsSubclassOf(typeof(GraphData)) || type == typeof(GraphData)){
+            //     var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
+            //     foreach (var graphData in graphDatas){
+            //         if (graphData.InstanceID == gfuInstanceID) return graphData;
+            //     }
+            // }
             return null;
         }
         public static Object FindAllWithGfuInstanceID(long gfuInstanceID){
@@ -232,10 +232,10 @@ namespace GalForUnity.InstanceID{
                     return gfuInstance;
                 }
             }
-            var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
-            foreach (var graphData in graphDatas){
-                if (graphData.InstanceID == gfuInstanceID) return graphData;
-            }
+            // var graphDatas = Resources.FindObjectsOfTypeAll<GraphData>();
+            // foreach (var graphData in graphDatas){
+            //     if (graphData.InstanceID == gfuInstanceID) return graphData;
+            // }
             return null;
         }
         private void OnDestroy(){ GfuInstances.Remove(instanceID); }

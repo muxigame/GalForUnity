@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalForUnity.External;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using UnityEngine;
@@ -118,7 +119,12 @@ namespace GalForUnity.Graph.SceneGraph{
                 gfuNodeAsset.Save(graphViewNode.Value, portMap);
                 gfuNodeAsset.instanceID = graphViewNode.Key;
             }
-            graphView.edges.ForEach(x => new GfuConnectionAsset().Save(portMap[x.input], portMap[x.output]));
+            Debug.Log(graphView.edges.ToList().Count);
+            graphView.edges.ForEach(x => {
+                if (portMap.ContainsKey(x.input) && portMap.ContainsKey(x.output)) 
+                    new GfuConnectionAsset().Save(portMap[x.input], portMap[x.output]);
+            });
+
         }
 
         internal static void Save(this GfuNodeAsset gfuNodeAsset, GfuNode gfuNode, Dictionary<Port, GfuPortAsset> portMap){

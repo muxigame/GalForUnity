@@ -34,8 +34,10 @@ namespace GalForUnity.Graph.SceneGraph{
         public long instanceID;
         public int gfuNodeTypeCode;
         public Vector4 position;
+        [HideInInspector]
         [SerializeReference]
         public List<GfuPortAsset> inputPort;
+        [HideInInspector]
         [SerializeReference]
         public List<GfuPortAsset> outputPort;
         public Type Type => NodeType.GetTypeByCode(gfuNodeTypeCode);
@@ -55,10 +57,8 @@ namespace GalForUnity.Graph.SceneGraph{
 
     [Serializable]
     public class GfuConnectionAsset{
-        [HideInInspector]
         [SerializeReference]
         public GfuPortAsset input;
-        [HideInInspector]
         [SerializeReference]
         public GfuPortAsset output;
     }

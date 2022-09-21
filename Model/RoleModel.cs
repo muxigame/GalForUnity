@@ -30,7 +30,6 @@ namespace GalForUnity.Model {
 
 	[ExecuteAlways]
 	[RequireComponent(typeof(RoleData))]
-	[RequireComponent(typeof(GfuInstance))]
 	[Serializable]
 	public class RoleModel : TransformSavableBehaviour {
 		[SerializeField]

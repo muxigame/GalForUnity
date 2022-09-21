@@ -144,7 +144,7 @@ namespace GalForUnity.System.Archive{
             {typeof(SceneController),-10},
             {typeof(ShowPlotView),-10},
             {typeof(OptionController),-20},
-            {typeof(PlotFlowController),-100},
+            // {typeof(PlotFlowController),-100},
         };
 
         /// <summary>

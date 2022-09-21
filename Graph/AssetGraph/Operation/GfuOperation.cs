@@ -160,11 +160,11 @@ namespace GalForUnity.Graph.AssetGraph.Operation{
                     for (int j = 0; j < node.GetInputConnectionCount(i); j++){
                         InputData[i].outportIndex=node.gfuNodeAsset.inputPort[i].connections[j].output.Index;
                         if(node.gfuNodeAsset.inputPort[i].connections[j] == null) continue;
-                        if (node.GetNode(node.gfuNodeAsset.inputPort[i].connections[j].output.node.instanceID) is GfuOperationNode parentGfuOperationNode){
-                            // if (!parentGfuOperationNode.GfuOperation.IsOver) continue;
-                            currentLevelGfuOperation.Add(Input.Data[i],parentGfuOperationNode); //注意这两行保存，这是保证节点重复链接时依旧不会被重复激活运行的关键
-                            if(!_gfuOperations.Contains(this)) _gfuOperations.Add(parentGfuOperationNode.GfuOperation);
-                        }
+                        // if (node.GetNode(node.gfuNodeAsset.inputPort[i].connections[j].output.node.instanceID) is GfuOperationNode parentGfuOperationNode){
+                        //     // if (!parentGfuOperationNode.GfuOperation.IsOver) continue;
+                        //     currentLevelGfuOperation.Add(Input.Data[i],parentGfuOperationNode); //注意这两行保存，这是保证节点重复链接时依旧不会被重复激活运行的关键
+                        //     if(!_gfuOperations.Contains(this)) _gfuOperations.Add(parentGfuOperationNode.GfuOperation);
+                        // }
                     }
                     // foreach (var portDataConnection in portData.connections){
                     //     InputData[i].outportIndex=portDataConnection.outputIndex;

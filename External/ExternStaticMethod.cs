@@ -114,44 +114,44 @@ namespace GalForUnity.External{
             return false;
         }
 
-        public static bool TryGetGfuInstance(this Object obj, out GfuInstance gfuInstance){
-            if (obj is GameObject gameObject){
-                gfuInstance = gameObject.GetComponent<GfuInstance>();
-                return gfuInstance;
-            }
-
-            if (obj is MonoBehaviour monoBehaviour){
-                gfuInstance = monoBehaviour.GetComponent<GfuInstance>();
-                return gfuInstance;
-            }
-
-            if (obj is Component component){
-                gfuInstance = component.GetComponent<GfuInstance>();
-                return gfuInstance;
-            }
-
-            gfuInstance = null;
-            return false;
-        }
-        public static bool TryAddGfuInstance(this Object obj, out GfuInstance gfuInstance){
-            if (obj is GameObject gameObject){
-                gfuInstance = gameObject.AddComponent<GfuInstance>();
-                return gfuInstance;
-            }
-
-            if (obj is MonoBehaviour monoBehaviour){
-                gfuInstance = monoBehaviour.gameObject.AddComponent<GfuInstance>();
-                return gfuInstance;
-            }
-
-            if (obj is Component component){
-                gfuInstance = component.gameObject.AddComponent<GfuInstance>();
-                return gfuInstance;
-            }
-
-            gfuInstance = null;
-            return false;
-        }
+        // public static bool TryGetGfuInstance(this Object obj, out GfuInstance gfuInstance){
+        //     if (obj is GameObject gameObject){
+        //         gfuInstance = gameObject.GetComponent<GfuInstance>();
+        //         return gfuInstance;
+        //     }
+        //
+        //     if (obj is MonoBehaviour monoBehaviour){
+        //         gfuInstance = monoBehaviour.GetComponent<GfuInstance>();
+        //         return gfuInstance;
+        //     }
+        //
+        //     if (obj is Component component){
+        //         gfuInstance = component.GetComponent<GfuInstance>();
+        //         return gfuInstance;
+        //     }
+        //
+        //     gfuInstance = null;
+        //     return false;
+        // }
+        // public static bool TryAddGfuInstance(this Object obj, out GfuInstance gfuInstance){
+        //     if (obj is GameObject gameObject){
+        //         gfuInstance = gameObject.AddComponent<GfuInstance>();
+        //         return gfuInstance;
+        //     }
+        //
+        //     if (obj is MonoBehaviour monoBehaviour){
+        //         gfuInstance = monoBehaviour.gameObject.AddComponent<GfuInstance>();
+        //         return gfuInstance;
+        //     }
+        //
+        //     if (obj is Component component){
+        //         gfuInstance = component.gameObject.AddComponent<GfuInstance>();
+        //         return gfuInstance;
+        //     }
+        //
+        //     gfuInstance = null;
+        //     return false;
+        // }
 
         public static FieldInfo[] GetFields<T>(this Type type,BindingFlags bindingFlags=BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic){
             var fieldInfos = type.GetFields(bindingFlags);
@@ -162,29 +162,29 @@ namespace GalForUnity.External{
             return fieldInfosList.ToArray();
         }
         
-        public static T FindObjectsWithGfuInstanceID<T>(this Object obj, long gfuInstanceID) where T : Object{
-            if (GfuInstance.GfuInstances.ContainsKey(gfuInstanceID)) return GfuInstance.GfuInstances[gfuInstanceID].GetComponent<T>();
-            foreach (var gfuInstance in ObjectOfType<GfuInstance>()){
-                if (gfuInstanceID == gfuInstance.instanceID){
-                    GfuInstance.GfuInstances.Add(gfuInstanceID, gfuInstance);
-                    return gfuInstance.GetComponent<T>();
-                }
-            }
-
-            return null;
-        }
-
-        public static T FindAllWithGfuInstanceID<T>(this Object obj, long gfuInstanceID) where T : Object{
-            if (GfuInstance.GfuInstances.ContainsKey(gfuInstanceID)) return GfuInstance.GfuInstances[gfuInstanceID].GetComponent<T>();
-            foreach (var gfuInstance in AllOfType<GfuInstance>()){
-                if (gfuInstanceID == gfuInstance.instanceID){
-                    GfuInstance.GfuInstances.Add(gfuInstanceID, gfuInstance);
-                    return gfuInstance.GetComponent<T>();
-                }
-            }
-
-            return null;
-        }
+        // public static T FindObjectsWithGfuInstanceID<T>(this Object obj, long gfuInstanceID) where T : Object{
+        //     if (GfuInstance.GfuInstances.ContainsKey(gfuInstanceID)) return GfuInstance.GfuInstances[gfuInstanceID].GetComponent<T>();
+        //     foreach (var gfuInstance in ObjectOfType<GfuInstance>()){
+        //         if (gfuInstanceID == gfuInstance.instanceID){
+        //             GfuInstance.GfuInstances.Add(gfuInstanceID, gfuInstance);
+        //             return gfuInstance.GetComponent<T>();
+        //         }
+        //     }
+        //
+        //     return null;
+        // }
+        //
+        // public static T FindAllWithGfuInstanceID<T>(this Object obj, long gfuInstanceID) where T : Object{
+        //     if (GfuInstance.GfuInstances.ContainsKey(gfuInstanceID)) return GfuInstance.GfuInstances[gfuInstanceID].GetComponent<T>();
+        //     foreach (var gfuInstance in AllOfType<GfuInstance>()){
+        //         if (gfuInstanceID == gfuInstance.instanceID){
+        //             GfuInstance.GfuInstances.Add(gfuInstanceID, gfuInstance);
+        //             return gfuInstance.GetComponent<T>();
+        //         }
+        //     }
+        //
+        //     return null;
+        // }
 
         private static T[] ObjectOfType<T>() where T : Object{ return Object.FindObjectsOfType<T>(); }
         private static T[] AllOfType<T>() where T : Object{ return Resources.FindObjectsOfTypeAll<T>(); }
@@ -196,110 +196,110 @@ namespace GalForUnity.External{
 
         public static IList<T> Clone<T>(this IList<T> listToClone) where T : ICloneable{ return listToClone.Select(item => (T) item.Clone()).ToList(); }
 
-        /// <summary>
-        /// Editor Method 解析节点数据中的值
-        /// </summary>
-        /// <param name="dataInfo"></param>
-        /// <param name="fieldValue"></param>
-        /// <param name="fieldInfo"></param>
-        public static void ParseField(this DataInfo dataInfo, object fieldValue, FieldInfo fieldInfo){
-            if(fieldValue ==null) return;
-#if UNITY_EDITOR
-            if (fieldInfo.GetCustomAttribute<NonSerializedAttribute>() != null) return;
-            //保存List等字段，字典不支持
-            if (fieldInfo.FieldType!=typeof(string)&&fieldInfo.FieldType.GetInterface(nameof(IEnumerable))!=null){
-                var enumerable = fieldValue as IEnumerable;
-                var nodeFieldInfos = new List<NodeData.NodeFieldInfo>();
-                var listData = new NodeData.ListData();
-                if (enumerable != null){
-                    foreach (var obj in enumerable){
-                        if (fieldValue is Object){
-                            ParseIDField(nodeFieldInfos, obj, obj.GetType());
-                        }
+//         /// <summary>
+//         /// Editor Method 解析节点数据中的值
+//         /// </summary>
+//         /// <param name="dataInfo"></param>
+//         /// <param name="fieldValue"></param>
+//         /// <param name="fieldInfo"></param>
+//         public static void ParseField(this DataInfo dataInfo, object fieldValue, FieldInfo fieldInfo){
+//             if(fieldValue ==null) return;
+// #if UNITY_EDITOR
+//             if (fieldInfo.GetCustomAttribute<NonSerializedAttribute>() != null) return;
+//             //保存List等字段，字典不支持
+//             if (fieldInfo.FieldType!=typeof(string)&&fieldInfo.FieldType.GetInterface(nameof(IEnumerable))!=null){
+//                 var enumerable = fieldValue as IEnumerable;
+//                 var nodeFieldInfos = new List<NodeData.NodeFieldInfo>();
+//                 var listData = new NodeData.ListData();
+//                 if (enumerable != null){
+//                     foreach (var obj in enumerable){
+//                         if (fieldValue is Object){
+//                             ParseIDField(nodeFieldInfos, obj, obj.GetType());
+//                         }
+//
+//                         if (!fieldInfo.IsNotSerialized){ //可序列化的非VisualElement字段可被序列化，并且在之后被反序列化为对象，赋值给Node节点
+//                             ParseJSONField(nodeFieldInfos, obj, obj.GetType());
+//                         }
+//                     }
+//                 } else{
+//                     Debug.Log("This list is empty");
+//                 }
+//                 listData.type = fieldInfo.FieldType.ToString();
+//                 listData.assembly = fieldInfo.FieldType.Assembly.FullName;
+//                 listData.name = fieldInfo.Name;
+//                 if (fieldValue is Object){
+//                     listData.idField = nodeFieldInfos;
+//                     dataInfo.listField.Add(listData);
+//                 }
+//                 if (!fieldInfo.IsNotSerialized){ //可序列化的非VisualElement字段可被序列化，并且在之后被反序列化为对象，赋值给Node节点
+//                     listData.jsonField = nodeFieldInfos;
+//                     dataInfo.listField.Add(listData);
+//                 }
+//                 return;
+//             }
+//             //保存普通字段
+//             if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
+//                 ParseIDField(dataInfo.idField, fieldValue, fieldInfo);
+//                 return;
+//             }
+//
+//             if (!fieldInfo.IsNotSerialized){ //可序列化的非VisualElement字段可被序列化，并且在之后被反序列化为对象，赋值给Node节点
+//                 ParseJSONField(dataInfo.jsonField, fieldValue, fieldInfo);
+//             }
+//
+// #endif
+//         }
 
-                        if (!fieldInfo.IsNotSerialized){ //可序列化的非VisualElement字段可被序列化，并且在之后被反序列化为对象，赋值给Node节点
-                            ParseJSONField(nodeFieldInfos, obj, obj.GetType());
-                        }
-                    }
-                } else{
-                    Debug.Log("This list is empty");
-                }
-                listData.type = fieldInfo.FieldType.ToString();
-                listData.assembly = fieldInfo.FieldType.Assembly.FullName;
-                listData.name = fieldInfo.Name;
-                if (fieldValue is Object){
-                    listData.idField = nodeFieldInfos;
-                    dataInfo.listField.Add(listData);
-                }
-                if (!fieldInfo.IsNotSerialized){ //可序列化的非VisualElement字段可被序列化，并且在之后被反序列化为对象，赋值给Node节点
-                    listData.jsonField = nodeFieldInfos;
-                    dataInfo.listField.Add(listData);
-                }
-                return;
-            }
-            //保存普通字段
-            if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
-                ParseIDField(dataInfo.idField, fieldValue, fieldInfo);
-                return;
-            }
+//         /// <summary>
+//         /// Editor Method 解析节点数据中的值
+//         /// </summary>
+//         /// <param name="dataInfo"></param>
+//         /// <param name="fieldValue"></param>
+//         /// <param name="fieldInfo"></param>
+//         public static void ParseIDField(List<NodeData.NodeFieldInfo> fieldinfo, object fieldValue, FieldInfo fieldInfo){
+//             if(fieldValue ==null) return;
+// #if UNITY_EDITOR
+//             if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
+//                 if(!o) return;
+//                 if (AssetDatabase.IsNativeAsset(o)){
+//                     fieldinfo.Add(new NodeData.NodeFieldInfo() {
+//                         name = fieldInfo.Name, scriptableObject = o, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
+//                     });
+//                 } else if (o.TryGetGfuInstance(out GfuInstance gfuInstance)){
+//                     fieldinfo.Add(new NodeData.NodeFieldInfo() {
+//                         name = fieldInfo.Name, instanceID = gfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
+//                     });
+//                 } else{
+//                     Debug.LogError("没有找到GfuInstanceID,且这不是一个本地资源对象,这意味着这个对象没有被保存：" + fieldValue);
+//                 }
+//             }
+// #endif
+//         }
 
-            if (!fieldInfo.IsNotSerialized){ //可序列化的非VisualElement字段可被序列化，并且在之后被反序列化为对象，赋值给Node节点
-                ParseJSONField(dataInfo.jsonField, fieldValue, fieldInfo);
-            }
-
-#endif
-        }
-
-        /// <summary>
-        /// Editor Method 解析节点数据中的值
-        /// </summary>
-        /// <param name="dataInfo"></param>
-        /// <param name="fieldValue"></param>
-        /// <param name="fieldInfo"></param>
-        public static void ParseIDField(List<NodeData.NodeFieldInfo> fieldinfo, object fieldValue, FieldInfo fieldInfo){
-            if(fieldValue ==null) return;
-#if UNITY_EDITOR
-            if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
-                if(!o) return;
-                if (AssetDatabase.IsNativeAsset(o)){
-                    fieldinfo.Add(new NodeData.NodeFieldInfo() {
-                        name = fieldInfo.Name, scriptableObject = o, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
-                    });
-                } else if (o.TryGetGfuInstance(out GfuInstance gfuInstance)){
-                    fieldinfo.Add(new NodeData.NodeFieldInfo() {
-                        name = fieldInfo.Name, instanceID = gfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
-                    });
-                } else{
-                    Debug.LogError("没有找到GfuInstanceID,且这不是一个本地资源对象,这意味着这个对象没有被保存：" + fieldValue);
-                }
-            }
-#endif
-        }
-
-        /// <summary>
-        /// Editor Method 解析节点数据中的值
-        /// </summary>
-        /// <param name="fieldinfo"></param>
-        /// <param name="fieldValue"></param>
-        /// <param name="type"></param>
-        public static void ParseIDField(List<NodeData.NodeFieldInfo> fieldinfo, object fieldValue, Type type){
-            if(fieldValue ==null) return;
-#if UNITY_EDITOR
-            if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
-                if (AssetDatabase.IsNativeAsset(o)){
-                    fieldinfo.Add(new NodeData.NodeFieldInfo() {
-                        name = type.Name, scriptableObject = o, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
-                    });
-                } else if (o.TryGetGfuInstance(out GfuInstance gfuInstance)){
-                    fieldinfo.Add(new NodeData.NodeFieldInfo() {
-                        name = type.Name, instanceID = gfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
-                    });
-                } else{
-                    Debug.LogError("没有找到GfuInstanceID,且这不是一个本地资源对象,这意味着这个对象没有被保存：" + fieldValue);
-                }
-            }
-#endif
-        }
+//         /// <summary>
+//         /// Editor Method 解析节点数据中的值
+//         /// </summary>
+//         /// <param name="fieldinfo"></param>
+//         /// <param name="fieldValue"></param>
+//         /// <param name="type"></param>
+//         public static void ParseIDField(List<NodeData.NodeFieldInfo> fieldinfo, object fieldValue, Type type){
+//             if(fieldValue ==null) return;
+// #if UNITY_EDITOR
+//             if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
+//                 if (AssetDatabase.IsNativeAsset(o)){
+//                     fieldinfo.Add(new NodeData.NodeFieldInfo() {
+//                         name = type.Name, scriptableObject = o, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
+//                     });
+//                 } else if (o.TryGetGfuInstance(out GfuInstance gfuInstance)){
+//                     fieldinfo.Add(new NodeData.NodeFieldInfo() {
+//                         name = type.Name, instanceID = gfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
+//                     });
+//                 } else{
+//                     Debug.LogError("没有找到GfuInstanceID,且这不是一个本地资源对象,这意味着这个对象没有被保存：" + fieldValue);
+//                 }
+//             }
+// #endif
+//         }
 
         /// <summary>
         /// Editor Method 解析节点数据中的值
@@ -334,46 +334,46 @@ namespace GalForUnity.External{
             }
 #endif
         }
-        /// <summary>
-        /// Editor Method 解析节点数据中的值
-        /// </summary>
-        /// <param name="dataInfo"></param>
-        /// <param name="fieldValue"></param>
-        /// <param name="fieldInfo"></param>
-        public static void ParseField(this DataInfo dataInfo, object fieldValue, PropertyInfo fieldInfo){
-#if UNITY_EDITOR
-            if (fieldValue != null){
-                if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
-                    if (AssetDatabase.IsNativeAsset(o)){
-                        dataInfo.idField.Add(new NodeData.NodeFieldInfo() {
-                            name = fieldInfo.Name, scriptableObject = o, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
-                        });
-                    } else if (o.TryGetGfuInstance(out GfuInstance gfuInstance)){
-                        dataInfo.idField.Add(new NodeData.NodeFieldInfo() {
-                            name = fieldInfo.Name, instanceID = gfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
-                        });
-                    } else{
-                        if (o.TryAddGfuInstance(out GfuInstance beAddedGfuInstance)){
-                            dataInfo.idField.Add(new NodeData.NodeFieldInfo() {
-                                name = fieldInfo.Name, instanceID = beAddedGfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
-                            });
-                        } else{
-                            Debug.LogError("The GfuInstanceID was not found and cannot be added, and this is not a local resource object, meaning the object is not saved"+fieldValue);
-                        }
-                    }
-                    return;
-                }
-                // Debug.Log(fieldInfo.PropertyType.IsSerializable);
-                if (!(fieldValue is VisualElement)){
-                    Type fieldType = fieldValue.GetType();
-                    dataInfo.jsonField.Add(new NodeData.NodeFieldInfo() {
-                        name = fieldInfo.Name, data = fieldType.IsPrimitive || fieldType == typeof(string) ? Convert.ToString(fieldValue) : JsonUtility.ToJson(fieldValue), type = fieldType.FullName, assembly = fieldType.Assembly.FullName
-                    });
-                }
-            }
-
-#endif
-        }
+//         /// <summary>
+//         /// Editor Method 解析节点数据中的值
+//         /// </summary>
+//         /// <param name="dataInfo"></param>
+//         /// <param name="fieldValue"></param>
+//         /// <param name="fieldInfo"></param>
+//         public static void ParseField(this DataInfo dataInfo, object fieldValue, PropertyInfo fieldInfo){
+// #if UNITY_EDITOR
+//             if (fieldValue != null){
+//                 if (fieldValue is Object o){ //如果是mono字段包括GameObject和MonoBehavior及其子类，那么则保存其的InstanceID，此InstanceID为GfuInstance中的ID。
+//                     if (AssetDatabase.IsNativeAsset(o)){
+//                         dataInfo.idField.Add(new NodeData.NodeFieldInfo() {
+//                             name = fieldInfo.Name, scriptableObject = o, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
+//                         });
+//                     } else if (o.TryGetGfuInstance(out GfuInstance gfuInstance)){
+//                         dataInfo.idField.Add(new NodeData.NodeFieldInfo() {
+//                             name = fieldInfo.Name, instanceID = gfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
+//                         });
+//                     } else{
+//                         if (o.TryAddGfuInstance(out GfuInstance beAddedGfuInstance)){
+//                             dataInfo.idField.Add(new NodeData.NodeFieldInfo() {
+//                                 name = fieldInfo.Name, instanceID = beAddedGfuInstance.instanceID, type = o.GetType().FullName, assembly = o.GetType().Assembly.FullName
+//                             });
+//                         } else{
+//                             Debug.LogError("The GfuInstanceID was not found and cannot be added, and this is not a local resource object, meaning the object is not saved"+fieldValue);
+//                         }
+//                     }
+//                     return;
+//                 }
+//                 // Debug.Log(fieldInfo.PropertyType.IsSerializable);
+//                 if (!(fieldValue is VisualElement)){
+//                     Type fieldType = fieldValue.GetType();
+//                     dataInfo.jsonField.Add(new NodeData.NodeFieldInfo() {
+//                         name = fieldInfo.Name, data = fieldType.IsPrimitive || fieldType == typeof(string) ? Convert.ToString(fieldValue) : JsonUtility.ToJson(fieldValue), type = fieldType.FullName, assembly = fieldType.Assembly.FullName
+//                     });
+//                 }
+//             }
+//
+// #endif
+//         }
 
         public static Dictionary<T1, T2> Clone<T1, T2>(this Dictionary<T1, T2> listToClone) where T2 : ICloneable{
             Dictionary<T1, T2> newDictionary = new Dictionary<T1, T2>();

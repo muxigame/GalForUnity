@@ -1671,6 +1671,34 @@ MonoBehaviour:
     - instanceID: 5505869651484364539
       objects: []
       values: []
+    - instanceID: 5104859790776059173
+      objects: []
+      values:
+      - fieldName: ______PortData0
+        FieldValue: 0
+      - fieldName: ______PortData1
+        FieldValue: 0
+      - fieldName: ______PortData2
+        FieldValue: 0
+      - fieldName: loop
+        FieldValue: False
+      - fieldName: durationTime
+        FieldValue: 0
+      - fieldName: storageExpanded
+        FieldValue: True
+    - instanceID: 5491013721416797229
+      objects:
+      - fieldName: Script
+        FieldValue: {fileID: 0}
+      values:
+      - fieldName: name
+        FieldValue: 
+      - fieldName: speak
+        FieldValue: 
+      - fieldName: isCanJump
+        FieldValue: True
+      - fieldName: isAutoHighLight
+        FieldValue: True
   references:
     version: 1
     00000000:
@@ -1710,7 +1738,8 @@ MonoBehaviour:
       data:
         node:
           id: 0
-        connections: []
+        connections:
+        - id: 11
         portType: 1
     00000004:
       type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
@@ -1752,7 +1781,8 @@ MonoBehaviour:
       data:
         node:
           id: 2
-        connections: []
+        connections:
+        - id: 11
         portType: 0
     0000000A:
       type: {class: GfuPortAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
@@ -1761,6 +1791,13 @@ MonoBehaviour:
           id: 2
         connections: []
         portType: 1
+    0000000B:
+      type: {class: GfuConnectionAsset, ns: GalForUnity.Graph.SceneGraph, asm: Assembly-CSharp}
+      data:
+        input:
+          id: 9
+        output:
+          id: 3
 --- !u!1 &980913359
 GameObject:
   m_ObjectHideFlags: 0

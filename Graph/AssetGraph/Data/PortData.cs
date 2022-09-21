@@ -57,7 +57,7 @@ namespace GalForUnity.Graph.AssetGraph.Data{
                         var inputViewValue = type.BaseType?.GetProperty("value");
                         if (inputViewValue != null){
                             try{
-                                this.ParseField(inputViewValue.GetValue(gfuPort.InputView.fieldContainer[0]), inputViewValue);
+                                // this.ParseField(inputViewValue.GetValue(gfuPort.InputView.fieldContainer[0]), inputViewValue);
                             } catch (Exception e){
                                 Debug.Log(GfuLanguage.ParseLog("Parsing the port failed, which means that the port data was not saved" + e));
                             }

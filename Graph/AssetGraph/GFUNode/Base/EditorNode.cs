@@ -36,11 +36,11 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         [NonSerialized]
         public NodeData nodeData;
 
-        /// <summary>
-        /// 如果当前节点数据被创建为图,则能访问到GfuGraph的数据
-        /// </summary>
-        [NonSerialized]
-        public GfuGraph GfuGraph;
+        // /// <summary>
+        // /// 如果当前节点数据被创建为图,则能访问到GfuGraph的数据
+        // /// </summary>
+        // [NonSerialized]
+        // public GfuGraph GfuGraph;
 
         protected EditorNode(){
 #if UNITY_EDITOR
@@ -226,7 +226,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
             Vector4 vector4 = new Vector4();
             if (otherNodeData) vector4 = otherNodeData.vector4;
             float scale = 1;
-            if (nodeData && nodeData.GraphData) scale = nodeData.GraphData.scale;
+            // if (nodeData && nodeData.GraphData) scale = nodeData.GraphData.scale;
             rect.position = new Vector2(vector4.x, vector4.y - 19) * (1f / scale);
             this.SetPosition(rect);
 #endif

@@ -122,7 +122,7 @@ namespace GalForUnity.Editor
     }
 
 #pragma warning disable 612
-    [CustomEditor(typeof(PlotFlow))]
+    // [CustomEditor(typeof(PlotFlow))]
 #pragma warning restore 612
     public class PoltItemReorderableListEditor : BaseEditor{
         private ReorderableList _reorderableList;
@@ -160,36 +160,36 @@ namespace GalForUnity.Editor
                     }
                 }
             };
-            _reorderableList = new ReorderableList(serializedObject, serializedObject.FindPropsOfType<List<PlotItem>>()[0]){
-                elementHeight = 108,
-                drawElementCallback = (rect, index, selected, focused) => {
-                    SerializedProperty item = _reorderableList.serializedProperty.GetArrayElementAtIndex(index);
-                    EditorGUI.PropertyField(rect, item, label: new GUIContent("剧情项" + index));
-                    // var subrect = new Rect(rect){
-                    //     y = rect.y + rect.height,height = 40
-                    // };
-                    // rects.Add(subrect);
-                },
-                onAddCallback = (list) => {
-                    if (list.serializedProperty != null){
-                        list.serializedProperty.arraySize++;
-                        list.index = list.serializedProperty.arraySize - 1;
-                        SerializedProperty item = list.serializedProperty.GetArrayElementAtIndex(list.index);
-                        // item = null;
-                        foreach (SerializedProperty o in item){ 
-                            if(o.name.Contains("anim"))o.objectReferenceValue=null;
-                        }
-                        serializedObject.ApplyModifiedProperties();
-                    } else{
-                        ReorderableList.defaultBehaviours.DoAddButton(list);
-                    }
-                },drawHeaderCallback = (rect) => {
-                    GUI.Label(rect,"剧情流");
-                },onRemoveCallback = (list) => {
-                    // _plotAnimationReorderableList.RemoveAt(list.index);
-                    ReorderableList.defaultBehaviours.DoRemoveButton(list);
-                }
-            };
+            // _reorderableList = new ReorderableList(serializedObject, serializedObject.FindPropsOfType<List<PlotItem>>()[0]){
+            //     elementHeight = 108,
+            //     drawElementCallback = (rect, index, selected, focused) => {
+            //         SerializedProperty item = _reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            //         EditorGUI.PropertyField(rect, item, label: new GUIContent("剧情项" + index));
+            //         // var subrect = new Rect(rect){
+            //         //     y = rect.y + rect.height,height = 40
+            //         // };
+            //         // rects.Add(subrect);
+            //     },
+            //     onAddCallback = (list) => {
+            //         if (list.serializedProperty != null){
+            //             list.serializedProperty.arraySize++;
+            //             list.index = list.serializedProperty.arraySize - 1;
+            //             SerializedProperty item = list.serializedProperty.GetArrayElementAtIndex(list.index);
+            //             // item = null;
+            //             foreach (SerializedProperty o in item){ 
+            //                 if(o.name.Contains("anim"))o.objectReferenceValue=null;
+            //             }
+            //             serializedObject.ApplyModifiedProperties();
+            //         } else{
+            //             ReorderableList.defaultBehaviours.DoAddButton(list);
+            //         }
+            //     },drawHeaderCallback = (rect) => {
+            //         GUI.Label(rect,"剧情流");
+            //     },onRemoveCallback = (list) => {
+            //         // _plotAnimationReorderableList.RemoveAt(list.index);
+            //         ReorderableList.defaultBehaviours.DoRemoveButton(list);
+            //     }
+            // };
             
             // _reorderableList.elementHeight += 50;
         }

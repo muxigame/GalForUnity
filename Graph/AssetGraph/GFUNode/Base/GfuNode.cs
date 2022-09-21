@@ -159,7 +159,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
                 if (output.connections == null || output.connections.Count == 0) throw new NullReferenceException(GfuLanguage.ParseLog("The current port is not connected") + this);
                 var input = output.connections.FirstOrDefault()?.Input;
                 if (input == null) throw new NullReferenceException(GfuLanguage.ParseLog("The current connection has no input node") + this);
-                inputNode = GfuGraph.GetNode(input.instanceID);
+                // inputNode = GfuGraph.GetNode(input.instanceID);
             }
 
             for (var i = invocationList.Length - 1; i >= 0; i--){
@@ -197,7 +197,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         /// <summary>
         /// NormalMethod 判断当前节点是否还有可能存在的下一个节点
         /// </summary>
-        public virtual GfuNode Next(int portIndex){ return GfuGraph.GetNode(nodeData.OutputPort?[portIndex]?.connections?.FirstOrDefault()?.Input.instanceID ?? 0); }
+        // public virtual GfuNode Next(int portIndex){ return GfuGraph.GetNode(nodeData.OutputPort?[portIndex]?.connections?.FirstOrDefault()?.Input.instanceID ?? 0); }
 
         [Obsolete]
         public GfuNode ToGfuNode(NodeData otherNodeData){
@@ -205,50 +205,50 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
             return this;
         }
 
-        /// <summary>
-        /// 获得Input端口指定端口索引，链接索引的指定节点，如果错误的创建了图和节点，可能返回null值
-        /// </summary>
-        /// <param name="portIndex"></param>
-        /// <param name="connectionIndex"></param>
-        /// <returns></returns>
-        /// <exception cref="NullReferenceException">当获取失败的时触发</exception>
-        public virtual GfuNode GetInputNode(int portIndex, int connectionIndex){
-            if (_nodeFindProvider != null) return _nodeFindProvider.GetOutputNode(portIndex,connectionIndex);
-            var portData = nodeData.InputPort[portIndex];
-            if (GfuGraph == null) throw new NullReferenceException("Graph does not exist, node may have been incorrectly initialized");
-            if (portData == null) throw new NullReferenceException("Get input portData failed,portIndex:" + portIndex);
-            var portDataConnection = portData.connections[connectionIndex];
-            if (portDataConnection == null) throw new NullReferenceException("Get connect failed,portIndex:" + portIndex + "connectIndex:" + connectionIndex);
-            return GfuGraph.GetNode(portDataConnection.Output.instanceID);
-        }
+        // /// <summary>
+        // /// 获得Input端口指定端口索引，链接索引的指定节点，如果错误的创建了图和节点，可能返回null值
+        // /// </summary>
+        // /// <param name="portIndex"></param>
+        // /// <param name="connectionIndex"></param>
+        // /// <returns></returns>
+        // /// <exception cref="NullReferenceException">当获取失败的时触发</exception>
+        // public virtual GfuNode GetInputNode(int portIndex, int connectionIndex){
+        //     if (_nodeFindProvider != null) return _nodeFindProvider.GetOutputNode(portIndex,connectionIndex);
+        //     var portData = nodeData.InputPort[portIndex];
+        //     if (GfuGraph == null) throw new NullReferenceException("Graph does not exist, node may have been incorrectly initialized");
+        //     if (portData == null) throw new NullReferenceException("Get input portData failed,portIndex:" + portIndex);
+        //     var portDataConnection = portData.connections[connectionIndex];
+        //     if (portDataConnection == null) throw new NullReferenceException("Get connect failed,portIndex:" + portIndex + "connectIndex:" + connectionIndex);
+        //     return GfuGraph.GetNode(portDataConnection.Output.instanceID);
+        // }
 
-        /// <summary>
-        /// 获得Input端口指定端口索引的所有节点，如果错误的创建了图和节点，可能返回null值
-        /// </summary>
-        /// <param name="portIndex"></param>
-        /// <returns></returns>
-        /// <exception cref="NullReferenceException">当获取失败的时触发</exception>
-        public virtual List<GfuNode> GetInputNodes(int portIndex){
-            if (_nodeFindProvider != null) return _nodeFindProvider.GetInputNodes(portIndex);
-            List<GfuNode> listNode = new List<GfuNode>();
-            if (GfuGraph == null) throw new NullReferenceException("Graph does not exist, node may have been incorrectly initialized");
-            var connections = nodeData.InputPort[portIndex].connections;
-            if (connections == null) throw new NullReferenceException("The link to the node input segment was not obtained");
-            foreach (var connection in connections){
-                listNode.Add(GfuGraph.GetNode(connection.Output.instanceID));
-            }
-            return listNode;
-        }
-
-        /// <summary>
-        /// 通过instanceID获得节点，如果错误的初始化了图或节点则会返回null
-        /// </summary>
-        /// <param name="instanceID"></param>
-        /// <returns></returns>
-        public GfuNode GetNode(long instanceID){
-            if (_nodeFindProvider != null) return _nodeFindProvider.GetNode(instanceID);
-            return GfuGraph?.GetNode(instanceID);
-        }
+        // /// <summary>
+        // /// 获得Input端口指定端口索引的所有节点，如果错误的创建了图和节点，可能返回null值
+        // /// </summary>
+        // /// <param name="portIndex"></param>
+        // /// <returns></returns>
+        // /// <exception cref="NullReferenceException">当获取失败的时触发</exception>
+        // public virtual List<GfuNode> GetInputNodes(int portIndex){
+        //     if (_nodeFindProvider != null) return _nodeFindProvider.GetInputNodes(portIndex);
+        //     List<GfuNode> listNode = new List<GfuNode>();
+        //     if (GfuGraph == null) throw new NullReferenceException("Graph does not exist, node may have been incorrectly initialized");
+        //     var connections = nodeData.InputPort[portIndex].connections;
+        //     if (connections == null) throw new NullReferenceException("The link to the node input segment was not obtained");
+        //     foreach (var connection in connections){
+        //         listNode.Add(GfuGraph.GetNode(connection.Output.instanceID));
+        //     }
+        //     return listNode;
+        // }
+        //
+        // /// <summary>
+        // /// 通过instanceID获得节点，如果错误的初始化了图或节点则会返回null
+        // /// </summary>
+        // /// <param name="instanceID"></param>
+        // /// <returns></returns>
+        // public GfuNode GetNode(long instanceID){
+        //     if (_nodeFindProvider != null) return _nodeFindProvider.GetNode(instanceID);
+        //     return GfuGraph?.GetNode(instanceID);
+        // }
 
         /// <summary>
         /// 判断Input端指定的端口是否存在链接

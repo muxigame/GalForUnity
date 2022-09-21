@@ -52,12 +52,12 @@ namespace GalForUnity.Graph.AssetGraph.Tool{
                         }
 
                         // Debug.Log(keyValuePair.type);
-                        var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(keyValuePair.instanceID, fieldType);
-                        if (gfuInstance == null){
-                            Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
-                        }
-
-                        propertyInfo.SetValue(gfuInputView, gfuInstance);
+                        // var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(keyValuePair.instanceID, fieldType);
+                        // if (gfuInstance == null){
+                        //     Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
+                        // }
+                        //
+                        // propertyInfo.SetValue(gfuInputView, gfuInstance);
                         return;
                     }
                 }
@@ -180,13 +180,13 @@ namespace GalForUnity.Graph.AssetGraph.Tool{
             if (!string.IsNullOrEmpty(nodeFieldInfo.assembly) || fieldType == null){
                 if (Assembly.GetExecutingAssembly().FullName != nodeFieldInfo.assembly) fieldType = Assembly.Load(nodeFieldInfo.assembly).GetType(nodeFieldInfo.type);
             }
+            //
+            // var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(nodeFieldInfo.instanceID, fieldType);
+            // if (gfuInstance == null){
+            //     Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
+            // }
 
-            var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(nodeFieldInfo.instanceID, fieldType);
-            if (gfuInstance == null){
-                Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
-            }
-
-            return gfuInstance;
+            return 1;
         }
 
         private static void SetIDValue(NodeData.NodeFieldInfo keyValuePair, object obj){
@@ -204,14 +204,14 @@ namespace GalForUnity.Graph.AssetGraph.Tool{
                 if (Assembly.GetExecutingAssembly().FullName != keyValuePair.assembly) fieldType = Assembly.Load(keyValuePair.assembly).GetType(keyValuePair.type);
             }
 
-            var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(keyValuePair.instanceID, fieldType);
-            if (gfuInstance == null){
-                Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
-            }
+            // var gfuInstance = GfuInstance.FindAllWithGfuInstanceID(keyValuePair.instanceID, fieldType);
+            // if (gfuInstance == null){
+            //     Debug.LogError(GfuLanguage.ParseLog("Do not save, or because the scene switch caused the object lost, cannot get the value of the object from the ID, you can try to open the original scene and try again, do not save!"));
+            // }
 
-            if (field is FieldInfo fieldInfo2)
-                fieldInfo2.SetValue(obj, gfuInstance);
-            else if (field is PropertyInfo propertyInfo) propertyInfo.SetValue(obj, gfuInstance);
+            // if (field is FieldInfo fieldInfo2)
+            //     fieldInfo2.SetValue(obj, gfuInstance);
+            // else if (field is PropertyInfo propertyInfo) propertyInfo.SetValue(obj, gfuInstance);
         }
 
         private static void SetListValue(NodeData.ListData listData, object obj, List<NodeData.NodeFieldInfo> nodeFieldInfos){

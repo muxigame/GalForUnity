@@ -81,7 +81,7 @@ namespace GalForUnity.Model{
             }
         
             if (customEvent != null||customEventNoParam != null){
-                ExecuteCustom(GameSystem.Data.PlotFlowController.currentPlotModel,GameSystem.Data.CurrentSceneModel);
+                // ExecuteCustom(GameSystem.Data.PlotFlowController.currentPlotModel,GameSystem.Data.CurrentSceneModel);
             }
         }
         
@@ -93,7 +93,7 @@ namespace GalForUnity.Model{
         /// 以默认操作执行活动
         /// </summary>
         public virtual void DoAction(){
-            DoAction(GameSystem.Data.PlotFlowController.currentPlotModel);
+            // DoAction(GameSystem.Data.PlotFlowController.currentPlotModel);
         }
         
         public void GotoScene(){

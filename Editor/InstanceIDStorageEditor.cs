@@ -11,7 +11,6 @@
 
 
 using GalForUnity.External;
-using GalForUnity.Graph.AssetGraph.Data.Property;
 using GalForUnity.InstanceID;
 using UnityEditor;
 using UnityEngine;
@@ -34,18 +33,18 @@ namespace GalForUnity.Editor{
                         if(!x.HasInstanceID(gfuInstance.instanceID)) x.Add(gfuInstance.instanceID,AssetDatabase.GetAssetPath(gfuInstance));
                     }
                 }
-                PlotFlowGraphData[] graphDatas = Resources.FindObjectsOfTypeAll<PlotFlowGraphData>();
-                foreach (var graphData in graphDatas){
-                    if (EditorUtility.IsPersistent(graphData)){
-                        if(!x.HasInstanceID(graphData.InstanceID)) x.Add(graphData.InstanceID,AssetDatabase.GetAssetPath(graphData));
-                    }
-                }
-                PlotItemGraphData[] plotItemGraphDatas = Resources.FindObjectsOfTypeAll<PlotItemGraphData>();
-                foreach (var graphData in plotItemGraphDatas){
-                    if (EditorUtility.IsPersistent(graphData)){
-                        if(!x.HasInstanceID(graphData.InstanceID)) x.Add(graphData.InstanceID,AssetDatabase.GetAssetPath(graphData));
-                    }
-                }
+                // PlotFlowGraphData[] graphDatas = Resources.FindObjectsOfTypeAll<PlotFlowGraphData>();
+                // foreach (var graphData in graphDatas){
+                //     if (EditorUtility.IsPersistent(graphData)){
+                //         if(!x.HasInstanceID(graphData.InstanceID)) x.Add(graphData.InstanceID,AssetDatabase.GetAssetPath(graphData));
+                //     }
+                // }
+                // PlotItemGraphData[] plotItemGraphDatas = Resources.FindObjectsOfTypeAll<PlotItemGraphData>();
+                // foreach (var graphData in plotItemGraphDatas){
+                //     if (EditorUtility.IsPersistent(graphData)){
+                //         if(!x.HasInstanceID(graphData.InstanceID)) x.Add(graphData.InstanceID,AssetDatabase.GetAssetPath(graphData));
+                //     }
+                // }
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
                 // x.InitialGameSystem(false);

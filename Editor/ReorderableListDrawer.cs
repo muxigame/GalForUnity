@@ -110,7 +110,7 @@ namespace GalForUnity.Editor
     //     }
     // }
 
-    [CustomPropertyDrawer(typeof(PlotItem))]
+    // [CustomPropertyDrawer(typeof(PlotItem))]
     public class PlotFlowItemDrawer : PropertyDrawer{
         // ReorderableList  _plotAnimationReorderable;
         public override VisualElement CreatePropertyGUI(SerializedProperty property)

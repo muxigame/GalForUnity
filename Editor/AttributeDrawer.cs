@@ -35,13 +35,13 @@ namespace GalForUnity.Editor{
 			}
 			GUILayout.EndHorizontal();
 		}
-		[CustomEditor(typeof(PlotFlowController))]
+		// [CustomEditor(typeof(PlotFlowController))]
 		public class PlotFlowControllerEditor:ButtonEditor{
 			public override void OnInspectorGUI() {
 				base.OnInspectorGUI();
-				DrawButton<PlotFlowController>(GfuLanguage.GfuLanguageInstance.INITIALIZEALLPLOTMODEL.Value,(x)=>{
-					x.InitialPlowFlowController();
-				});
+				// DrawButton<PlotFlowController>(GfuLanguage.GfuLanguageInstance.INITIALIZEALLPLOTMODEL.Value,(x)=>{
+				// 	x.InitialPlowFlowController();
+				// });
 			}
 		}
 		[CustomEditor(typeof(SceneController))]

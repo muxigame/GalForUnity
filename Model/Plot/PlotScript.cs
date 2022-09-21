@@ -17,7 +17,6 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.GFUNode.Plot;
 using GalForUnity.Graph.AssetGraph.Operation;
 using UnityEngine;
-using GraphData = GalForUnity.Graph.AssetGraph.Data.GraphData;
 
 namespace GalForUnity.Model.Plot{
     /// <summary>
@@ -40,10 +39,6 @@ namespace GalForUnity.Model.Plot{
         public RoleData RoleData;
         [NonSerialized]
         public PlotModel PlotModel;
-        [NonSerialized]
-        public GraphData GraphData;
-        [NonSerialized]
-        public GfuGraph GfuGraph;
 
         public PlotItemNode PlotItemNode{
             get{

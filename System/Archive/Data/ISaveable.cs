@@ -20,6 +20,6 @@ namespace GalForUnity.System.Archive.Data{
         void Recover();
     }
     public interface INodeSaveable:ISerializable{
-        void Recover(GfuGraph gfuGraph);
+        // void Recover(GfuGraph gfuGraph);
     }
 }

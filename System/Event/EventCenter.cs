@@ -240,13 +240,15 @@ namespace GalForUnity.System.Event {
 				    || null == _eventCenter.SceneStateChangeEvent
 				    || null == _eventCenter.OnPlotWillExecuteEvent
 #pragma warning disable 612
-				    || null == _eventCenter.PlotItemExecuteEvent
+				    // || null == _eventCenter.PlotItemExecuteEvent
 #pragma warning restore 612
 				    // || null == _eventCenter.PlotExecuteOverEvent
 				    || null == _eventCenter.PlotRequireCheckOkEvent
 				    || null == _eventCenter.DayOverEvent
 				    || null == _eventCenter.OnNodeExecutedEvent
-				    || null == _eventCenter.OnGraphExecutedEvent){
+				    // || null == _eventCenter.OnGraphExecutedEvent
+				    )
+				{
 					return _eventCenter = new EventCenter();
 				}
 				return _eventCenter;
@@ -283,11 +285,11 @@ namespace GalForUnity.System.Event {
 		/// 当剧情开始执行时触发
 		/// </summary>
 		public Func<PlotModel, RoleModel, bool> OnPlotWillExecuteEvent;
-		/// <summary>
-		/// 当剧情流中的某一项开始执行时触发
-		/// </summary>
-		[Obsolete]
-		public Func<PlotModel, RoleModel, PlotItem, bool> PlotItemExecuteEvent;
+		// /// <summary>
+		// /// 当剧情流中的某一项开始执行时触发
+		// /// </summary>
+		// [Obsolete]
+		// public Func<PlotModel, RoleModel, PlotItem, bool> PlotItemExecuteEvent;
 		/// <summary>
 		/// 当剧情流执行完毕时触发
 		/// </summary>
@@ -313,7 +315,7 @@ namespace GalForUnity.System.Event {
 		/// <summary>
 		/// 当剧情流通过检查器的检查时触发
 		/// </summary>
-		public UnityAction<GfuGraph> OnGraphExecutedEvent;
+		// public UnityAction<GfuGraph> OnGraphExecutedEvent;
 		
 		/// <summary>
 		/// 当剧情项执行完毕时触发
@@ -362,13 +364,13 @@ namespace GalForUnity.System.Event {
 			SceneStateChangeEvent = new UnityAction<SceneModel>((x)=>{});
 			OnPlotWillExecuteEvent = (x,y) => false;
 #pragma warning disable 612
-			PlotItemExecuteEvent = (x,y,z) => false;
+			// PlotItemExecuteEvent = (x,y,z) => false;
 #pragma warning restore 612
 			// PlotExecuteOverEvent = (x, y) => { recursionCount = 0; };
 			PlotRequireCheckOkEvent = (x,y)=> { };
 			DayOverEvent = (x) => { Debug.Log("当日结束,新的时间是："+x); };
 			OnNodeExecutedEvent+=LimitCheck;
-			OnGraphExecutedEvent = (x) => { recursionCount = 0; };
+			// OnGraphExecutedEvent = (x) => { recursionCount = 0; };
 			OnPlotItemExecutedEvent = () => { };
 			OnOperationExecutedEvent = new UnityEvent<GfuOperation>();
 			_events = new Dictionary<string, UnityAction>();

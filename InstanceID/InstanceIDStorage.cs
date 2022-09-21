@@ -82,9 +82,9 @@ namespace GalForUnity.InstanceID{
             return Resources.Load<T>(resourcesPath);
         }
 
-        public static T Load<T>(GfuInstance gfuInstance) where T : Object{
-            return Load<T>(gfuInstance.instanceID);
-        }
+        // public static T Load<T>(GfuInstance gfuInstance) where T : Object{
+        //     return Load<T>(gfuInstance.instanceID);
+        // }
         public static Object Load(long instanceID){
             var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
             if (!currentInstanceIDStorage) return null;
@@ -95,8 +95,8 @@ namespace GalForUnity.InstanceID{
             resourcesPath = resourcesPath.Substring(0, resourcesPath.IndexOf(".", StringComparison.Ordinal));
             return Resources.Load(resourcesPath);
         }
-        public static Object Load(GfuInstance gfuInstance){
-            return Load(gfuInstance.instanceID);
-        }
+        // public static Object Load(GfuInstance gfuInstance){
+        //     return Load(gfuInstance.instanceID);
+        // }
     }
 }

@@ -29,7 +29,6 @@ namespace GalForUnity.Model{
     /// <summary>
     /// 角色数据，角色数据存放的类，保存着玩家定义的角色数据
     /// </summary>
-    [RequireComponent(typeof(GfuInstance))]
     [Serializable]
     public class RoleData : SavableBehaviour, IEnumerable<RoleDataItem>{
 

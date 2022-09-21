@@ -177,28 +177,28 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
                     node = edge.output.node;
                 }
 
-                if (node != null){
-                    while (!(node.parent is GfuGraph||node.parent is GfuSceneGraphView)){
-                        node = node.parent;
-                    }
-                    SearchMenuWindowProvider menuWindowProvider = ScriptableObject.CreateInstance<SearchMenuWindowProvider>();
-                    if (node.parent is GfuGraph gfuGraph){
-                        if (gfuGraph is PlotFlowGraph){
-                            menuWindowProvider.attributeTargets = NodeAttributeTargets.FlowGraph;
-                        } else if (gfuGraph is PlotItemGraph){
-                            menuWindowProvider.attributeTargets = NodeAttributeTargets.ItemGraph;
-                        }
-                        menuWindowProvider.OnSelectEntryHandler = (gfuGraph).OnMenuSelectEntry;
-                        
-                    }else if (node.parent is GfuSceneGraphView gfuSceneGraphView){
-                        menuWindowProvider.attributeTargets = NodeAttributeTargets.All;
-                        menuWindowProvider.OnSelectEntryHandler =
-                            // gfuSceneGraphView.SceneGraphEditorWindow
-                            new SearchProvider(gfuSceneGraphView, EditorWindow.focusedWindow , new NodeCreationContext(){screenMousePosition = position})
-                                .OnMenuSelectEntry ;
-                    }
-                    SearchWindow.Open(new SearchWindowContext(position), menuWindowProvider);
-                }
+                // if (node != null){
+                //     while (!(node.parent is GfuGraph||node.parent is GfuSceneGraphView)){
+                //         node = node.parent;
+                //     }
+                //     SearchMenuWindowProvider menuWindowProvider = ScriptableObject.CreateInstance<SearchMenuWindowProvider>();
+                //     if (node.parent is GfuGraph gfuGraph){
+                //         if (gfuGraph is PlotFlowGraph){
+                //             menuWindowProvider.attributeTargets = NodeAttributeTargets.FlowGraph;
+                //         } else if (gfuGraph is PlotItemGraph){
+                //             menuWindowProvider.attributeTargets = NodeAttributeTargets.ItemGraph;
+                //         }
+                //         menuWindowProvider.OnSelectEntryHandler = (gfuGraph).OnMenuSelectEntry;
+                //         
+                //     }else if (node.parent is GfuSceneGraphView gfuSceneGraphView){
+                //         menuWindowProvider.attributeTargets = NodeAttributeTargets.All;
+                //         menuWindowProvider.OnSelectEntryHandler =
+                //             // gfuSceneGraphView.SceneGraphEditorWindow
+                //             new SearchProvider(gfuSceneGraphView, EditorWindow.focusedWindow , new NodeCreationContext(){screenMousePosition = position})
+                //                 .OnMenuSelectEntry ;
+                //     }
+                //     SearchWindow.Open(new SearchWindowContext(position), menuWindowProvider);
+                // }
             }
 
 

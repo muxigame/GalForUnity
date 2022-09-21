@@ -12,7 +12,6 @@
 using System;
 using GalForUnity.Attributes;
 using GalForUnity.Controller;
-using GalForUnity.Graph.AssetGraph.Windows;
 using GalForUnity.InstanceID;
 using GalForUnity.Model;
 using GalForUnity.Model.Scene;
@@ -161,20 +160,20 @@ namespace GalForUnity.System{
 		}
 
 		private static void CheckWindow(){
-#if UNITY_EDITOR
-			if (EditorWindow.HasOpenInstances<PlotItemEditorWindow>()){
-				GameObject.FindObjectOfType<GraphSystem>().GraphData.currentGfuPlotItemEditorWindow = EditorWindow.GetWindow<PlotItemEditorWindow>();
-			}else if (EditorWindow.HasOpenInstances<PlotFlowEditorWindow>()){
-				GameObject.FindObjectOfType<GraphSystem>().GraphData.currentGfuPlotFlowEditorWindow = EditorWindow.GetWindow<PlotFlowEditorWindow>();
-			}
-#endif
+// #if UNITY_EDITOR
+// 			if (EditorWindow.HasOpenInstances<PlotItemEditorWindow>()){
+// 				GameObject.FindObjectOfType<GraphSystem>().GraphData.currentGfuPlotItemEditorWindow = EditorWindow.GetWindow<PlotItemEditorWindow>();
+// 			}else if (EditorWindow.HasOpenInstances<PlotFlowEditorWindow>()){
+// 				GameObject.FindObjectOfType<GraphSystem>().GraphData.currentGfuPlotFlowEditorWindow = EditorWindow.GetWindow<PlotFlowEditorWindow>();
+// 			}
+// #endif
 		}
 		
 
 		public void InitialGameSystem(bool chird){
 			systemData.SceneController = InitialSystemComponent<SceneController>();
 			systemData.RoleController = InitialSystemComponent<RoleController>();
-			systemData.PlotFlowController = InitialSystemComponent<PlotFlowController>();
+			// systemData.PlotFlowController = InitialSystemComponent<PlotFlowController>();
 			systemData.ShowPlotView = InitialSystemComponent<ShowPlotView>();
 			systemData.OptionController = InitialSystemComponent<OptionController>();
 			if (FindObjectOfType<GfuRunOnMono>() == null) systemData.currentMonoProxy = gameObject.AddComponent<GfuRunOnMono>();
@@ -195,7 +194,7 @@ namespace GalForUnity.System{
 			if (chird){
 				systemData.SceneController.InitialSceneController();
 				systemData.RoleController.InitialRoleController();
-				systemData.PlotFlowController.InitialPlowFlowController();
+				// systemData.PlotFlowController.InitialPlowFlowController();
 				systemData.ShowPlotView.InitialView();
 				systemData.OptionController.InitialView();
 			}
@@ -283,8 +282,8 @@ namespace GalForUnity.System{
 			[Rename(nameof(RoleController))]
 			public RoleController RoleController;
 
-			[Rename(nameof(PlotFlowController))]
-			public PlotFlowController PlotFlowController;
+			// [Rename(nameof(PlotFlowController))]
+			// public PlotFlowController PlotFlowController;
 
 			[Rename(nameof(ShowPlotView))]
 			public ShowPlotView ShowPlotView;

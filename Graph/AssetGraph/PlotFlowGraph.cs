@@ -19,27 +19,27 @@ using UnityEditor;
 
 
 namespace GalForUnity.Graph.AssetGraph{
-
-    public class PlotFlowGraph : GfuGraph {
-        public PlotFlowGraph(){
-            GameSystem.GraphData.currentGraph = this;
-        }
-        public PlotFlowGraph(GraphCallChain graphCallChain):base(graphCallChain){
-            
-        }
-        public PlotFlowGraph(Data.GraphData graphData) : base(graphData){
-            GameSystem.GraphData.currentGraph = this;
-#if UNITY_EDITOR
-            EditorWindow = GameSystem.GraphData.currentGfuPlotFlowEditorWindow;
-#endif
-        }
-        
-#if UNITY_EDITOR
-        public PlotFlowGraph(EditorWindow editorWindow, string path) : base(path){
-            EditorWindow = editorWindow;
-            Init();
-        }
-#endif
-    }
+//
+//     public class PlotFlowGraph : GfuGraph {
+//         public PlotFlowGraph(){
+//             GameSystem.GraphData.currentGraph = this;
+//         }
+//         public PlotFlowGraph(GraphCallChain graphCallChain):base(graphCallChain){
+//             
+//         }
+//         public PlotFlowGraph(Data.GraphData graphData) : base(graphData){
+//             GameSystem.GraphData.currentGraph = this;
+// #if UNITY_EDITOR
+//             EditorWindow = GameSystem.GraphData.currentGfuPlotFlowEditorWindow;
+// #endif
+//         }
+//         
+// #if UNITY_EDITOR
+//         public PlotFlowGraph(EditorWindow editorWindow, string path) : base(path){
+//             EditorWindow = editorWindow;
+//             Init();
+//         }
+// #endif
+//     }
 
 }

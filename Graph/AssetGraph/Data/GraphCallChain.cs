@@ -56,26 +56,26 @@ namespace GalForUnity.Graph.AssetGraph.Data{
 
     [Serializable]
     public class CallInfo{
-        public GraphData CallerGraphData{
-            get => _callerGraphData ? _callerGraphData : InstanceIDStorageLoadTool.Load<GraphData>(callerGraphInstanceID);
-            set{
-                callerGraphInstanceID = value.InstanceID;
-                _callerGraphData = value;
-            }
-        }
+        // public GraphData CallerGraphData{
+        //     get => _callerGraphData ? _callerGraphData : InstanceIDStorageLoadTool.Load<GraphData>(callerGraphInstanceID);
+        //     set{
+        //         callerGraphInstanceID = value.InstanceID;
+        //         _callerGraphData = value;
+        //     }
+        // }
 
-        public NodeData CallerNodeData{
-            get{
-                return _callerNodeData ? _callerNodeData : CallerGraphData.Nodes.Find((x) => x.instanceID == callerNodeInstanceID);
-            }
-            set{
-                callerNodeInstanceID = value.instanceID;
-                _callerNodeData = value;
-            }
-        }
-
-        [NonSerialized]
-        private GraphData _callerGraphData;
+        // public NodeData CallerNodeData{
+        //     get{
+        //         return _callerNodeData ? _callerNodeData : CallerGraphData.Nodes.Find((x) => x.instanceID == callerNodeInstanceID);
+        //     }
+        //     set{
+        //         callerNodeInstanceID = value.instanceID;
+        //         _callerNodeData = value;
+        //     }
+        // }
+        //
+        // [NonSerialized]
+        // private GraphData _callerGraphData;
         [NonSerialized]
         private NodeData _callerNodeData;
 
@@ -87,7 +87,8 @@ namespace GalForUnity.Graph.AssetGraph.Data{
         private long callerNodeInstanceID;
 
         public override string ToString(){
-            return CallerGraphData.name+"-->"+CallerNodeData.name;
+            // return CallerGraphData.name+"-->"+CallerNodeData.name;
+            return null;
         }
     }
 }

@@ -3,16 +3,13 @@
 //       CopyRight 2019-2022 © MUXI Game Studio 
 //       . All Rights Reserved 
 //
-//        FileName :  SceneGraph.cs
-//
-//        Created by 半世癫(Roc) at 2022-04-13 23:22:10
+//        FileName :  SceneGraph.cs Created at 2022-04-13 23:22:10
 //
 //======================================================================
 
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using GalForUnity.Graph.Attributes;
 using UnityEngine;
 using UnityEngine.Events;
 using Object = UnityEngine.Object;
@@ -38,7 +35,11 @@ namespace GalForUnity.Graph.SceneGraph{
             get => graphData;
             set => graphData = value;
         }
-        
+
+        private void Awake(){
+            
+        }
+
         public static UnityEvent<GfuSceneGraphView> OnSceneGraphSave=new UnityEvent<GfuSceneGraphView>();
         
     }
@@ -127,6 +128,7 @@ namespace GalForUnity.Graph.SceneGraph{
     [CustomEditor(typeof(SceneGraph))]
     public class SceneGraphEditor : Editor{
         public override void OnInspectorGUI(){
+            this.serializedObject.Update();
             base.OnInspectorGUI();
             var sceneGraph = (SceneGraph) target;
             if (GUILayout.Button("创建")){

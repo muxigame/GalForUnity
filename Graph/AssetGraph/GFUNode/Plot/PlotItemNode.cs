@@ -133,39 +133,39 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Plot{
             if (!_isExecuting){
                 _isExecuting = true; //指示正在执行
                 //TODO 还要写是否节点允许跳过的逻辑
-                var gfuNodes = GetInputNodes(0);
-                EventCenter.GetInstance().OnMouseDown.AddListener(OnMouseDown);
-                EventCenter.GetInstance().archiveEvent.AddListener(ArchiveListener);
-                GameSystem.Data.PlotFlowController.ExecutePoltItem(new PlotItem() {
-                    name = this.name, speak = this.speak,
-                });
-                foreach (var gfuNode in gfuNodes){
-                    var gfuOperationNode = ((GfuOperationNode) gfuNode);
-                    if (gfuOperationNode is RoleNode roleNode){
-                        roleNode.GfuOperation.OnStart += delegate(GfuOperation operation){
-                            //自动高光部分代码
-                            if (isAutoHighLight){
-                                RoleController.AutoHighLight_S(name);
-                                if (!roleNode.IsInputConnected(3)){ //如果角色节点的颜色属性已经连接了，不去尝试强行篡改，
-                                    //TODO 这里以后要进行重构，RoleNode的OutPutData要转移到ContainerData中去
-                                    // Debug.Log(operation.OutPutData[0].value);
-                                    operation.InputData[3].value = (operation.ContainerData[0].value as RoleModel)?.Name == name ? RoleModel.HighLightColor : RoleModel.UnHighLightColor;
-                                }
-                            }
-                        };
-                    }
-                
-                    if (Script){
-                        gfuOperationNode.GfuOperation.OnStart += Script.OnGfuOperationStart;
-                        gfuOperationNode.GfuOperation.OnUpdate += Script.OnGfuOperationUpdate;
-                    }
-                    gfuOperationNode.GfuOperation.Start(1, null, gfuNode);
-                    gfuOperationNode.GfuOperation.RunAllNode();
-                }
-
-                if (isAutoHighLight){
-                    GfuRunOnMono.LateUpdate(-1, delegate{ RoleController.AutoHighLight_S(name); });
-                }
+                // var gfuNodes = GetInputNodes(0);
+                // EventCenter.GetInstance().OnMouseDown.AddListener(OnMouseDown);
+                // EventCenter.GetInstance().archiveEvent.AddListener(ArchiveListener);
+                // GameSystem.Data.PlotFlowController.ExecutePoltItem(new PlotItem() {
+                //     name = this.name, speak = this.speak,
+                // });
+                // foreach (var gfuNode in gfuNodes){
+                //     var gfuOperationNode = ((GfuOperationNode) gfuNode);
+                //     if (gfuOperationNode is RoleNode roleNode){
+                //         roleNode.GfuOperation.OnStart += delegate(GfuOperation operation){
+                //             //自动高光部分代码
+                //             if (isAutoHighLight){
+                //                 RoleController.AutoHighLight_S(name);
+                //                 if (!roleNode.IsInputConnected(3)){ //如果角色节点的颜色属性已经连接了，不去尝试强行篡改，
+                //                     //TODO 这里以后要进行重构，RoleNode的OutPutData要转移到ContainerData中去
+                //                     // Debug.Log(operation.OutPutData[0].value);
+                //                     operation.InputData[3].value = (operation.ContainerData[0].value as RoleModel)?.Name == name ? RoleModel.HighLightColor : RoleModel.UnHighLightColor;
+                //                 }
+                //             }
+                //         };
+                //     }
+                //
+                //     if (Script){
+                //         gfuOperationNode.GfuOperation.OnStart += Script.OnGfuOperationStart;
+                //         gfuOperationNode.GfuOperation.OnUpdate += Script.OnGfuOperationUpdate;
+                //     }
+                //     gfuOperationNode.GfuOperation.Start(1, null, gfuNode);
+                //     gfuOperationNode.GfuOperation.RunAllNode();
+                // }
+                //
+                // if (isAutoHighLight){
+                //     GfuRunOnMono.LateUpdate(-1, delegate{ RoleController.AutoHighLight_S(name); });
+                // }
             } else{
                 // if (isCanJump){
                 //     var gfuNodes =  GetInputNodes(0);
@@ -184,28 +184,28 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Plot{
         /// </summary>
         /// <param name="roleData"></param>
         private void InitScript(RoleData roleData){
-            if (Script){
-                if (Script.GfuNode == null) Script.GfuNode = this;
-                Script.RoleData = roleData;
-                Script.NodeData = this.nodeData;
-                Script.PlotModel = GameSystem.Data.PlotFlowController.currentPlotModel;
-                Script.GraphData = this.GfuGraph?.graphData;
-                Script.GfuGraph = this.GfuGraph;
-                Script.OnNodeWillExecute();
-            }
+            // if (Script){
+            //     if (Script.GfuNode == null) Script.GfuNode = this;
+            //     Script.RoleData = roleData;
+            //     Script.NodeData = this.nodeData;
+            //     Script.PlotModel = GameSystem.Data.PlotFlowController.currentPlotModel;
+            //     Script.GraphData = this.GfuGraph?.graphData;
+            //     Script.GfuGraph = this.GfuGraph;
+            //     Script.OnNodeWillExecute();
+            // }
         }
 
         public void OnMouseDown(Vector2 vector2){
-            if (isCanJump){
-                Executed();
-            } else{
-                var gfuNodes = GetInputNodes(0);
-                bool isOver = gfuNodes.TrueForAll(node => ((GfuOperationNode) node).GfuOperation.IsOver);
-                Debug.Log(isOver);
-                if (isOver){
-                    Executed();
-                }
-            }
+            // if (isCanJump){
+            //     Executed();
+            // } else{
+            //     var gfuNodes = GetInputNodes(0);
+            //     bool isOver = gfuNodes.TrueForAll(node => ((GfuOperationNode) node).GfuOperation.IsOver);
+            //     Debug.Log(isOver);
+            //     if (isOver){
+            //         Executed();
+            //     }
+            // }
         }
 
         public override void Executed(){

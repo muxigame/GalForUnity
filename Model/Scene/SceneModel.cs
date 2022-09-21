@@ -19,8 +19,7 @@ namespace GalForUnity.Model.Scene {
 	/// <summary>
 	/// 场景模型，保存着场景背景和背景音乐
 	/// </summary>
-	[RequireComponent(typeof(GfuInstance))]
-    public class SceneModel : MonoBehaviour {
+	public class SceneModel : MonoBehaviour {
 
 	    /// <summary>
 	    /// 场景背景，

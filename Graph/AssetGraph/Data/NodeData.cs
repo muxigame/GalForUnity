@@ -28,7 +28,7 @@ namespace GalForUnity.Graph.AssetGraph.Data{
     /// </summary>
     [Serializable]
     public class NodeData : ScriptableObject, DataInfo{
-        public GraphData GraphData;
+        // public GraphData GraphData;
         public string type;
         public Vector4 vector4;
         [FormerlySerializedAs("Input")] 
@@ -84,7 +84,7 @@ namespace GalForUnity.Graph.AssetGraph.Data{
             foreach (var fieldInfo in fieldInfos){
                 object fieldValue = fieldInfo.GetValue(node);
                 if (fieldValue is Port || fieldValue == null) continue; //不保存接口和空对象
-                this.ParseField(fieldValue, fieldInfo);
+                // this.ParseField(fieldValue, fieldInfo);
             }
             return this;
         }
