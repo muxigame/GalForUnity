@@ -1,3 +1,5 @@
+牢记初心 不忘使命 ----让文字游戏开发更简单
+
 # GalForUnity
 一个为Unity开发的文字游戏开发插件，他同时支持Live2D
 如果有任何疑问请访问官网 https://muxigame.com 或者 http://muxigame.uicp.net 反馈

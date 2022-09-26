@@ -17,19 +17,19 @@ namespace GalForUnity.Core{
         
         public void SetName(string roleName);
         public void SetSay(string roleSaid);
-        public void SetRole(RoleModel roleModel);
+        public void SetRole(string roleName, RoleModel roleModel);
         public void SetBackground(Sprite sprite);
         public void SetBackground(VideoClip videoClip);
         public void SetAudio(AudioClip audioClip);
     } 
     public interface IRoleIO{
-        public void SetSprite(string roleName,Sprite sprite);
-        public void SetPosition(string roleName,Vector3 position);
-        public void SetRotate(string roleName,Vector3 rotate);
-        public void SetScale(string roleName,Vector3 scale);
-        public void SetColor(string roleName, Color color);
-        public void SetVoice(string roleName, AudioClip audioClip);
-        public void SetVisible(string roleName, bool visible);
-        public void SetAnimation(string roleName, Animation animation);
+        public void SetSprite(Sprite sprite);
+        public void SetPosition(Vector3 position);
+        public void SetRotate(Vector3 rotate);
+        public void SetScale(Vector3 scale);
+        public void SetColor(Color color);
+        public void SetVoice(AudioClip audioClip);
+        public void SetVisible(bool visible);
+        public void SetAnimation(AnimationClip animationClip);
     }
 }
