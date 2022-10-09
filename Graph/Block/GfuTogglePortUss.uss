@@ -1,0 +1,35 @@
+#connector{
+    /*min-width: 0;*/
+}
+#type{
+    /*min-width: 0;*/
+}
+Port{
+    /*min-width: 0;*/
+}
+GfuTogglePort{
+    height: 26px;
+    flex-direction:row;
+}
+BlockContentUxml{
+    padding: 2px;
+    flex-grow: 1;
+}
+#BlockContent{
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+}
+#AddConfigButton{
+    width: 120px;
+}
+PlotAudioBlockUxml{
+    width: 100%;
+    flex-direction: row;
+    background-color: rgba(32,32,32,0.58);
+}
+GfuConfigFieldUXml{
+    flex-direction: row;
+}
+#unity-text-input{
+    min-width: 30px;
+}

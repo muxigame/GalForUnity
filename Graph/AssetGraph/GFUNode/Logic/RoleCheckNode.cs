@@ -8,16 +8,6 @@
 //        Created by 半世癫(Roc) at 2021-12-14 19:11:10
 //
 //======================================================================
-//======================================================================
-//
-//       CopyRight 2019-2021 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  RoleCheckNode.cs
-//
-//        Created by #AuthorName# at #CreateTime#
-//
-//======================================================================
 
 using GalForUnity.Attributes;
 using GalForUnity.Graph.AssetGraph.Attributes;

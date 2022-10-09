@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/GalForUnity/Graph/Build/GalGraphWindow.uss?fileID=7433441132597879392&amp;guid=329e142322559d747ac97984e479b84a&amp;type=3#GalGraphWindow" />
+    <ui:VisualElement style="-unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0;">
+        <ui:VisualElement name="PlotItemBlock" style="height: auto; color: rgb(255, 255, 255); background-color: rgba(32, 32, 32, 0.59); margin-bottom: 5px;">
+            <ui:DropdownField label="Name" index="-1" choices="System.Collections.Generic.List`1[System.String]" style="align-items: auto;" />
+            <ui:TextField picking-mode="Ignore" label="Said" value="What your say?" text="What your say?" />
+        </ui:VisualElement>
+        <ui:VisualElement name="OutTypeBlock" style="height: auto; color: rgb(255, 255, 255); background-color: rgba(32, 32, 32, 0.59); margin-bottom: 5px; top: 38px; position: absolute; left: 3px;">
+            <ui:DropdownField label="OutType" index="-1" choices="System.Collections.Generic.List`1[System.String]" style="align-items: auto;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <GalForUnity.Graph.Block.PlotAudioBlockUxml style="position: relative;" />
+    <GalForUnity.Graph.Block.PlotBlockUxml />
+</ui:UXML>

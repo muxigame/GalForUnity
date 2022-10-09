@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace GalForUnity.Attributes{
 #if UNITY_EDITOR
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field|AttributeTargets.Class)]
 #endif
     public class RenameAttribute : PropertyAttribute{
         /// <summary> 枚举名称 </summary>
@@ -37,7 +37,11 @@ namespace GalForUnity.Attributes{
         /// <param name="name">新名称</param>
         public RenameAttribute(string name){
             if (new Regex(@"[a-zA-Z]+").IsMatch(name)){
-                LanguageItem = (LanguageItem) typeof(GfuLanguage).GetField(name.ToUpper()).GetValue(GfuLanguage.GfuLanguageInstance);
+                try{
+                    LanguageItem = (LanguageItem) typeof(GfuLanguage).GetField(name.ToUpper()).GetValue(GfuLanguage.GfuLanguageInstance);
+                } catch (Exception e){
+                    Name = name;
+                }
             } else{
                 Name = name;
             }

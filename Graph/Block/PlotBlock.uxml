@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/GalForUnity/Graph/Block/PlotBlock.uss?fileID=7433441132597879392&amp;guid=a7c380304f1daf94c8d74f95d24d8c4e&amp;type=3#PlotBlock" />
+    <ui:TextField picking-mode="Ignore" label="Said" is-delayed="false" tooltip="What your say?" multiline="true" name="Said" />
+    <ui:DropdownField label="Name" index="-1" choices="System.Collections.Generic.List`1[System.String]" tooltip="What your name?" name="Name" style="align-items: auto;" />
+</ui:UXML>

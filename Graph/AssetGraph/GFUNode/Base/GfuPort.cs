@@ -30,8 +30,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
 #endif
     {
         public GfuInputView InputView;
-
-
+        
 #if UNITY_EDITOR
         protected GfuPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type) : base(portOrientation, portDirection, portCapacity, type){ }
 #endif

@@ -79,6 +79,7 @@ namespace GalForUnity.Graph.Attributes{
         public const ushort PlotItemNode = 3;
         public const ushort PlotFlowNode = 4;
         public const ushort PlotGraphNode = 5;
+        public const ushort PlotNode = 6;
 #endregion
         
 #region Logic

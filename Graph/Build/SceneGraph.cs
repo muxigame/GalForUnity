@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using GalForUnity.Graph.Build;
 using UnityEngine;
 using UnityEngine.Events;
 using Object = UnityEngine.Object;
@@ -126,7 +127,7 @@ namespace GalForUnity.Graph.SceneGraph{
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(SceneGraph))]
-    public class SceneGraphEditor : Editor{
+    public class SceneGraphEditor : UnityEditor.Editor{
         public override void OnInspectorGUI(){
             this.serializedObject.Update();
             base.OnInspectorGUI();
@@ -135,7 +136,7 @@ namespace GalForUnity.Graph.SceneGraph{
 
             }
 
-            if (GUILayout.Button("打开")) SceneGraphEditorWindow.Open(sceneGraph);
+            if (GUILayout.Button("打开")) GalGraphWindow.Open(sceneGraph);
         }
     }
 #endif

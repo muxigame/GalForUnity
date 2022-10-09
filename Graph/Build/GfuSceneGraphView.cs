@@ -13,26 +13,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using GalForUnity.Graph.AssetGraph;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.GFUNode.Plot;
-using GalForUnity.InstanceID;
-using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.SceneGraph{
     public class GfuSceneGraphView : GraphView{
-        // public List<GfuConnectionAsset> Connection=new List<GfuConnectionAsset>();
-        // private SceneGraphEditorWindow _sceneGraphEditorWindow;
-        //
-        // public SceneGraphEditorWindow SceneGraphEditorWindow => _sceneGraphEditorWindow;
         public Dictionary<long, GfuNode> Nodes = new Dictionary<long, GfuNode>();
 
-        public GfuSceneGraphView() : this(null,null){ }
+        public GfuSceneGraphView() : this(null, null){ }
 
-        public GfuSceneGraphView(GfuGraphAsset gfuGraphAsset,GraphData graphData){
+        public GfuSceneGraphView(GfuGraphAsset gfuGraphAsset, GraphData graphData){
             // _sceneGraphEditorWindow = sceneGraphEditorWindow;
             InitEditorView();
             if (gfuGraphAsset == null || gfuGraphAsset.nodes == null || gfuGraphAsset.nodes.Count == 0){
@@ -61,10 +54,10 @@ namespace GalForUnity.Graph.SceneGraph{
             foreach (var gfuConnectionAsset in connection) InitConnection(gfuConnectionAsset);
             foreach (var keyValuePair in Nodes){
                 var nodeByInstanceID = gfuGraphAsset.GetNodeByInstanceID(keyValuePair.Value.instanceID);
-                keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID,graphData.GetNodeData(keyValuePair.Value.instanceID),null);
+                keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID, graphData.GetNodeData(keyValuePair.Value.instanceID), null);
             }
         }
-        public class GfuBackground : GridBackground{ }
+
         public void InitEditorView(){
             GridBackground gridBackground = new GfuBackground();
             gridBackground.name = "GridBackground";
@@ -84,6 +77,7 @@ namespace GalForUnity.Graph.SceneGraph{
                 Debug.LogError("node is null");
                 return;
             }
+
             AddElement(node);
             // if(node is GfuOperationNode gfuOperationNode)gfuOperationNode.GfuInputViews.ForEach(x=>x.);.Init(null);
             Nodes.Add(gfuNodeAsset.instanceID, node);
@@ -100,6 +94,7 @@ namespace GalForUnity.Graph.SceneGraph{
                 Debug.Log("1");
                 return;
             }
+
             var visualElementInput = Nodes[inputPort.node.instanceID].inputContainer.ElementAt(inputPort.Index) as Port;
             var visualElementOutput = Nodes[outputPort.node.instanceID].outputContainer.ElementAt(outputPort.Index) as Port;
             var connectTo = visualElementInput?.ConnectTo(visualElementOutput);
@@ -154,5 +149,9 @@ namespace GalForUnity.Graph.SceneGraph{
                                                return pi != null && pi.ParameterType == baseType;
                                            });
         }
+
+        public class GfuSceneGraphViewFactory : UxmlFactory<GfuSceneGraphView, UxmlTraits>{ }
+
+        public class GfuBackground : GridBackground{ }
     }
 }
