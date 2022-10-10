@@ -38,9 +38,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode{
         public GfuPort Exit;
 
         public PlotNode(){
-            
-            styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GalForUnity/Graph/Build/GalGraphWindow.uss"));
-            
+            styleSheets.Add(UxmlHandler.instance.plotNodeUss);
             Add(new Button {
                 name = "AddBlockButton",
                 text = "AddBlock",

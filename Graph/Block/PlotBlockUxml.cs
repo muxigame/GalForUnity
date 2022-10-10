@@ -7,8 +7,6 @@
 //
 //======================================================================
 
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Block{
@@ -17,8 +15,7 @@ namespace GalForUnity.Graph.Block{
         private TextField _said;
 
         public PlotBlockUxml(){
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GalForUnity/Graph/Block/PlotBlock.uss");
-            styleSheets.Add(styleSheet);
+            styleSheets.Add(UxmlHandler.instance.plotBlockUss);
             content.Add(_nameField = new NameDropdownField());
             content.Add(_said = new TextField {
                 label = "Said"

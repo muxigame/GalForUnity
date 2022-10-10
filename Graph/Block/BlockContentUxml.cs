@@ -10,7 +10,7 @@
 using System;
 using UnityEngine.UIElements;
 
-namespace GalForUnity.Graph.AssetGraph.GFUNode{
+namespace GalForUnity.Graph.Block{
     public class BlockContentUxml : VisualElement{
 
         public BlockContentUxml():this(null){

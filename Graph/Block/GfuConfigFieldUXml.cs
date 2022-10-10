@@ -13,7 +13,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GalForUnity.Graph.AssetGraph.GFUNode{
+namespace GalForUnity.Graph.Block{
     public sealed class GfuConfigFieldUXml<T> : VisualElement{
         private T _value;
 
@@ -41,6 +41,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode{
             }
             field?.RegisterCallback<ChangeEvent<T>>(x=> { action.Invoke(_value = x.newValue); });
             var button = new Button() {
+                name="deleteConfigButton",
                 text = "X",
                 style= {
                     minWidth = 0,
@@ -50,6 +51,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode{
             };
             contentContainer.Add(field);
             contentContainer.Add(button);
+            styleSheets.Add(UxmlHandler.instance.gfuConfigFieldUss);
         }
     }
     public sealed class GfuConfigFieldUXml : VisualElement{
@@ -96,10 +98,9 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode{
                 longField.RegisterValueChangedCallback(x=> { action.Invoke(_value = x.newValue); });
                 field = longField;
             }
-
             
-
             var button = new Button() {
+                name="deleteConfigButton",
                 text = "X",
                 style= {
                     minWidth = 0,
@@ -109,6 +110,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode{
             };
             contentContainer.Add(field);
             contentContainer.Add(button);
+            styleSheets.Add(UxmlHandler.instance.gfuConfigFieldUss);
         }
     }
 }

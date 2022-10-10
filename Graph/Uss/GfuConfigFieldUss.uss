@@ -1,0 +1,11 @@
+GfuConfigFieldUXml{
+    flex-direction: row;
+}
+
+#unity-text-input{
+    min-width: 30px;
+}
+
+#AddConfigButton{
+    width: 120px;
+}

@@ -2,3 +2,6 @@ PlotBlockUxml {
     width: 100%;
     flex-direction: column;
 }
+#PlotItemBlock {
+    width: 100%;
+}

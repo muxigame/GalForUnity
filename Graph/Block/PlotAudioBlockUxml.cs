@@ -26,8 +26,7 @@ namespace GalForUnity.Graph.Block{
         private readonly BlockContentUxml _blockContentUxml;
 
         public PlotAudioBlockUxml(){
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GalForUnity/Graph/Block/GfuTogglePortUss.uss");
-            styleSheets.Add(styleSheet);
+            styleSheets.Add(UxmlHandler.instance.gfuTogglePortUss);
             var gfuTogglePort = new GfuTogglePort(typeof(AudioSource));
             _blockContentUxml = new BlockContentUxml(() => {
                 var searchWindowContext = new SearchWindowContext(EditorWindow.focusedWindow.position.position+this.LocalToWorld(transform.position));

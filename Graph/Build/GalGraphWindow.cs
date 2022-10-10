@@ -12,6 +12,7 @@ using System.Linq;
 using GalForUnity.Graph.AssetGraph.Attributes;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Tool;
+using GalForUnity.Graph.Block;
 using GalForUnity.Graph.SceneGraph;
 using GalForUnity.InstanceID;
 using GalForUnity.System;
@@ -79,16 +80,9 @@ namespace GalForUnity.Graph.Build{
 
         private void InitGraph(){
             rootVisualElement.Clear();
-            
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/GalForUnity/Graph/Build/GalGraphWindow.uxml");
-            VisualElement labelFromUXML = visualTree.Instantiate();
-            // A stylesheet can be added to a VisualElement.
-            // The style will be applied to the VisualElement and all of its children.
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GalForUnity/Graph/Build/GalGraphWindow.uss");
-            VisualElement labelWithStyle = new Label("Hello World! With Style");
-            labelWithStyle.styleSheets.Add(styleSheet);
-            rootVisualElement.Add(labelWithStyle);
-            
+            VisualElement labelFromUxml = UxmlHandler.instance.galGraphWindowUxml.Instantiate();
+            labelFromUxml.styleSheets.Add(UxmlHandler.instance.galGraphWindowUss);
+
             if (GraphView == null) return;
 
             rootVisualElement.Add(GraphView);
@@ -115,7 +109,7 @@ namespace GalForUnity.Graph.Build{
                     top = 20
                 }
             });
-            rootVisualElement.Add(labelFromUXML);
+            rootVisualElement.Add(labelFromUxml);
         }
 
         [MenuItem("Test/OpenGalWindows")]
