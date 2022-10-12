@@ -39,7 +39,7 @@ namespace GalForUnity.Attributes{
             if (new Regex(@"[a-zA-Z]+").IsMatch(name)){
                 try{
                     LanguageItem = (LanguageItem) typeof(GfuLanguage).GetField(name.ToUpper()).GetValue(GfuLanguage.GfuLanguageInstance);
-                } catch (Exception e){
+                } catch (Exception){
                     Name = name;
                 }
             } else{

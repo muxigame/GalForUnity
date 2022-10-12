@@ -8,6 +8,7 @@
 //======================================================================
 
 using System.Collections.Generic;
+using GalForUnity.Graph.Block.Config;
 using GalForUnity.Model;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,12 +57,14 @@ namespace GalForUnity.Core{
 
         public override void SetBackground(VideoClip videoClip){
             videoPlayer.gameObject.SetActive(true);
+            // galVideoConfig.Process(videoPlayer);
             if(!videoPlayer.targetTexture) videoPlayer.targetTexture=new RenderTexture(Screen.width,Screen.height,32);
             videoPlayer.clip = videoClip;
             videoPlayer.Play();
         }
 
         public override void SetAudio(AudioClip audioClip){
+            // galAudioConfig.Process(bgAudioSource);
             bgAudioSource.clip = audioClip;
             bgAudioSource.Play();
         }

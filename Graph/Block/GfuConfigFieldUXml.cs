@@ -9,9 +9,11 @@
 
 using System;
 using System.Reflection;
+using GalForUnity.Graph.Block.Config;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.Video;
 
 namespace GalForUnity.Graph.Block{
     public sealed class GfuConfigFieldUXml<T> : VisualElement{
@@ -97,6 +99,15 @@ namespace GalForUnity.Graph.Block{
                     label = fieldInfo.Name};
                 longField.RegisterValueChangedCallback(x=> { action.Invoke(_value = x.newValue); });
                 field = longField;
+            }
+
+            var underlyingType = Nullable.GetUnderlyingType(fieldInfo.FieldType);
+            if ((underlyingType!=null&&underlyingType.IsEnum)){
+                var enumField = new EnumField(defaultValue == null ?  (Enum)Enum.GetValues(underlyingType).GetValue(0):(Enum)defaultValue){
+                    label = fieldInfo.Name,
+                };
+                enumField.RegisterValueChangedCallback(x=> { action.Invoke(_value = x.newValue); });
+                field = enumField;
             }
             
             var button = new Button() {

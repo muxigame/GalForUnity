@@ -3,7 +3,7 @@
 //       CopyRight 2019-2022 © MUXI Game Studio 
 //       . All Rights Reserved 
 //
-//        FileName :  PlotAudioBlock.cs Created at 2022-09-28 00:31:49
+//        FileName :  PlotVideoBlockUxml.cs 2022-10-11 21:43:32
 //
 //======================================================================
 
@@ -17,20 +17,21 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Block{
-    public class PlotAudioBlockUxml : DraggableBlock{
+    public class PlotVideoBlockUxml : DraggableBlock{
         private readonly BlockContentUxml _blockContentUxml;
         private readonly BlockPortUxml _blockPortUxml;
 
-        public PlotAudioBlockUxml(){
+        public PlotVideoBlockUxml(){
             styleSheets.Add(UxmlHandler.instance.gfuTogglePortUss);
             _blockContentUxml = new BlockContentUxml(() => {
                 var searchWindowContext = new SearchWindowContext(EditorWindow.focusedWindow.position.position + _blockContentUxml.LocalToWorld(transform.position));
-                var searchTypeProvider = ConfigSearchTypeProvider.Create<GalAudioConfig>(x => 
+                var searchTypeProvider = ConfigSearchTypeProvider.Create<GalVideoConfig>(x => 
                     !x.FieldType.IsSubclassOf(typeof(Object))
                     &&_blockContentUxml.Content.Q<GfuConfigFieldUXml>(x.Name) == null
-                    &&_blockPortUxml.Content.Q<Port>(x.Name) == null);
+                    &&_blockPortUxml.Content.Q<Port>(x.Name)    == null);
                 searchTypeProvider.OnSelectEntryHandler += (x, y) => {
                     var xUserData = (FieldInfo) x.userData;
+                    if (_blockContentUxml.Content.Q<GfuConfigFieldUXml>(xUserData.Name) != null) return true;
                     _blockContentUxml.Content.Add(new GfuConfigFieldUXml(x => { }, xUserData));
                     return true;
                 };
@@ -39,7 +40,7 @@ namespace GalForUnity.Graph.Block{
 
             _blockPortUxml = new BlockPortUxml(() => {
                 var searchWindowContext = new SearchWindowContext(EditorWindow.focusedWindow.position.position + _blockPortUxml.LocalToWorld(transform.position));
-                var searchTypeProvider = ConfigSearchTypeProvider.Create<GalAudioConfig>(x => 
+                var searchTypeProvider = ConfigSearchTypeProvider.Create<GalVideoConfig>(x =>  
                     (x.FieldType.IsSubclassOf(typeof(Object)) || x.FieldType.IsNullablePrimitive())
                     &&_blockContentUxml.Content.Q<GfuConfigFieldUXml>(x.Name) == null
                     &&_blockPortUxml.Content.Q<Port>(x.Name) == null);
@@ -56,8 +57,8 @@ namespace GalForUnity.Graph.Block{
             content.Add(_blockContentUxml);
         }
 
-        public class PlotAudioBlockUxmlFactory : UxmlFactory<PlotAudioBlockUxml, UxmlTraits>{
-            public override VisualElement Create(IUxmlAttributes bag, CreationContext cc){ return new PlotAudioBlockUxml(); }
+        public class PlotVideoBlockUxmlFactory : UxmlFactory<PlotVideoBlockUxml, UxmlTraits>{
+            public override VisualElement Create(IUxmlAttributes bag, CreationContext cc){ return new PlotVideoBlockUxml(); }
         }
     }
 }

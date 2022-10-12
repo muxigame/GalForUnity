@@ -8,16 +8,24 @@
 //======================================================================
 
 using System;
+using System.Reflection;
 using GalForUnity.Graph.Block;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode{
     public class GfuTogglePort : VisualElement{
-        public GfuTogglePort() : this(typeof(int)){ }
+        public GfuTogglePort() : this(null){ }
 
-        public GfuTogglePort(Type type){
-            var port = Port.Create<Edge>(Orientation.Vertical, Direction.Input, Port.Capacity.Single, type);
+        public GfuTogglePort(FieldInfo fieldInfo){
+            Port port;
+            if (Nullable.GetUnderlyingType(fieldInfo.FieldType) != null){
+                port = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, Nullable.GetUnderlyingType(fieldInfo.FieldType));
+            } else{
+                port = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, fieldInfo.FieldType);
+            }
+            port.portName = fieldInfo.Name;
+            port.name = fieldInfo.Name;
             var toggle = new Toggle {
                 value = true
             };

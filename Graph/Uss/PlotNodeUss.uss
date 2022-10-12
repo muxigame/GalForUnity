@@ -17,6 +17,11 @@ BlockContentUxml{
     width: 100%;
 }
 
+BlockPortUxml{
+    padding: 2px;
+    flex-grow: 0;
+}
+
 #BlockContent{
     max-width: 400px;
     flex-direction: row;

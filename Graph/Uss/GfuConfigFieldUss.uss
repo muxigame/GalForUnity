@@ -1,5 +1,10 @@
 GfuConfigFieldUXml{
     flex-direction: row;
+    /*max-height: 25px;*/
+    max-width: 400px;
+}
+EnumField{
+    height: 22px;
 }
 
 #unity-text-input{

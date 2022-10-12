@@ -98,6 +98,11 @@ namespace GalForUnity.External{
             return fileInfos;
         }
 
+        public static bool IsNullablePrimitive(this Type type){
+            var underlyingType = Nullable.GetUnderlyingType(type);
+            if (underlyingType == null) return type.IsPrimitive;
+            return underlyingType.IsPrimitive;
+        }
         public static bool IsGfuInstance(this Object obj){
             if (obj is GameObject gameObject){
                 return true;
