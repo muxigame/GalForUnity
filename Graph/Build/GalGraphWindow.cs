@@ -80,6 +80,7 @@ namespace GalForUnity.Graph.Build{
 
         private void InitGraph(){
             rootVisualElement.Clear();
+            
             VisualElement labelFromUxml = UxmlHandler.instance.galGraphWindowUxml.Instantiate();
             labelFromUxml.styleSheets.Add(UxmlHandler.instance.galGraphWindowUss);
 

@@ -16,6 +16,7 @@ using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation.Geometry;
 using GalForUnity.Graph.Attributes;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation.Geometry{
     [NodeRename("Operation/Geometry/" + nameof(SineNode), "得到输入值的正弦函数值")]

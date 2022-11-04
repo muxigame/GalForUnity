@@ -18,6 +18,7 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation.Logic;
 using GalForUnity.Graph.Attributes;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 #if UNITY_EDITOR
 using UnityEditor.UIElements;
 #endif

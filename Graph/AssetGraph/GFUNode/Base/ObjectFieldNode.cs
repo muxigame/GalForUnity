@@ -15,6 +15,8 @@ using GalForUnity.Graph.AssetGraph.Data;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
+
 #if UNITY_EDITOR
 #endif
 

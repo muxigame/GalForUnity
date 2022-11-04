@@ -23,6 +23,7 @@ using GalForUnity.System;
 using GalForUnity.System.Archive;
 using GalForUnity.System.Event;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Logic{
     [NodeRename("Logic/" + nameof(OptionNode), "通过进度条来控制对应剧情的概率")]

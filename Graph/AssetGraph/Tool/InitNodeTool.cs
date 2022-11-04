@@ -18,6 +18,7 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.InstanceID;
 using GalForUnity.System;
 using UnityEngine;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.Tool{
     public class InitNodeTool{

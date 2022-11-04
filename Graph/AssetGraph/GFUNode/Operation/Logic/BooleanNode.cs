@@ -17,6 +17,7 @@ using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation.Logic;
 using GalForUnity.Graph.Attributes;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation.Logic{
     [NodeRename("Operation/LogicOperation/" + nameof(BooleanNode), "布尔节点，能进行逻辑判断")]

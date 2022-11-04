@@ -21,6 +21,8 @@ using GalForUnity.Model;
 using GalForUnity.System;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using NodeData = GalForUnity.Graph.Build.NodeData;
+
 #if UNITY_EDITOR
 #endif
 

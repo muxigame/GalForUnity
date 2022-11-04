@@ -115,6 +115,7 @@ namespace GalForUnity.Graph.SceneGraph{
         public List<FieldData<string>> values;
 
         public static implicit operator bool(GfuNodeData gfuNode){
+            SerializedObject serializedObject;
             if (gfuNode == null) return false;
             return true;
         }

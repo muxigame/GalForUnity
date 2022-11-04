@@ -25,6 +25,7 @@ using GalForUnity.Graph.AssetGraph.Tool;
 using GalForUnity.Graph.Attributes;
 using UnityEngine;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 using Object = UnityEngine.Object;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation{

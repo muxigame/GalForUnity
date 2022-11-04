@@ -23,6 +23,7 @@ using UnityEditor.UIElements;
 #endif
 using UnityEngine;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 using Random = UnityEngine.Random;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Logic{

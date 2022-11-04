@@ -21,6 +21,7 @@ using GalForUnity.System;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 using Object = UnityEngine.Object;
 
 

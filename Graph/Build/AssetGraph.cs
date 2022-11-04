@@ -13,9 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.External;
+using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using UnityEngine;
 using GalForUnity.Graph.Attributes;
+using Unity.Plastic.Newtonsoft.Json;
+using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -28,6 +31,7 @@ namespace GalForUnity.Graph.SceneGraph{
         public int GetInstanceID();
         // ReSharper disable once InconsistentNaming
         public string name{ get; set; }
+        
     }
     [CreateAssetMenu(menuName = "GalForUnity/AssetGraph" ,fileName = "AssetGraph.asset", order = 2)]
     public class AssetGraph: ScriptableObject,IGalGraph{
@@ -35,7 +39,6 @@ namespace GalForUnity.Graph.SceneGraph{
         private GfuGraphAsset graphNode;
         [SerializeField]
         private GraphData graphData;
-
         public GfuGraphAsset GraphNode{
             get => graphNode;
             set => graphNode = value;
@@ -52,6 +55,8 @@ namespace GalForUnity.Graph.SceneGraph{
         public long instanceID = -1;
         [SerializeReference]
         public List<GfuNodeAsset> nodes;
+        public string nodeDataJson;
+        public List<Object> unityReference;
         [NonSerialized]
         private Dictionary<long, GfuNodeAsset> _nodeKeyMap = new Dictionary<long, GfuNodeAsset>();
 
@@ -119,7 +124,6 @@ namespace GalForUnity.Graph.SceneGraph{
                 gfuNodeAsset.Save(graphViewNode.Value, portMap);
                 gfuNodeAsset.instanceID = graphViewNode.Key;
             }
-            Debug.Log(graphView.edges.ToList().Count);
             graphView.edges.ForEach(x => {
                 if (portMap.ContainsKey(x.input) && portMap.ContainsKey(x.output)) 
                     new GfuConnectionAsset().Save(portMap[x.input], portMap[x.output]);

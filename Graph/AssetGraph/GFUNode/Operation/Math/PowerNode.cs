@@ -17,6 +17,7 @@ using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation.GfuMath;
 using GalForUnity.Graph.Attributes;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation.Math{
     [NodeRename("Operation/Math/" + nameof(PowerNode), "提供幂指函数操作")]

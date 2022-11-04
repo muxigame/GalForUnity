@@ -17,6 +17,7 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation;
 using GalForUnity.Graph.Attributes;
 using UnityEngine;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation{
     [NodeRename("Operation/" + nameof(TransformNode), "变换操作节点，能够修改Transform")]

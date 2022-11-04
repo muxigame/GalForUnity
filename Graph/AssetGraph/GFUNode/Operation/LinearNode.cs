@@ -20,6 +20,7 @@ using GalForUnity.Graph.Attributes;
 using GalForUnity.System;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation{
     [NodeRename("Operation/" + nameof(LinearNode), "提供时间维度的线性操作")]

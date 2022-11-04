@@ -22,6 +22,7 @@ using UnityEditor.UIElements;
 #endif
 using UnityEngine;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Logic{

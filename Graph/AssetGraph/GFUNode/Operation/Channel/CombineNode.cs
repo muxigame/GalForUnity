@@ -17,6 +17,7 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation.Channel;
 using GalForUnity.Graph.Attributes;
 using UnityEngine;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation.Channel{
     [NodeRename("Operation/Channel/" + nameof(CombineNode), "将浮点数组合成向量")]

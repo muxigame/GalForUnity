@@ -17,6 +17,7 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.GFUNode.Plot;
 using GalForUnity.Graph.AssetGraph.Operation;
 using UnityEngine;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Model.Plot{
     /// <summary>

@@ -16,6 +16,7 @@ using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Model;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Plot{
     [NodeRename("Node/" + nameof(PlotItemNode), "剧情项编辑节点")]

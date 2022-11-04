@@ -15,6 +15,7 @@ using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation;
 using GalForUnity.Graph.Attributes;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation{
     [NodeRename("Operation/" + nameof(TimeNode), "时间节点，提供Unity系统的时间信息")]

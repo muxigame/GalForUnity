@@ -16,6 +16,7 @@ using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Operation.Channel;
 using GalForUnity.Graph.Attributes;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation.Channel{
     [NodeRename("Operation/Channel/" + nameof(SplitNode), "将向量拆分成浮点数")]

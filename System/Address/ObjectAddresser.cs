@@ -25,6 +25,7 @@ using GalForUnity.InstanceID;
 using UnityEditor;
 #endif
 using UnityEngine;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 using Object = UnityEngine.Object;
 
 namespace GalForUnity.System.Address{

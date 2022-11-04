@@ -22,6 +22,7 @@ using GalForUnity.Model;
 using GalForUnity.System;
 using UnityEngine;
 using UnityEngine.UIElements;
+using NodeData = GalForUnity.Graph.Build.NodeData;
 using Object = UnityEngine.Object;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Operation{

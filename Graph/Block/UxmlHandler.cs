@@ -12,7 +12,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Block{
-    [CreateAssetMenu(menuName = "UxmlHandler",fileName = "UxmlHandler")]
+    [CreateAssetMenu(menuName = "UxmlHandler", fileName = "UxmlHandler")]
+    [FilePath("Assets/GalForUnity/Graph/UxmlHandler.asset", FilePathAttribute.Location.ProjectFolder)]
     public class UxmlHandler : ScriptableSingleton<UxmlHandler>{
         public StyleSheet gfuTogglePortUss;
         public StyleSheet galGraphWindowUss;

@@ -40,6 +40,7 @@ namespace GalForUnity.Graph.SceneGraph{
         [HideInInspector]
         [SerializeReference]
         public List<GfuPortAsset> outputPort;
+        
         public Type Type => NodeType.GetTypeByCode(gfuNodeTypeCode);
         public bool HasInputPort => inputPort   != null && inputPort.Count  != 0;
         public bool HasOutputPort => outputPort != null && outputPort.Count != 0;
