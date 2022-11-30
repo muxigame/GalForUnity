@@ -6,11 +6,11 @@ namespace GalForUnity.Editor{
     public class CustomRenameEditor{
         [CustomEditor(typeof(OptionController))][CanEditMultipleObjects]
         public class RenameTestEditor : RenameEditor { }      
-        [CustomEditor(typeof(PlotModel))][CanEditMultipleObjects]
+        // [CustomEditor(typeof(PlotModel))][CanEditMultipleObjects]
                                                               
         public class RenameTestEditor2 : RenameEditor { }
         
-        [CustomEditor(typeof(PlotRequire))][CanEditMultipleObjects]
+        // [CustomEditor(typeof(PlotRequire))][CanEditMultipleObjects]
         public class RenameTestEditor3 : RenameEditor { }
     }
 }

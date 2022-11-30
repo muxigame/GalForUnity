@@ -13,7 +13,6 @@ using GalForUnity.Attributes;
 using GalForUnity.InstanceID;
 using GalForUnity.Model;
 using GalForUnity.System;
-using GalForUnity.System.Archive.Data;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -127,19 +126,19 @@ namespace GalForUnity.Controller{
             return (distance, size);
         }
 
-        public override void GetObjectData(ScriptData scriptData){
-            base.GetObjectData(scriptData);
-            scriptData.priority = -2;
-            //TODO 未来请为优先级单独配一个配置表方便维护
-        }
-
-        public override void Recover(){
-            //如果显示选项状态保存游戏，游戏结束的时候会保存到选项节点的调用链，读档时选项节点会被执行重新显示选项
-            var componentsInChildren = GetComponentsInChildren<Button>();
-            foreach (var componentsInChild in componentsInChildren){
-                componentsInChild.onClick.RemoveAllListeners();
-            }
-            HideOption(); //但是如果在选项激活的时候读档，目标档没有显示选项，那就将选项隐藏
-        }
+        // public override void GetObjectData(ScriptData scriptData){
+        //     base.GetObjectData(scriptData);
+        //     scriptData.priority = -2;
+        //     //TODO 未来请为优先级单独配一个配置表方便维护
+        // }
+        //
+        // public override void Recover(){
+        //     //如果显示选项状态保存游戏，游戏结束的时候会保存到选项节点的调用链，读档时选项节点会被执行重新显示选项
+        //     var componentsInChildren = GetComponentsInChildren<Button>();
+        //     foreach (var componentsInChild in componentsInChildren){
+        //         componentsInChild.onClick.RemoveAllListeners();
+        //     }
+        //     HideOption(); //但是如果在选项激活的时候读档，目标档没有显示选项，那就将选项隐藏
+        // }
     }
 }

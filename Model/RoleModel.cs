@@ -11,10 +11,6 @@
 using System;
 using System.Collections.Generic;
 using GalForUnity.Attributes;
-using GalForUnity.System.Archive.Attributes;
-using GalForUnity.System.Archive.Behavior;
-using GalForUnity.System.Archive.Data;
-using GalForUnity.System.Archive.Data.Savables;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -30,14 +26,11 @@ namespace GalForUnity.Model {
 	[ExecuteAlways]
 	[RequireComponent(typeof(RoleData))]
 	[Serializable]
-	public class RoleModel : TransformSavableBehaviour {
-		[SerializeField]
-		[HideInInspector]
-		public SavableSpriteRender SavableSpriteRender;
+	public class RoleModel : MonoBehaviour {
+		// public SavableSpriteRender SavableSpriteRender;
 		
 		//姓名 
 		[Rename(nameof(name))]
-		[SaveFlag]
 		[SerializeField]
 		private new string name = "";
 
@@ -56,8 +49,7 @@ namespace GalForUnity.Model {
 		[Rename(nameof(color))]
 		private Color color=new Color();
 		
-		[SaveFlag]
-		private SerializableVector _serializableColor;
+		private Vector4 _serializableColor;
 
 		public Sprite RoleSpriteMap{
 			get => roleSpriteMap;
@@ -204,20 +196,6 @@ namespace GalForUnity.Model {
 				material.color = otherColor;
 			}
 		}
-
-		public override void GetObjectData(ScriptData scriptData){
-			SavableSpriteRender = new SavableSpriteRender(_spriteRenderer);
-			base.GetObjectData(scriptData);
-		}
 		
-		public override void GetObjectData(){
-			base.GetObjectData();
-			_serializableColor = color;
-		}
-
-		public override void Recover(){
-			base.Recover();
-			Color = _serializableColor;
-		}
 	}
 }

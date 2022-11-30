@@ -100,8 +100,8 @@ namespace GalForUnity.Controller {
         /// <param name="directionSceneModel"></param>
         /// <exception cref="SceneModelNotFoundException">当场景不存在于场景控制器中时触发异常，但是不会影响场景变更的事实</exception>
         public void GoToScene(SceneModel directionSceneModel){
-            GameSystem.Data.CurrentSceneModel = directionSceneModel;
-            GameSystem.Data.ShowPlotView.ShowSceneModel(directionSceneModel);
+            // GameSystem.Data.CurrentSceneModel = directionSceneModel;
+            // GameSystem.Data.ShowPlotView.ShowSceneModel(directionSceneModel);
             if (!HasScene(directionSceneModel)){
                 throw new SceneModelNotFoundException();
             }

@@ -14,43 +14,42 @@ using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Attributes;
+using GalForUnity.Graph.Build;
 using GalForUnity.System;
 using UnityEngine;
+using MainNode = GalForUnity.Graph.Nodes.Runtime.MainNode;
 
 namespace GalForUnity.Graph.SceneGraph{
     public class GalGraph{
-        private readonly Dictionary<long, GfuNodeData> _graphData;
-        public const string PortViewName = "______PortData";
         private readonly GfuGraphAsset _sourceAsset;
         private GraphProvider _graphProvider;
 
-        public GalGraph(IGalGraph galGraph) : this(galGraph.GraphNode, galGraph.GraphData.nodeDatas){ }
+        public GalGraph(IGalGraph galGraph) : this(galGraph.GraphNode){ }
 
-        public GalGraph(GfuGraphAsset gfuGraphAsset, Dictionary<long, GfuNodeData> graphData) : this(gfuGraphAsset, graphData, new GraphProvider {
+        public GalGraph(GfuGraphAsset gfuGraphAsset) : this(gfuGraphAsset, new GraphProvider {
             Click = () => Input.GetMouseButtonDown(0)
         }){ }
 
-        public GalGraph(GfuGraphAsset gfuGraphAsset, Dictionary<long, GfuNodeData> graphData, GraphProvider graphProvider){
+        public GalGraph(GfuGraphAsset gfuGraphAsset, GraphProvider graphProvider){
             _sourceAsset = gfuGraphAsset;
-            _graphData = graphData;
             _graphProvider = graphProvider;
             CreateRunTimeNode();
         }
 
-        public GfuNode CurrentNode{ get; private set; }
+        public RuntimeNode CurrentNode{ get; private set; }
 
         public bool IsPlay{ get; private set; }
 
-        private MainNode _rootNode=null;
+        private RuntimeNode _rootNode=null;
 
         public Dictionary<long, GfuNode> RunTimeNode{ get; private set; }
 
-        public MainNode RootNode => _rootNode ?? RunTimeNode.First(x => x.Value is MainNode).Value as MainNode;
+        public RuntimeNode RootNode => _rootNode ?? RunTimeNode.First(x => x.Value.RuntimeNode is MainNode).Value.RuntimeNode as MainNode;
 
         public void Play(){
             if (IsPlay) return;
             IsPlay = true;
-            ExecuteCirculation(CurrentNode);
+            ExecuteCirculation(null);
         }
 
         public void Reset(){
@@ -65,13 +64,11 @@ namespace GalForUnity.Graph.SceneGraph{
 
         public void Pause(){
             IsPlay = false;
-            CurrentNode.OnExecuted = null;
         }
 
-        private void ExecuteCirculation(GfuNode gfuNode){
-            CurrentNode = gfuNode;
-            CurrentNode.OnExecuted += x => GfuRunOnMono.Update(() => ExecuteCirculation(x));
-            GameSystem.Data.CurrentRoleModel.roleData = CurrentNode.Execute(GameSystem.Data.CurrentRoleModel.roleData);
+        private void ExecuteCirculation(GfuNodeAsset gfuNodeAsset){
+            CurrentNode = gfuNodeAsset.runtimeNode;
+            ExecuteCirculation(CurrentNode.Execute(gfuNodeAsset));
         }
 
         private void CreateRunTimeNode(){
@@ -79,9 +76,8 @@ namespace GalForUnity.Graph.SceneGraph{
             if (RunTimeNode == null) RunTimeNode = new Dictionary<long, GfuNode>();
             foreach (var sourceAssetNode in _sourceAsset.nodes){
                 var instance = Activator.CreateInstance(sourceAssetNode.Type) as GfuNode;
-                if (sourceAssetNode.gfuNodeTypeCode == NodeCode.MainNode) CurrentNode = _rootNode = instance as MainNode;
+                if (sourceAssetNode.gfuNodeTypeCode == NodeCode.MainNode) CurrentNode = _rootNode = instance?.RuntimeNode as MainNode;
                 if (instance                        == null) throw new NullReferenceException("node create failed");
-                instance.InitWithGfuNodeData(sourceAssetNode,_graphData[sourceAssetNode.instanceID], new NodeRuntimeProvider(this,sourceAssetNode));
                 RunTimeNode.Add(instance.instanceID, instance);
             }
         }

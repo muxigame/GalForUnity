@@ -14,7 +14,6 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Tool;
 using GalForUnity.Graph.Block;
 using GalForUnity.Graph.SceneGraph;
-using GalForUnity.InstanceID;
 using GalForUnity.System;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -24,8 +23,8 @@ using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Build{
     public class GalGraphWindow : EditorWindow{
-        [SerializeField] 
-        private int instanceID = -1;
+        [SerializeField] private int instanceID = -1;
+
         public IGalGraph galGraph;
         public GfuSceneGraphView GraphView;
 
@@ -34,7 +33,7 @@ namespace GalForUnity.Graph.Build{
                 galGraph = EditorUtility.InstanceIDToObject(instanceID) as IGalGraph;
                 GetWindow(false);
             } else{
-                GraphView = new GfuSceneGraphView(null, null);
+                GraphView = new GfuSceneGraphView(null);
                 InitGraph();
             }
         }
@@ -65,7 +64,7 @@ namespace GalForUnity.Graph.Build{
             sceneGraphEditorWindow.galGraph = galGraph;
             sceneGraphEditorWindow.instanceID = galGraph.GetInstanceID();
             sceneGraphEditorWindow.titleContent = new GUIContent(sceneGraphEditorWindow.name = galGraph.name);
-            sceneGraphEditorWindow.GraphView = new GfuSceneGraphView(galGraph.GraphNode, galGraph.GraphData);
+            sceneGraphEditorWindow.GraphView = new GfuSceneGraphView(galGraph.GraphNode);
             sceneGraphEditorWindow.InitGraph();
             sceneGraphEditorWindow.Show(true);
         }
@@ -73,14 +72,14 @@ namespace GalForUnity.Graph.Build{
         private void GetWindow(bool focus = true){
             instanceID = galGraph.GetInstanceID();
             titleContent = new GUIContent(name = galGraph.name);
-            GraphView = new GfuSceneGraphView(galGraph.GraphNode, galGraph.GraphData);
+            GraphView = new GfuSceneGraphView(galGraph.GraphNode);
             InitGraph();
             if (focus) Focus();
         }
 
         private void InitGraph(){
             rootVisualElement.Clear();
-            
+
             VisualElement labelFromUxml = UxmlHandler.instance.galGraphWindowUxml.Instantiate();
             labelFromUxml.styleSheets.Add(UxmlHandler.instance.galGraphWindowUss);
 
@@ -116,10 +115,10 @@ namespace GalForUnity.Graph.Build{
         [MenuItem("Test/OpenGalWindows")]
         private static void CreateGUI(){
             var galGraphWindow = GetWindow<GalGraphWindow>();
-            galGraphWindow.GraphView = new GfuSceneGraphView(null, null);
+            galGraphWindow.GraphView = new GfuSceneGraphView(null);
             galGraphWindow.InitGraph();
         }
-        
+
 
         public void Save(){
             if (galGraph is SceneGraph.SceneGraph sceneGraph) sceneGraph.Save(GraphView);
@@ -152,7 +151,7 @@ namespace GalForUnity.Graph.Build{
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
             node.SetPosition(new Rect(graphMousePosition, Vector2.zero)); //将节点移动到鼠标位置
             node.Init(null);
-            _graphView.Nodes.Add(GfuInstance.CreateInstanceID(), node);
+            _graphView.Nodes.Add(GetHashCode(), node);
             return true;
         }
     }

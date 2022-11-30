@@ -69,34 +69,34 @@ namespace GalForUnity.InstanceID{
         }
     }
 
-    // ReSharper disable all UnusedMember.Global
-    public class InstanceIDStorageLoadTool{
-        public static T Load<T>(long instanceID) where T : Object{
-            var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
-            if (!currentInstanceIDStorage) return null;
-            if (!currentInstanceIDStorage.HasInstanceID(instanceID)) return null;
-            var path = currentInstanceIDStorage[instanceID];
-            if (!path.Contains("Resources")) return null;
-            var resourcesPath = path.Substring(path.IndexOf("Resources", StringComparison.Ordinal) + 10);
-            resourcesPath = resourcesPath.Substring(0, resourcesPath.IndexOf(".", StringComparison.Ordinal));
-            return Resources.Load<T>(resourcesPath);
-        }
-
-        // public static T Load<T>(GfuInstance gfuInstance) where T : Object{
-        //     return Load<T>(gfuInstance.instanceID);
-        // }
-        public static Object Load(long instanceID){
-            var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
-            if (!currentInstanceIDStorage) return null;
-            if (!currentInstanceIDStorage.HasInstanceID(instanceID)) return null;
-            var path = currentInstanceIDStorage[instanceID];
-            if (!path.Contains("Resources")) return null;
-            var resourcesPath = path.Substring(path.IndexOf("Resources", StringComparison.Ordinal) + 10);
-            resourcesPath = resourcesPath.Substring(0, resourcesPath.IndexOf(".", StringComparison.Ordinal));
-            return Resources.Load(resourcesPath);
-        }
-        // public static Object Load(GfuInstance gfuInstance){
-        //     return Load(gfuInstance.instanceID);
-        // }
-    }
+    // // ReSharper disable all UnusedMember.Global
+    // public class InstanceIDStorageLoadTool{
+    //     public static T Load<T>(long instanceID) where T : Object{
+    //         var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
+    //         if (!currentInstanceIDStorage) return null;
+    //         if (!currentInstanceIDStorage.HasInstanceID(instanceID)) return null;
+    //         var path = currentInstanceIDStorage[instanceID];
+    //         if (!path.Contains("Resources")) return null;
+    //         var resourcesPath = path.Substring(path.IndexOf("Resources", StringComparison.Ordinal) + 10);
+    //         resourcesPath = resourcesPath.Substring(0, resourcesPath.IndexOf(".", StringComparison.Ordinal));
+    //         return Resources.Load<T>(resourcesPath);
+    //     }
+    //
+    //     // public static T Load<T>(GfuInstance gfuInstance) where T : Object{
+    //     //     return Load<T>(gfuInstance.instanceID);
+    //     // }
+    //     public static Object Load(long instanceID){
+    //         var currentInstanceIDStorage = GameSystem.GetInstance().currentInstanceIDStorage;
+    //         if (!currentInstanceIDStorage) return null;
+    //         if (!currentInstanceIDStorage.HasInstanceID(instanceID)) return null;
+    //         var path = currentInstanceIDStorage[instanceID];
+    //         if (!path.Contains("Resources")) return null;
+    //         var resourcesPath = path.Substring(path.IndexOf("Resources", StringComparison.Ordinal) + 10);
+    //         resourcesPath = resourcesPath.Substring(0, resourcesPath.IndexOf(".", StringComparison.Ordinal));
+    //         return Resources.Load(resourcesPath);
+    //     }
+    //     // public static Object Load(GfuInstance gfuInstance){
+    //     //     return Load(gfuInstance.instanceID);
+    //     // }
+    // }
 }

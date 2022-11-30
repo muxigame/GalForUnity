@@ -1,7 +1,9 @@
 {
     "name": "com.muxigame.galforunity",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:4be7bd55635cd1b47983c5d1ff92714e"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,

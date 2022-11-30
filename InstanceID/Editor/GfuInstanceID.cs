@@ -24,7 +24,7 @@ namespace GalForUnity.InstanceID{
         protected long instanceID;
         public long InstanceID{
             get{
-                if (instanceID == 0) instanceID = GfuInstance.CreateInstanceID();
+                // if (instanceID == 0) instanceID = GfuInstance.CreateInstanceID();
                 return instanceID;
             }
             set=>instanceID=value;
@@ -38,15 +38,15 @@ namespace GalForUnity.InstanceID{
         }
 #endif 
         public void RegisterInstanceID(){
-#if UNITY_EDITOR
-            var currentInstanceIDStorage = GameSystem.GetInstance()?.currentInstanceIDStorage;//这会造成这行代码获取不到值
-            if (!currentInstanceIDStorage){
-                Debug.LogError("ID寄存器不存在");
-                return;
-            }
-            if(!currentInstanceIDStorage.HasInstanceID(instanceID))
-                currentInstanceIDStorage.Add(instanceID,AssetDatabase.GetAssetPath(this));
-#endif
+// #if UNITY_EDITOR
+//             var currentInstanceIDStorage = GameSystem.GetInstance()?.currentInstanceIDStorage;//这会造成这行代码获取不到值
+//             if (!currentInstanceIDStorage){
+//                 Debug.LogError("ID寄存器不存在");
+//                 return;
+//             }
+//             if(!currentInstanceIDStorage.HasInstanceID(instanceID))
+//                 currentInstanceIDStorage.Add(instanceID,AssetDatabase.GetAssetPath(this));
+// #endif
         }
     }
 }

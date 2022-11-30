@@ -12,7 +12,7 @@ namespace GalForUnity.Editor {
     public sealed class PoltRequireInspector : BaseEditor {
 
         private SerializedObject _obj;
-        private PlotRequire _testA;
+        // private PlotRequire _testA;
         private SerializedProperty _replacePlot;
         private SerializedProperty _triggerPlot;
         private SerializedProperty _startTime;
@@ -188,7 +188,7 @@ namespace GalForUnity.Editor {
     
     }
 #pragma warning disable 612
-    [CustomEditor(typeof(ActionModel))]
+    // [CustomEditor(typeof(ActionModel))]
 #pragma warning restore 612
     public class ActionModelInspector : BaseEditor {
         private SerializedProperty _actionModelType;
@@ -212,36 +212,36 @@ namespace GalForUnity.Editor {
         
         public override void OnInspectorGUI(){
 #pragma warning disable 612
-            GameObject gameObj = ((ActionModel)target).gameObject;
-            serializedObject.Update();
-            DrawMonoScript();
-            EditorGUILayout.PropertyField(_actionModelType, new GUIContent(new GUIContent(_actionModelType.GetFirstAttribute<RenameAttribute>().Name)));
-            if (_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.Custom){
-                EditorGUILayout.PropertyField(_customEvent, new GUIContent(_customEvent.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
-                EditorGUILayout.PropertyField(_customEventNoParam, new GUIContent(_customEventNoParam.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
-            } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.JumpPlot){
-                EditorGUILayout.PropertyField(_plotModel, new GUIContent(_plotModel.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
-            } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.ChangePlotProbability){
-                EditorGUILayout.PropertyField(_plotModel, new GUIContent(_plotModel.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
-                EditorGUILayout.PropertyField(_probability, new GUIContent(_probability.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
-            } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.GotoScene){
-                EditorGUILayout.PropertyField(_directionSceneModel, new GUIContent(_directionSceneModel.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
-            } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.GrowUp){
-                EditorGUILayout.PropertyField(_roleData, new GUIContent(_roleData.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
-                if (_roleData.objectReferenceValue == null){
-                    if (!gameObj.TryGetComponent<RoleData>(out RoleData roleData)){
-                        _roleData.objectReferenceValue = gameObj.AddComponent<RoleData>();
-                    } else{
-                        _roleData.objectReferenceValue = roleData;
-                    }
-                }
-            }
-            if (_actionModelType.enumValueIndex != (byte) ActionModel.ActionModelType.GrowUp){
-                if (gameObj.TryGetComponent<RoleData>(out RoleData roleData)){
-                    Component.DestroyImmediate(roleData,true);
-                }
-            }
-            serializedObject.ApplyModifiedProperties();
+            // GameObject gameObj = ((ActionModel)target).gameObject;
+            // serializedObject.Update();
+            // DrawMonoScript();
+            // EditorGUILayout.PropertyField(_actionModelType, new GUIContent(new GUIContent(_actionModelType.GetFirstAttribute<RenameAttribute>().Name)));
+            // if (_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.Custom){
+            //     EditorGUILayout.PropertyField(_customEvent, new GUIContent(_customEvent.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
+            //     EditorGUILayout.PropertyField(_customEventNoParam, new GUIContent(_customEventNoParam.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
+            // } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.JumpPlot){
+            //     EditorGUILayout.PropertyField(_plotModel, new GUIContent(_plotModel.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
+            // } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.ChangePlotProbability){
+            //     EditorGUILayout.PropertyField(_plotModel, new GUIContent(_plotModel.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
+            //     EditorGUILayout.PropertyField(_probability, new GUIContent(_probability.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
+            // } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.GotoScene){
+            //     EditorGUILayout.PropertyField(_directionSceneModel, new GUIContent(_directionSceneModel.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
+            // } else if(_actionModelType.enumValueIndex == (byte) ActionModel.ActionModelType.GrowUp){
+            //     EditorGUILayout.PropertyField(_roleData, new GUIContent(_roleData.GetFirstAttribute<RenameInEditorAttribute>().LanguageItem.Value));
+            //     if (_roleData.objectReferenceValue == null){
+            //         if (!gameObj.TryGetComponent<RoleData>(out RoleData roleData)){
+            //             _roleData.objectReferenceValue = gameObj.AddComponent<RoleData>();
+            //         } else{
+            //             _roleData.objectReferenceValue = roleData;
+            //         }
+            //     }
+            // }
+            // if (_actionModelType.enumValueIndex != (byte) ActionModel.ActionModelType.GrowUp){
+            //     if (gameObj.TryGetComponent<RoleData>(out RoleData roleData)){
+            //         Component.DestroyImmediate(roleData,true);
+            //     }
+            // }
+            // serializedObject.ApplyModifiedProperties();
 #pragma warning restore 612
         }
     }

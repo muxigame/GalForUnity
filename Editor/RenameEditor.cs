@@ -19,7 +19,7 @@ namespace GalForUnity.Editor{
 /// </summary>
 /// 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(PlotRequire))]
+// [CustomEditor(typeof(PlotRequire))]
     public class RenameEditor : BaseEditor {
 
     // 绘制GUI

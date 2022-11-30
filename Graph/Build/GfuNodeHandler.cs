@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using GalForUnity.Graph.Attributes;
+using GalForUnity.Graph.Build;
 using UnityEngine;
 
 namespace GalForUnity.Graph.SceneGraph{
@@ -40,7 +41,8 @@ namespace GalForUnity.Graph.SceneGraph{
         [HideInInspector]
         [SerializeReference]
         public List<GfuPortAsset> outputPort;
-        
+        [NonSerialized]
+        public RuntimeNode runtimeNode;
         public Type Type => NodeType.GetTypeByCode(gfuNodeTypeCode);
         public bool HasInputPort => inputPort   != null && inputPort.Count  != 0;
         public bool HasOutputPort => outputPort != null && outputPort.Count != 0;

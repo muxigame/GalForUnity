@@ -13,13 +13,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.External;
-using GalForUnity.Graph.AssetGraph.Data;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using UnityEngine;
 using GalForUnity.Graph.Attributes;
-using Unity.Plastic.Newtonsoft.Json;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
+using GalForUnity.Graph.Build;
+using MUXIGame.Serializer;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 #endif
@@ -27,7 +27,6 @@ using UnityEditor.Experimental.GraphView;
 namespace GalForUnity.Graph.SceneGraph{
     public interface IGalGraph{
         public GfuGraphAsset GraphNode{ get; set; }
-        public GraphData GraphData{ get; set; }
         public int GetInstanceID();
         // ReSharper disable once InconsistentNaming
         public string name{ get; set; }
@@ -38,17 +37,11 @@ namespace GalForUnity.Graph.SceneGraph{
         [SerializeField]
         private GfuGraphAsset graphNode;
         [SerializeField]
-        private GraphData graphData;
         public GfuGraphAsset GraphNode{
             get => graphNode;
             set => graphNode = value;
         }
 
-        public GraphData GraphData{
-            get => graphData;
-            set => graphData = value;
-        }
-        
     }
     [Serializable]
     public class GfuGraphAsset :IInstanceIDAble{
@@ -89,26 +82,22 @@ namespace GalForUnity.Graph.SceneGraph{
 #if UNITY_EDITOR
         
         internal static void Save(this SceneGraph sceneGraph,GfuSceneGraphView graphView){
-            sceneGraph.GraphNode.Save(graphView);
-            sceneGraph.GraphData.Save(graphView);
+            var save = sceneGraph.GraphNode.Save(graphView);
+            var valueTuple = PolymorphismSerializer.Serialize(save.ToList());
+            sceneGraph.GraphNode.nodeDataJson = valueTuple.Item1;
+            sceneGraph.GraphNode.unityReference = valueTuple.Item2;
         }
         internal static void Save(this AssetGraph assetGraph, GfuSceneGraphView graphView){
-            assetGraph.GraphNode=new GfuGraphAsset();
-            assetGraph.GraphNode.Save(graphView);
-            assetGraph.GraphData.Save(graphView);
-            // TODO 使用子资产持有引用，方便预览
-            // foreach (var graphNodeNode in assetGraph.GraphNode.nodes){
-            //     var gfuNodeHandler = ScriptableObject.CreateInstance<GfuNodeHandler>();
-            //     gfuNodeHandler.gfuNode = graphNodeNode;
-            //     gfuNodeHandler.name = graphNodeNode.GetType().Name;
-            //     AssetDatabase.AddObjectToAsset(gfuNodeHandler,assetGraph);
-            // }
+            var save = assetGraph.GraphNode.Save(graphView);
+            var valueTuple = PolymorphismSerializer.Serialize(save.ToList());
+            assetGraph.GraphNode.nodeDataJson = valueTuple.Item1;
+            assetGraph.GraphNode.unityReference = valueTuple.Item2;
             AssetDatabase.SetMainObject(assetGraph,AssetDatabase.GetAssetPath(assetGraph));
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
         
-        internal static void Save(this GfuGraphAsset assetGraph, GfuSceneGraphView graphView){
+        internal static IEnumerable<RuntimeNode> Save(this GfuGraphAsset assetGraph, GfuSceneGraphView graphView){
             if (assetGraph.instanceID == -1) assetGraph.instanceID = assetGraph.CreateInstanceID();
             var portMap = new Dictionary<Port, GfuPortAsset>();
             foreach (var graphViewNode in graphView.Nodes){
@@ -122,13 +111,13 @@ namespace GalForUnity.Graph.SceneGraph{
                     assetGraph.nodes.Add(gfuNodeAsset);
                 }
                 gfuNodeAsset.Save(graphViewNode.Value, portMap);
+                yield return gfuNodeAsset.runtimeNode = graphViewNode.Value.RuntimeNode;
                 gfuNodeAsset.instanceID = graphViewNode.Key;
             }
             graphView.edges.ForEach(x => {
                 if (portMap.ContainsKey(x.input) && portMap.ContainsKey(x.output)) 
                     new GfuConnectionAsset().Save(portMap[x.input], portMap[x.output]);
             });
-
         }
 
         internal static void Save(this GfuNodeAsset gfuNodeAsset, GfuNode gfuNode, Dictionary<Port, GfuPortAsset> portMap){

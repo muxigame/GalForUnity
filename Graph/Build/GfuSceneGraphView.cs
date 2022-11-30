@@ -14,18 +14,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
-using GalForUnity.Graph.AssetGraph.GFUNode.Plot;
+using GalForUnity.Graph.Nodes.Editor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+
 
 namespace GalForUnity.Graph.SceneGraph{
     public class GfuSceneGraphView : GraphView{
         public Dictionary<long, GfuNode> Nodes = new Dictionary<long, GfuNode>();
 
-        public GfuSceneGraphView() : this(null, null){ }
+        public GfuSceneGraphView() : this(null){ }
 
-        public GfuSceneGraphView(GfuGraphAsset gfuGraphAsset, GraphData graphData){
+        public GfuSceneGraphView(GfuGraphAsset gfuGraphAsset){
             // _sceneGraphEditorWindow = sceneGraphEditorWindow;
             InitEditorView();
             if (gfuGraphAsset == null || gfuGraphAsset.nodes == null || gfuGraphAsset.nodes.Count == 0){
@@ -36,7 +37,8 @@ namespace GalForUnity.Graph.SceneGraph{
             }
 
             var connection = new HashSet<GfuConnectionAsset>();
-            foreach (var gfuNodeAsset in gfuGraphAsset.nodes){
+            var gfuNodeAsset = gfuGraphAsset.nodes[0];
+            for (var i = 0; i < gfuGraphAsset.nodes.Count; gfuNodeAsset = gfuGraphAsset.nodes[i++]){
                 InitNode(gfuNodeAsset);
                 if (gfuNodeAsset.HasInputPort)
                     foreach (var gfuPortAsset in gfuNodeAsset.inputPort){
@@ -54,7 +56,7 @@ namespace GalForUnity.Graph.SceneGraph{
             foreach (var gfuConnectionAsset in connection) InitConnection(gfuConnectionAsset);
             foreach (var keyValuePair in Nodes){
                 var nodeByInstanceID = gfuGraphAsset.GetNodeByInstanceID(keyValuePair.Value.instanceID);
-                keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID, graphData.GetNodeData(keyValuePair.Value.instanceID), null);
+                // keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID, graphData.GetNodeData(keyValuePair.Value.instanceID), null);
             }
         }
 
@@ -72,7 +74,7 @@ namespace GalForUnity.Graph.SceneGraph{
         }
 
         public void InitNode(GfuNodeAsset gfuNodeAsset){
-            var node = Activator.CreateInstance(gfuNodeAsset.Type ?? typeof(PlotItemNode)) as GfuNode;
+            var node = Activator.CreateInstance(gfuNodeAsset.Type ?? typeof(GfuNode)) as GfuNode;
             if (node == null){
                 Debug.LogError("node is null");
                 return;
@@ -114,7 +116,7 @@ namespace GalForUnity.Graph.SceneGraph{
                 if (!port.enabledSelf) continue;
                 if (startAnchor.node      == port.node      ||
                     startAnchor.direction == port.direction ||
-                    port is GfuInputView                    ||
+                    // port is GfuInputView                    ||
                     startAnchor.portType != port.portType  &&
                     port.portType        != typeof(object) &&
                     startAnchor.portType != typeof(object)
