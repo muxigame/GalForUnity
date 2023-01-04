@@ -1,0 +1,71 @@
+//======================================================================
+//
+//       CopyRight 2019-2022 © MUXI Game Studio 
+//       . All Rights Reserved 
+//
+//        FileName :  FBinder.cs at 2022-11-05 22:09:45
+//
+//======================================================================
+
+using System;
+using System.Reflection;
+using UnityEngine.UIElements;
+
+namespace GalForUnity.Graph.Nodes{
+    public class FBinder<TValue> : IBinding{
+        private readonly VisualElement _visualElement;
+        private Action _get;
+        private Action _onUIPreUpdate;
+        private Action<TValue> _set;
+
+        public FBinder(VisualElement visualElement, Action<TValue> set, Action get, Action onUIPreUpdate){
+            visualElement.RegisterCallback<ChangeEvent<TValue>>(Callback);
+            _visualElement = visualElement;
+            this._get = get;
+            this._set = set;
+            this._onUIPreUpdate = onUIPreUpdate;
+        }
+
+        public void PreUpdate(){ _onUIPreUpdate?.Invoke(); }
+        public void Update(){ _get?.Invoke(); }
+
+
+        public void Release(){
+            _visualElement.UnregisterCallback<ChangeEvent<TValue>>(Callback);
+            _get = null;
+            _set = null;
+            _onUIPreUpdate = null;
+        }
+
+        private void Callback(ChangeEvent<TValue> evt){ _set?.Invoke(evt.newValue); }
+    }
+
+    public static class Expansion{
+        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, FieldInfo fieldInfo, object instance, Action onUIPreUpdate = null, Action onValueChanged = null){
+            if (notifyValueChanged is BindableElement bindableElement){
+                return bindableElement.binding = new FBinder<TValue>(bindableElement,
+                    value => {
+                        fieldInfo.SetValue(instance, value);
+                        onValueChanged?.Invoke();
+                    },
+                    () => {
+                        notifyValueChanged.value = (TValue) fieldInfo.GetValue(instance);
+                    },
+                    onUIPreUpdate);
+            }
+            return null;
+        }
+        public static IBinding CreateBinder<TValue>(this BindableElement bindableElement, FieldInfo fieldInfo, object instance, Action onUIPreUpdate = null,Action onValueChanged = null){
+            if (bindableElement is INotifyValueChanged<TValue> notifyValueChanged){
+                return bindableElement.binding = new FBinder<TValue>(bindableElement,
+                    value => {
+                        fieldInfo.SetValue(instance, value);
+                        onValueChanged?.Invoke();
+                    },
+                    () => { notifyValueChanged.value = (TValue) fieldInfo.GetValue(instance); },
+                    onUIPreUpdate);
+            }
+            return null;
+        }
+    }
+}

@@ -1,0 +1,13 @@
+#connector{
+    /*min-width: 0;*/
+}
+#type{
+    /*min-width: 0;*/
+}
+Port{
+    /*min-width: 0;*/
+}
+GfuTogglePort{
+    height: 26px;
+    flex-direction:row;
+}

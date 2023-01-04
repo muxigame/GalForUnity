@@ -140,7 +140,7 @@ namespace GalForUnity.Graph.SceneGraph{
                 portMap.Add(gfuPorts[i], gfuNodeAsset.outputPort[i]);
             }
         }
-
+        
         internal static void Save(this GfuPortAsset gfuPortAsset, GfuPort gfuPort, GfuNodeAsset gfuNodeAsset){
             if (gfuPort.direction == Direction.Input)
                 gfuPortAsset.portType = PortType.Input;
