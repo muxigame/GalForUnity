@@ -15,7 +15,6 @@ using System.Linq;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Build;
-using GalForUnity.System;
 using UnityEngine;
 using MainNode = GalForUnity.Graph.Nodes.Runtime.MainNode;
 
@@ -72,12 +71,12 @@ namespace GalForUnity.Graph.SceneGraph{
         }
 
         private void CreateRunTimeNode(){
-            if (_sourceAsset == null || _sourceAsset.nodes?.Count == default) return;
+            if (_sourceAsset?.nodes?.Count == null) return;
             if (RunTimeNode == null) RunTimeNode = new Dictionary<long, GfuNode>();
             foreach (var sourceAssetNode in _sourceAsset.nodes){
                 var instance = Activator.CreateInstance(sourceAssetNode.Type) as GfuNode;
                 if (sourceAssetNode.gfuNodeTypeCode == NodeCode.MainNode) CurrentNode = _rootNode = instance?.RuntimeNode as MainNode;
-                if (instance                        == null) throw new NullReferenceException("node create failed");
+                if (instance == null) throw new NullReferenceException("node create failed");
                 RunTimeNode.Add(instance.instanceID, instance);
             }
         }

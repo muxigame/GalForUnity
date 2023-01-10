@@ -7,29 +7,33 @@
 //
 //======================================================================
 
+using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.External;
-using GalForUnity.Graph.AssetGraph.GFUNode;
+using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Block.Config;
 using GalForUnity.Graph.Nodes.Editor;
+using GalForUnity.Graph.SceneGraph;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Block{
-    public class DraggableBlock : VisualElement, IGalBlock{
+    public class DraggableBlockEditor : VisualElement, IGalBlockEditor{
         private readonly VisualElement _dragContainer;
         private bool _mouseDown;
         public VisualElement content;
         public Button delete;
         public Button drag;
-        public IGalConfig galConfig;
+        public IGalBlock GalBlock;
         public PlotNode plotNode;
 
-        public DraggableBlock(){
+        public DraggableBlockEditor(PlotNode plotNode, IGalBlock galBlock){
             var templateContainer = UxmlHandler.instance.draggableBlockUxml.Instantiate();
-            _dragContainer = new VisualElement {
+            _dragContainer = new VisualElement{
                 name = "DragContainer"
             };
+            GalBlock = galBlock;
+            this.plotNode = plotNode;
             _dragContainer.Add(templateContainer);
             content = templateContainer.Q<VisualElement>("content");
             drag = templateContainer.Q<Button>("dragButton");
@@ -41,13 +45,17 @@ namespace GalForUnity.Graph.Block{
             Add(_dragContainer);
         }
 
+        public virtual IEnumerable<(GfuPort, GfuPortAsset)> OnSavePort(GfuNodeAsset gfuNodeAsset){ return default; }
+
+        public virtual IEnumerable<(GfuPortAsset, GfuPort)> OnLoadPort(GfuNodeAsset gfuNodeAsset){ return default; }
+
         private void Up(MouseUpEvent x){
             _mouseDown = false;
             if (_dragContainer.style.top != 0) _dragContainer.style.top = 0;
-            var configValue = plotNode.runtimeNode.config.value;
-            configValue.Remove(galConfig);
-            configValue.Insert(parent.IndexOf(this), galConfig);
-            PortProcess(galConfig);
+            var configValue = plotNode.runtimeNode.config;
+            configValue.Remove(GalBlock);
+            configValue.Insert(parent.IndexOf(this), GalBlock);
+            PortProcess(GalBlock);
         }
 
         private void Down(MouseDownEvent x){ _mouseDown = true; }
@@ -76,14 +84,13 @@ namespace GalForUnity.Graph.Block{
             node.Insert(index, this);
             return mIndex < index ? -min.Obj.worldBound.size.y : min.Obj.worldBound.size.y;
         }
-        private void PortProcess(IGalConfig changedGalConfig){
-            var index = plotNode.runtimeNode.config.value.IndexOf(changedGalConfig);
-            var hashSet = plotNode.runtimeNode.portalizedData.value[index];
-            hashSet.Clear();
-            content.Q<BlockPortUxml>().Query<GfuTogglePort>().ForEach(x => hashSet.Add(x.name));
+
+        private void PortProcess(IGalBlock changedGalBlock){
+            if (!(changedGalBlock is IGalConfig config)) return;
+            config.Clear();
         }
-        
-        ~DraggableBlock(){
+
+        ~DraggableBlockEditor(){
             drag.UnregisterCallback<MouseUpEvent>(Up);
             drag.UnregisterCallback<MouseDownEvent>(Down);
             drag.UnregisterCallback<MouseMoveEvent>(Callback);

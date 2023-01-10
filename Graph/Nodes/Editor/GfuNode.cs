@@ -32,12 +32,11 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         /// <summary>
         /// 节点数据
         /// </summary>
-        public GfuNodeAsset gfuNodeAsset;
+        public GfuNodeAsset nodeAsset;
         /// <summary>
         ///     当节点执行完毕回调
         /// </summary>
         [NonSerialized] public Action<GfuNode> OnExecuted;
-
         public GfuNode(){}
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
@@ -54,27 +53,29 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         ///     获得Input和Output总端口的数量
         /// </summary>
         /// <returns></returns>
-        public int PortCount => gfuNodeAsset.inputPort.Count + gfuNodeAsset.outputPort.Count;
+        public int PortCount => nodeAsset.inputPort.Count + nodeAsset.outputPort.Count;
 
 
         /// <summary>
         ///     获得Input端口数量
         /// </summary>
         /// <returns></returns>
-        public int InputPortCount => gfuNodeAsset.inputPort.Count;
+        public int InputPortCount => nodeAsset.inputPort.Count;
 
         /// <summary>
         ///     获得Output端口数量
         /// </summary>
         /// <returns></returns>
-        public int OutputPortCount => gfuNodeAsset.outputPort.Count;
-        
+        public int OutputPortCount => nodeAsset.outputPort.Count;
+
 
         /// <summary>
         ///     初始化节点系统的方法，应该从此方法初始化节点系统，并调用父类的方法
         /// </summary>
         /// <param name="otherRuntimeNode"></param>
-        public virtual void Init(RuntimeNode otherRuntimeNode){ RuntimeNode = otherRuntimeNode; }
+        public virtual void Init(RuntimeNode otherRuntimeNode){
+            RuntimeNode = otherRuntimeNode;
+        }
         
         /// <summary>
         ///     需要在此方法中定义节点的操作，并且在节点执行完毕中调用Executed来跳转到下一个端口(不可以在此方法中使用Editor，这会导致节点系统无法使用)
@@ -115,7 +116,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         /// <summary>
         ///     NormalMethod 判断当前节点是否还有可能存在的下一个节点
         /// </summary>
-        public virtual bool HasNext(){ return gfuNodeAsset.HasOutputPort && gfuNodeAsset.outputPort.HasConnection(); }
+        public virtual bool HasNext(){ return nodeAsset.HasOutputPort && nodeAsset.outputPort.HasConnection(); }
 
         /// <summary>
         ///     NormalMethod 判断当前节点是否还有可能存在的下一个节点
@@ -137,7 +138,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         public bool IsInputConnected(int portIndex){
             if (_nodeFindProvider != null) return _nodeFindProvider.IsInputPortConnected(portIndex);
             if (RuntimeNode is null) throw new NullReferenceException("Node data does not exist");
-            return gfuNodeAsset.HasInputPort&&gfuNodeAsset.inputPort.HasConnection();
+            return nodeAsset.HasInputPort&&nodeAsset.inputPort.HasConnection();
         }
 
         /// <summary>
@@ -149,7 +150,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         public bool IsOutputConnected(int portIndex){
             if (_nodeFindProvider != null) return _nodeFindProvider.IsOutputPortConnected(portIndex);
             if (RuntimeNode is null) throw new NullReferenceException("Node data does not exist");
-            return gfuNodeAsset.HasOutputPort &&gfuNodeAsset.outputPort.HasConnection();
+            return nodeAsset.HasOutputPort &&nodeAsset.outputPort.HasConnection();
         }
 
         public int GetOutputConnectionCount(int index = 0){ return _nodeFindProvider.GetOutputPortConnectionCount(index); }

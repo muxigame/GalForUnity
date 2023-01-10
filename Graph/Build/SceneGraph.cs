@@ -7,6 +7,7 @@
 //
 //======================================================================
 
+
 using GalForUnity.Graph.Build;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,6 +21,7 @@ namespace GalForUnity.Graph.SceneGraph{
         public static UnityEvent<GfuSceneGraphView> OnSceneGraphSave = new UnityEvent<GfuSceneGraphView>();
 
         [SerializeField] private GfuGraphAsset graphNode;
+        
 
         public GfuGraphAsset GraphNode{
             get => graphNode;
@@ -35,9 +37,12 @@ namespace GalForUnity.Graph.SceneGraph{
             serializedObject.Update();
             base.OnInspectorGUI();
             var sceneGraph = (SceneGraph) target;
-            if (GUILayout.Button("创建")){ }
+            if (GUILayout.Button("创建")){
+                
+            }
 
-            if (GUILayout.Button("打开")) GalGraphWindow.Open(sceneGraph);
+            if (GUILayout.Button("打开")) 
+                GalGraphWindow.Open(sceneGraph);
         }
     }
 #endif

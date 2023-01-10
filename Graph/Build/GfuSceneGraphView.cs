@@ -18,6 +18,7 @@ using GalForUnity.Graph.Nodes.Editor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using PlotNode = GalForUnity.Graph.Nodes.Runtime.PlotNode;
 
 
 namespace GalForUnity.Graph.SceneGraph{
@@ -37,9 +38,12 @@ namespace GalForUnity.Graph.SceneGraph{
             }
 
             var connection = new HashSet<GfuConnectionAsset>();
-            var gfuNodeAsset = gfuGraphAsset.nodes[0];
-            for (var i = 0; i < gfuGraphAsset.nodes.Count; gfuNodeAsset = gfuGraphAsset.nodes[i++]){
-                InitNode(gfuNodeAsset);
+            Dictionary<GfuPortAsset,GfuPort> portMap=new Dictionary<GfuPortAsset, GfuPort>();
+            for (var i = 0; i < gfuGraphAsset.nodes.Count; ++i){
+                GfuNodeAsset gfuNodeAsset = gfuGraphAsset.nodes[i];
+                foreach (var port in InitNode(gfuNodeAsset)){
+                    if(!portMap.ContainsKey(port.Item1))portMap.Add(port.Item1,port.Item2);
+                }
                 if (gfuNodeAsset.HasInputPort)
                     foreach (var gfuPortAsset in gfuNodeAsset.inputPort){
                         if (!gfuPortAsset.HasConnection) continue;
@@ -52,8 +56,7 @@ namespace GalForUnity.Graph.SceneGraph{
                         gfuPortAsset.connections.ForEach(asset => connection.Add(asset));
                     }
             }
-
-            foreach (var gfuConnectionAsset in connection) InitConnection(gfuConnectionAsset);
+            foreach (var gfuConnectionAsset in connection) InitConnection(gfuConnectionAsset,portMap);
             foreach (var keyValuePair in Nodes){
                 var nodeByInstanceID = gfuGraphAsset.GetNodeByInstanceID(keyValuePair.Value.instanceID);
                 // keyValuePair.Value.InitWithGfuNodeData(nodeByInstanceID, graphData.GetNodeData(keyValuePair.Value.instanceID), null);
@@ -73,12 +76,14 @@ namespace GalForUnity.Graph.SceneGraph{
             this.AddManipulator(new RectangleSelector());
         }
 
-        public void InitNode(GfuNodeAsset gfuNodeAsset){
+        public IEnumerable<(GfuPortAsset, GfuPort)> InitNode(GfuNodeAsset gfuNodeAsset){
             var node = Activator.CreateInstance(gfuNodeAsset.Type ?? typeof(GfuNode)) as GfuNode;
             if (node == null){
                 Debug.LogError("node is null");
-                return;
+                return default;
             }
+
+            node.Init(gfuNodeAsset.runtimeNode);
 
             AddElement(node);
             // if(node is GfuOperationNode gfuOperationNode)gfuOperationNode.GfuInputViews.ForEach(x=>x.);.Init(null);
@@ -87,18 +92,18 @@ namespace GalForUnity.Graph.SceneGraph{
             var rect = node.GetPosition();
             rect.position = gfuNodeAsset.position;
             node.SetPosition(rect);
+            return node.OnLoadPort(gfuNodeAsset);
         }
 
-        public void InitConnection(GfuConnectionAsset gfuConnectionAsset){
+        public void InitConnection(GfuConnectionAsset gfuConnectionAsset,Dictionary<GfuPortAsset,GfuPort> portMap){
             var inputPort = gfuConnectionAsset.input;
             var outputPort = gfuConnectionAsset.output;
             if (inputPort == null || outputPort == null){
-                Debug.Log("1");
+                Debug.LogError("链接没有节点");
                 return;
             }
-
-            var visualElementInput = Nodes[inputPort.node.instanceID].inputContainer.ElementAt(inputPort.Index) as Port;
-            var visualElementOutput = Nodes[outputPort.node.instanceID].outputContainer.ElementAt(outputPort.Index) as Port;
+            var visualElementInput = portMap[inputPort] as Port;
+            var visualElementOutput = portMap[outputPort] as Port;
             var connectTo = visualElementInput?.ConnectTo(visualElementOutput);
             AddElement(connectTo);
         }

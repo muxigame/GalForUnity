@@ -8,16 +8,6 @@
 //        Created by 半世癫(Roc) at 2022-09-19 23:38:34
 //
 //======================================================================
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuNodeAsset.cs
-//
-//        Created by 半世癫(Roc) at 2022-04-14 00:43:37
-//
-//======================================================================
 
 using System;
 using System.Collections.Generic;
@@ -35,10 +25,10 @@ namespace GalForUnity.Graph.SceneGraph{
         public long instanceID;
         public int gfuNodeTypeCode;
         public Vector4 position;
-        [HideInInspector]
+        // [HideInInspector]
         [SerializeReference]
         public List<GfuPortAsset> inputPort;
-        [HideInInspector]
+        // 
         [SerializeReference]
         public List<GfuPortAsset> outputPort;
         // [NonSerialized]
@@ -62,8 +52,10 @@ namespace GalForUnity.Graph.SceneGraph{
     [Serializable]
     public class GfuConnectionAsset{
         [SerializeReference]
+        [HideInInspector]
         public GfuPortAsset input;
         [SerializeReference]
+        [HideInInspector]
         public GfuPortAsset output;
     }
 

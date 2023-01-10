@@ -59,7 +59,7 @@ namespace GalForUnity.Graph.Attributes{
     }
 
     public static class NodeTypeStatic{
-        public static int GetTypeByCode(this GfuNode gfuNode){ return NodeType.GetCodeByType(gfuNode.GetType()); }
+        public static int GetTypeByCode(this EditorNode gfuNode){ return NodeType.GetCodeByType(gfuNode.GetType()); }
     }
 
     public struct NodeCode{

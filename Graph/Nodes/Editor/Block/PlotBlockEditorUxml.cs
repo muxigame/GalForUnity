@@ -7,14 +7,16 @@
 //
 //======================================================================
 
+using GalForUnity.Graph.Block.Config;
+using GalForUnity.Graph.Nodes.Editor;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Block{
-    public class PlotBlockUxml : DraggableBlock{
+    public class PlotBlockEditorUxml : DraggableBlockEditor{
         private NameDropdownField _nameField;
         private TextField _said;
 
-        public PlotBlockUxml(){
+        public PlotBlockEditorUxml(PlotNode plotNode,Config.IGalBlock galBlock):base(plotNode,galBlock){
             styleSheets.Add(UxmlHandler.instance.plotBlockUss);
             content.Add(_nameField = new NameDropdownField());
             content.Add(_said = new TextField {
@@ -22,9 +24,6 @@ namespace GalForUnity.Graph.Block{
             });
             content.style.flexDirection = FlexDirection.Column;
         }
-
-        public class PlotBlockUxmlFactory : UxmlFactory<PlotBlockUxml, UxmlTraits>{
-            public override VisualElement Create(IUxmlAttributes bag, CreationContext cc){ return new PlotBlockUxml(); }
-        }
+        
     }
 }

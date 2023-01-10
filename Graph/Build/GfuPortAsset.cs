@@ -11,19 +11,22 @@
 
 using System;
 using System.Collections.Generic;
+using GalForUnity.Graph.Build;
 using UnityEngine;
 
 namespace GalForUnity.Graph.SceneGraph{
     [Serializable]
     public class GfuPortAsset{
+        [SerializeField]
+        public string portName;
         [HideInInspector]
-        [SerializeReference]
-        public GfuNodeAsset node;
-        [SerializeReference]
-        public List<GfuConnectionAsset> connections;
+        [SerializeReference] public GfuNodeAsset node;
+        [SerializeReference] public List<GfuConnectionAsset> connections;
         public PortType portType;
+        [SerializeField]
+        public PortValue value;
         public bool HasConnection => connections != null && connections.Count != 0;
-        public int Index => portType             == PortType.Input ? node.inputPort.IndexOf(this) : node.outputPort.IndexOf(this);
+        // public int Index => portType             == PortType.Input ? node.inputPort.IndexOf(this) : node.outputPort.IndexOf(this);
 
         public static implicit operator bool(GfuPortAsset gfuNode){
             if (gfuNode == null) return false;

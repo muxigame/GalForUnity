@@ -28,8 +28,6 @@ namespace GalForUnity.Graph.Nodes{
 
         public void PreUpdate(){ _onUIPreUpdate?.Invoke(); }
         public void Update(){ _get?.Invoke(); }
-
-
         public void Release(){
             _visualElement.UnregisterCallback<ChangeEvent<TValue>>(Callback);
             _get = null;

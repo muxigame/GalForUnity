@@ -9,6 +9,8 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
+using GalForUnity.Attributes;
 using GalForUnity.Graph.AssetGraph.Attributes;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Tool;
@@ -33,8 +35,7 @@ namespace GalForUnity.Graph.Build{
                 galGraph = EditorUtility.InstanceIDToObject(instanceID) as IGalGraph;
                 GetWindow(false);
             } else{
-                GraphView = new GfuSceneGraphView(null);
-                InitGraph();
+                InitGraph(galGraph?.GraphNode);
             }
         }
 
@@ -47,7 +48,6 @@ namespace GalForUnity.Graph.Build{
                 Open(AssetDatabase.LoadAssetAtPath<SceneGraph.AssetGraph>(path));
                 return true;
             }
-
             return false;
         }
 
@@ -64,64 +64,70 @@ namespace GalForUnity.Graph.Build{
             sceneGraphEditorWindow.galGraph = galGraph;
             sceneGraphEditorWindow.instanceID = galGraph.GetInstanceID();
             sceneGraphEditorWindow.titleContent = new GUIContent(sceneGraphEditorWindow.name = galGraph.name);
-            sceneGraphEditorWindow.GraphView = new GfuSceneGraphView(galGraph.GraphNode);
-            sceneGraphEditorWindow.InitGraph();
+            sceneGraphEditorWindow.InitGraph(galGraph.GraphNode);
             sceneGraphEditorWindow.Show(true);
         }
 
         private void GetWindow(bool focus = true){
             instanceID = galGraph.GetInstanceID();
             titleContent = new GUIContent(name = galGraph.name);
-            GraphView = new GfuSceneGraphView(galGraph.GraphNode);
-            InitGraph();
+            InitGraph(galGraph.GraphNode);
             if (focus) Focus();
         }
 
-        private void InitGraph(){
+        private void InitGraph(GfuGraphAsset graphAsset){
             rootVisualElement.Clear();
-
-            VisualElement labelFromUxml = UxmlHandler.instance.galGraphWindowUxml.Instantiate();
-            labelFromUxml.styleSheets.Add(UxmlHandler.instance.galGraphWindowUss);
-
-            if (GraphView == null) return;
-
-            rootVisualElement.Add(GraphView);
-            var menuWindowProvider = CreateInstance<SearchMenuWindowProvider>();
-            menuWindowProvider.attributeTargets = NodeAttributeTargets.All;
-            GraphView.nodeCreationRequest += context => {
-                SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), menuWindowProvider);
-                menuWindowProvider.OnSelectEntryHandler = new SearchProvider(GraphView, this, context).OnMenuSelectEntry;
-            };
-            rootVisualElement.Add(new Button(() => { new GalGraph(galGraph).Play(); }) {
-                text = GfuLanguage.GfuLanguageInstance.EXECUTE.Value + "(experimental)",
-                style = {
-                    width = 200, height = 20, right = 0, position = Position.Absolute
+            try{
+                GraphView = new GfuSceneGraphView(graphAsset);
+            } catch (Exception e){
+                Debug.LogError(e);
+            } finally{
+                VisualElement labelFromUxml = UxmlHandler.instance.galGraphWindowUxml.Instantiate();
+                labelFromUxml.styleSheets.Add(UxmlHandler.instance.galGraphWindowUss);
+                if (GraphView != null){
+                    rootVisualElement.Add(GraphView);
+                    var menuWindowProvider = CreateInstance<SearchMenuWindowProvider>();
+                    menuWindowProvider.attributeTargets = NodeAttributeTargets.All;
+                    GraphView.nodeCreationRequest += context => {
+                        SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), menuWindowProvider);
+                        menuWindowProvider.OnSelectEntryHandler = new SearchProvider(GraphView, this, context).OnMenuSelectEntry;
+                    };
+                    rootVisualElement.Add(new Button(() => { new GalGraph(galGraph).Play(); }) {
+                        text = GfuLanguage.GfuLanguageInstance.EXECUTE.Value + "(experimental)",
+                        style = {
+                            width = 200, height = 20, right = 0, position = Position.Absolute
+                        }
+                    });
+                    rootVisualElement.Add(new Button(Save) {
+                        text = GfuLanguage.GfuLanguageInstance.SAVE.Value,
+                        style = {
+                            width = 200,
+                            height = 20,
+                            unityTextAlign = TextAnchor.MiddleCenter,
+                            right = 0,
+                            position = Position.Absolute,
+                            top = 20
+                        }
+                    });
+                    rootVisualElement.Add(labelFromUxml);  
                 }
-            });
-            rootVisualElement.Add(new Button(Save) {
-                text = GfuLanguage.GfuLanguageInstance.SAVE.Value,
-                style = {
-                    width = 200,
-                    height = 20,
-                    unityTextAlign = TextAnchor.MiddleCenter,
-                    right = 0,
-                    position = Position.Absolute,
-                    top = 20
-                }
-            });
-            rootVisualElement.Add(labelFromUxml);
+                
+            }
+
         }
 
         [MenuItem("Test/OpenGalWindows")]
         private static void CreateGUI(){
             var galGraphWindow = GetWindow<GalGraphWindow>();
-            galGraphWindow.GraphView = new GfuSceneGraphView(null);
-            galGraphWindow.InitGraph();
+            galGraphWindow.InitGraph(null);
         }
 
 
         public void Save(){
-            if (galGraph is SceneGraph.SceneGraph sceneGraph) sceneGraph.Save(GraphView);
+            if (galGraph is SceneGraph.SceneGraph sceneGraph){
+                Undo.RecordObject(sceneGraph,"");
+                sceneGraph.Save(GraphView);
+            }
             if (galGraph is SceneGraph.AssetGraph assetGraph) assetGraph.Save(GraphView);
         }
     }
@@ -150,7 +156,8 @@ namespace GalForUnity.Graph.Build{
             var windowMousePosition = windowRoot.ChangeCoordinatesTo(windowRoot.parent, _context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
             node.SetPosition(new Rect(graphMousePosition, Vector2.zero)); //将节点移动到鼠标位置
-            node.Init(null);
+            var runtimeNode = Activator.CreateInstance(type?.GetCustomAttribute<NodeEditor>().Type ?? typeof(RuntimeNode)) as RuntimeNode;
+            node.Init(runtimeNode);
             _graphView.Nodes.Add(GetHashCode(), node);
             return true;
         }

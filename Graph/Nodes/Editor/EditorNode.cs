@@ -15,10 +15,10 @@ using System.Linq;
 using System.Reflection;
 using GalForUnity.Attributes;
 using GalForUnity.External;
+using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Build;
-using GalForUnity.Model;
+using GalForUnity.Graph.SceneGraph;
 using GalForUnity.System;
-using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 // using NodeData = GalForUnity.Graph.Build.NodeData;
@@ -142,7 +142,40 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         internal List<GfuPort> GfuPorts(){
             return GetGfuInput().AddAll(GetGfuOutPut());
         }
-        
+
+
+        internal virtual IEnumerable<(GfuPort port, GfuPortAsset gfuPortAsset)> OnSavePort(GfuNodeAsset gfuNodeAsset){
+            gfuNodeAsset.position = GetPosition().position;
+            gfuNodeAsset.gfuNodeTypeCode = this.GetTypeByCode();
+            gfuNodeAsset.inputPort = new List<GfuPortAsset>();
+            gfuNodeAsset.outputPort = new List<GfuPortAsset>();
+            var gfuPorts = GetGfuInput();
+            for (var i = 0; i < gfuPorts.Count; i++){
+                var gfuPortAsset = new GfuPortAsset();
+                gfuPortAsset.Save(gfuPorts[i], gfuNodeAsset);
+                gfuNodeAsset.inputPort.Add(gfuPortAsset);
+                yield return (gfuPorts[i], gfuNodeAsset.inputPort[i]);
+            }
+            gfuPorts = GetGfuOutPut();
+            for (var i = 0; i < gfuPorts.Count; i++){
+                var gfuPortAsset =new GfuPortAsset();
+                gfuPortAsset.Save(gfuPorts[i], gfuNodeAsset);
+                gfuNodeAsset.outputPort.Add(gfuPortAsset);
+                yield return (gfuPorts[i], gfuNodeAsset.outputPort[i]);
+            }
+        }
+
+        internal virtual IEnumerable<(GfuPortAsset gfuPortAsset, GfuPort port)> OnLoadPort(GfuNodeAsset gfuNodeAsset){
+            var gfuPorts = GetGfuInput();
+            for (var i = 0; i < gfuPorts.Count; i++){
+                yield return (gfuNodeAsset.inputPort[i],gfuPorts[i]);
+            }
+            gfuPorts = GetGfuOutPut();
+            for (var i = 0; i < gfuPorts.Count; i++){
+                yield return (gfuNodeAsset.outputPort[i],gfuPorts[i]);
+            }
+        }
+
         /// <summary>
         /// EditorMethod
         /// 获取输出端口列表

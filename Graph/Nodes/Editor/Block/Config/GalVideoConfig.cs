@@ -7,42 +7,33 @@
 //
 //======================================================================
 
+using System;
 using GalForUnity.Attributes;
 using UnityEngine.Video;
 
 namespace GalForUnity.Graph.Block.Config{
-    public class GalVideoConfig : IGalConfig<VideoPlayer>{
+    [Serializable]
+    [NodeEditor(typeof(PlotVideoBlockEditorUxml))]
+    public class GalVideoConfig : GalConfig<VideoPlayer>{
         public VideoClip videoClip;
-        [Rename("")]
-        public bool? playOnAwake;
-        [Rename("")]
-        public bool? waitForFirstFrame;
-        [Rename("")]
-        public bool? isLooping;
-        [Rename("")]
-        public bool? skipOnDrop;
-        [Rename("")]
-        public float? playbackSpeed;
-        [Rename("")]
-        public VideoAspectRatio? aspectRatio;
-        [Rename("")]
-        public VideoAudioOutputMode? audioOutputMode;
-        [Rename("")]
-        public float? volume;
+        [Rename("")] public bool playOnAwake;
+        [Rename("")] public bool waitForFirstFrame;
+        [Rename("")] public bool isLooping;
+        [Rename("")] public bool skipOnDrop;
+        [Rename("")] public float playbackSpeed;
+        [Rename("")] public VideoAspectRatio aspectRatio;
+        [Rename("")] public VideoAudioOutputMode audioOutputMode;
+        [Rename("")] public float volume;
 
-        public void Process(VideoPlayer t){
-            
-            if (videoClip != null) t.clip = videoClip;
-            if (playOnAwake != null) t.playOnAwake = (bool) playOnAwake;
-            if (waitForFirstFrame != null) t.waitForFirstFrame = (bool) waitForFirstFrame;
-            if (isLooping != null) t.isLooping = (bool) isLooping;
-            if (skipOnDrop != null) t.skipOnDrop = (bool) skipOnDrop;
-            if (playbackSpeed != null) t.playbackSpeed = (int) playbackSpeed;
-            if (aspectRatio != null) t.aspectRatio = (VideoAspectRatio) aspectRatio;
-            if (audioOutputMode != null) t.audioOutputMode = (VideoAudioOutputMode) audioOutputMode;
+        public override void Process(VideoPlayer t){
+            if (field.Contains(nameof(videoClip))) t.clip = videoClip;
+            if (field.Contains(nameof(playOnAwake))) t.playOnAwake = playOnAwake;
+            if (field.Contains(nameof(waitForFirstFrame))) t.waitForFirstFrame = waitForFirstFrame;
+            if (field.Contains(nameof(isLooping))) t.isLooping = isLooping;
+            if (field.Contains(nameof(skipOnDrop))) t.skipOnDrop = skipOnDrop;
+            if (field.Contains(nameof(playbackSpeed))) t.playbackSpeed = (int) playbackSpeed;
+            if (field.Contains(nameof(aspectRatio))) t.aspectRatio = aspectRatio;
+            if (field.Contains(nameof(audioOutputMode))) t.audioOutputMode = audioOutputMode;
         }
     }
-
 }
-    
-    
