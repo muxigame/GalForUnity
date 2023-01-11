@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalForUnity.Graph.Build;
 using UnityEngine;
 
@@ -25,8 +26,22 @@ namespace GalForUnity.Graph.SceneGraph{
         public PortType portType;
         [SerializeField]
         public PortValue value;
+
+        public (T value, bool over) GetValueIfExist<T>(){
+            if (portType == PortType.Input){
+                if (value.Value != null) return ((T)value.Value,true);
+                return connections?.FirstOrDefault()?.output?.GetValueIfExist<T>() ?? default;
+            }
+            if (node.runtimeNode is OperationNode operationNode) return operationNode.GetValue<T>(Index);
+            return default;
+        }
         public bool HasConnection => connections != null && connections.Count != 0;
-        // public int Index => portType             == PortType.Input ? node.inputPort.IndexOf(this) : node.outputPort.IndexOf(this);
+
+        /// <summary>
+        /// Get port index from ports of node
+        /// Ports in the block always return -1
+        /// </summary>
+        public int Index => portType == PortType.Input ? node.inputPort.IndexOf(this) : node.outputPort.IndexOf(this);
 
         public static implicit operator bool(GfuPortAsset gfuNode){
             if (gfuNode == null) return false;

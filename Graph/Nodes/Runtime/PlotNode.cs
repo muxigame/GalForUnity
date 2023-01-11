@@ -8,6 +8,7 @@
 //======================================================================
 
 using System.Collections.Generic;
+using GalForUnity.Core;
 using GalForUnity.Graph.Block.Config;
 using GalForUnity.Graph.Build;
 using GalForUnity.Graph.SceneGraph;
@@ -22,11 +23,11 @@ namespace GalForUnity.Graph.Nodes.Runtime{
         private int _index = 0;
 
         public override GfuNodeAsset Execute(GfuNodeAsset gfuNodeAsset){
-            _index++;
-            if (_index > config.Count){
+            if (_index >= config.Count){
                 _index = 0;
                 return gfuNodeAsset.outputPort[0].connections[0].input.node;
             }
+            config[_index++].Process(GalCore.ActiveCore);
             return gfuNodeAsset;
         }
     }

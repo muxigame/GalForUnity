@@ -7,6 +7,7 @@
 //
 //======================================================================
 
+using System.Threading;
 using GalForUnity.Model;
 using UnityEngine;
 using UnityEngine.Video;
@@ -15,6 +16,11 @@ namespace GalForUnity.Core{
     public abstract class GalCore : MonoBehaviour , ICoreIO{
         public GalCore(){
             ActiveCore = this;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Init(){
+            // SynchronizationContext.Current;
         }
         public static GalCore ActiveCore;
         public abstract RoleModel GetRole(string roleName);

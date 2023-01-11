@@ -99,7 +99,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         /// </summary>
         /// <param name="index">下一个端口的索引</param>
         public virtual void Executed(int index){
-            if (_nodeFindProvider != null) OnExecuted?.Invoke(_nodeFindProvider.GetOutputNode(index, 0));
+            // if (_nodeFindProvider != null) OnExecuted?.Invoke(_nodeFindProvider.GetOutputNode(index, 0));
         }
 
         /// <summary>

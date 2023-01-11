@@ -15,4 +15,8 @@ namespace GalForUnity.Graph.Build{
     public abstract class RuntimeNode{
         public abstract GfuNodeAsset Execute(GfuNodeAsset gfuNodeAsset);
     }
+
+    public abstract class OperationNode:RuntimeNode{
+        public abstract (T value,bool over) GetValue<T>(int index);
+    }
 }

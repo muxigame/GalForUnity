@@ -14,11 +14,11 @@ using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 
 namespace GalForUnity.Graph.SceneGraph{
     public interface INodeRuntimeProviderBase{
-        GfuNode GetInputNode(int portIndex, int connectionIndex);
-        List<GfuNode> GetInputNodes(int portIndex);
-        GfuNode GetOutputNode(int portIndex, int connectionIndex);
-        List<GfuNode>  GetOutputNodes(int portIndex);
-        GfuNode GetNode(long instanceID);
+        GfuNodeAsset GetInputNode(int portIndex, int connectionIndex);
+        List<GfuNodeAsset> GetInputNodes(int portIndex);
+        GfuNodeAsset GetOutputNode(int portIndex, int connectionIndex);
+        List<GfuNodeAsset>  GetOutputNodes(int portIndex);
+        GfuNodeAsset GetNode(long instanceID);
         bool IsInputPortConnected(int portIndex);
         int InputPortCount();
         bool IsOutputPortConnected(int portIndex);
