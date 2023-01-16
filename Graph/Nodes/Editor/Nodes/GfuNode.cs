@@ -17,6 +17,8 @@ using GalForUnity.Attributes;
 using GalForUnity.Graph.Build;
 using GalForUnity.Graph.SceneGraph;
 using GalForUnity.Model;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
     /// <summary>
@@ -47,7 +49,6 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         }
 
 
-        public RuntimeNode RuntimeNode{ get; internal set; }
 
         /// <summary>
         ///     获得Input和Output总端口的数量
@@ -73,7 +74,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         ///     初始化节点系统的方法，应该从此方法初始化节点系统，并调用父类的方法
         /// </summary>
         /// <param name="otherRuntimeNode"></param>
-        public virtual void Init(RuntimeNode otherRuntimeNode){
+        public virtual void OnInit(RuntimeNode otherRuntimeNode){
             RuntimeNode = otherRuntimeNode;
         }
         

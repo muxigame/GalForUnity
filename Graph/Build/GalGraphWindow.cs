@@ -15,6 +15,7 @@ using GalForUnity.Graph.AssetGraph.Attributes;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.AssetGraph.Tool;
 using GalForUnity.Graph.Block;
+using GalForUnity.Graph.Nodes.Editor.Nodes;
 using GalForUnity.Graph.SceneGraph;
 using GalForUnity.System;
 using UnityEditor;
@@ -149,16 +150,17 @@ namespace GalForUnity.Graph.Build{
 
         protected internal bool OnMenuSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context){
             var type = searchTreeEntry.userData as Type;
-            var node = Activator.CreateInstance(type ?? typeof(GfuNode)) as GfuNode;
-            if (node == null) return false;
-            _graphView.AddElement(node);
+            var runtimeNode = Activator.CreateInstance(type ?? typeof(RuntimeNode)) as RuntimeNode;
+            var editorNode = Activator.CreateInstance( NodeEditor.GetEditor(type) ?? typeof(CustomNode)) as GfuNode;
+            if (editorNode == null) return false;
+            _graphView.AddElement(editorNode);
             var windowRoot = _editorWindow.rootVisualElement;
             var windowMousePosition = windowRoot.ChangeCoordinatesTo(windowRoot.parent, _context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
-            node.SetPosition(new Rect(graphMousePosition, Vector2.zero)); //将节点移动到鼠标位置
-            var runtimeNode = Activator.CreateInstance(type?.GetCustomAttribute<NodeEditor>().Type ?? typeof(RuntimeNode)) as RuntimeNode;
-            node.Init(runtimeNode);
-            _graphView.Nodes.Add(GetHashCode(), node);
+            editorNode.SetPosition(new Rect(graphMousePosition, Vector2.zero)); //将节点移动到鼠标位置
+            editorNode.OnInit(runtimeNode);
+            editorNode.OnInitPort();
+            _graphView.Nodes.Add(GetHashCode(), editorNode);
             return true;
         }
     }

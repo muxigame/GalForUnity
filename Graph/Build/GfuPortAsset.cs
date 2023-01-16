@@ -18,34 +18,63 @@ using UnityEngine;
 namespace GalForUnity.Graph.SceneGraph{
     [Serializable]
     public class GfuPortAsset{
-        [SerializeField]
-        public string portName;
-        [HideInInspector]
-        [SerializeReference] public GfuNodeAsset node;
+        [SerializeField] public string portName;
+        [HideInInspector] [SerializeReference] public GfuNodeAsset node;
         [SerializeReference] public List<GfuConnectionAsset> connections;
-        public PortType portType;
-        [SerializeField]
-        public PortValue value;
+        [SerializeField] public byte[] portAttribute = new byte[3];
+        public Direction Direction{
+            get => (Direction) portAttribute[0];
+            set => portAttribute[0] = (byte) value;
+        }
+
+        public Orientation Orientation{
+            get => (Orientation) portAttribute[1];
+            set => portAttribute[1] = (byte) value;
+        }
+
+        public Capacity Capacity{
+            get => (Capacity) portAttribute[2];
+            set => portAttribute[2] = (byte) value;
+        }
+
+        [SerializeField] public PortValue value;
 
         public (T value, bool over) GetValueIfExist<T>(){
-            if (portType == PortType.Input){
-                if (value.Value != null) return ((T)value.Value,true);
+            if (Direction == Direction.Input){
+                if (value.Value != null) return ((T) value.Value, true);
                 return connections?.FirstOrDefault()?.output?.GetValueIfExist<T>() ?? default;
             }
-            if (node.runtimeNode is OperationNode operationNode) return operationNode.GetValue<T>(Index);
+
+            if (node.runtimeNode is OperationNode operationNode) return operationNode.GetValueFromOutput<T>(Index);
             return default;
         }
+
         public bool HasConnection => connections != null && connections.Count != 0;
 
         /// <summary>
         /// Get port index from ports of node
         /// Ports in the block always return -1
         /// </summary>
-        public int Index => portType == PortType.Input ? node.inputPort.IndexOf(this) : node.outputPort.IndexOf(this);
+        public int Index => Direction == Direction.Input ? node.inputPort.IndexOf(this) : node.outputPort.IndexOf(this);
 
         public static implicit operator bool(GfuPortAsset gfuNode){
             if (gfuNode == null) return false;
             return true;
         }
+    }
+
+    public enum Direction:byte{
+        Input = 0,
+        Output = 1
+    }
+
+    public enum Orientation:byte{
+        Horizontal = 0,
+        Vertical = 1
+    }
+
+    public enum Capacity:byte{
+        Single = 0,
+        Multi = 1,
     }
 }

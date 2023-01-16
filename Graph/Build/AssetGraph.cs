@@ -116,9 +116,9 @@ namespace GalForUnity.Graph.SceneGraph{
 
         internal static void Save(this GfuPortAsset gfuPortAsset, GfuPort gfuPort, GfuNodeAsset gfuNodeAsset){
             gfuPortAsset.portName = gfuPort.name;
-            if (gfuPort.direction == Direction.Input)
-                gfuPortAsset.portType = PortType.Input;
-            else if (gfuPort.direction == Direction.Output) gfuPortAsset.portType = PortType.OutPut;
+            if (gfuPort.direction == UnityEditor.Experimental.GraphView.Direction.Input)
+                gfuPortAsset.Direction = Direction.Input;
+            else if (gfuPort.direction == UnityEditor.Experimental.GraphView.Direction.Output) gfuPortAsset.Direction = Direction.Output;
             gfuPortAsset.node = gfuNodeAsset;
         }
 

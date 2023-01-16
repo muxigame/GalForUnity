@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GalForUnity.Attributes;
-using GalForUnity.Graph.AssetGraph.Attributes;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Block;
@@ -24,21 +23,22 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Direction = GalForUnity.Graph.SceneGraph.Direction;
+using Orientation = GalForUnity.Graph.SceneGraph.Orientation;
 
 namespace GalForUnity.Graph.Nodes.Editor{
     [NodeRename(nameof(PlotNode), "角色检查节点，该节点负责检查在图中流转的角色是否满足要求，如果要求达到，则会跳转满足出口，否则则会跳转不满足出口")]
-    [NodeAttributeUsage]
     [NodeType(NodeCode.PlotNode)]
     [NodeEditor(typeof(Runtime.PlotNode))]
     public sealed class PlotNode : GfuNode{
         public readonly VisualElement content;
 
-        public List<GfuPort> Enter = new List<GfuPort>{
-            new GfuPort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(object), nameof(Enter))
+        public override List<GfuPort> Enter{ get; }= new List<GfuPort>{
+            new GfuPort(Orientation.Horizontal, Direction.Input, Capacity.Multi, typeof(GfuNodeAsset), nameof(Enter))
         };
 
-        public List<GfuPort> Exit = new List<GfuPort>{
-            new GfuPort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(object), nameof(Exit))
+        public override List<GfuPort> Exit { get; }= new List<GfuPort>{
+            new GfuPort(Orientation.Horizontal, Direction.Output, Capacity.Multi, typeof(GfuNodeAsset), nameof(Exit))
         };
 
 
@@ -47,27 +47,21 @@ namespace GalForUnity.Graph.Nodes.Editor{
         public PlotNode(){ Add(content = new VisualElement()); }
 
         internal override IEnumerable<(GfuPort port, GfuPortAsset gfuPortAsset)> OnSavePort(GfuNodeAsset gfuNodeAsset){
-            foreach (var port in base.OnSavePort(gfuNodeAsset)) 
-                yield return port;
+            foreach (var port in base.OnSavePort(gfuNodeAsset)) yield return port;
             foreach (var draggableBlockEditor in content.Query<DraggableBlockEditor>().ToList()){
-                foreach (var blockPort in draggableBlockEditor.OnSavePort(gfuNodeAsset)){
-                    yield return blockPort;
-                }
+                foreach (var blockPort in draggableBlockEditor.OnSavePort(gfuNodeAsset)) yield return blockPort;
             }
         }
 
         internal override IEnumerable<(GfuPortAsset gfuPortAsset, GfuPort port)> OnLoadPort(GfuNodeAsset gfuNodeAsset){
-            foreach (var port in base.OnLoadPort(gfuNodeAsset)) 
-                yield return port;
+            foreach (var port in base.OnLoadPort(gfuNodeAsset)) yield return port;
             foreach (var draggableBlockEditor in content.Query<DraggableBlockEditor>().ToList()){
-                foreach (var blockPort in draggableBlockEditor.OnLoadPort(gfuNodeAsset)){
-                    yield return blockPort;
-                }
+                foreach (var blockPort in draggableBlockEditor.OnLoadPort(gfuNodeAsset)) yield return blockPort;
             }
         }
 
-        public override void Init(RuntimeNode otherRuntimeNode){
-            base.Init(otherRuntimeNode);
+        public override void OnInit(RuntimeNode otherRuntimeNode){
+            base.OnInit(otherRuntimeNode);
             runtimeNode = (Runtime.PlotNode) otherRuntimeNode;
             styleSheets.Add(UxmlHandler.instance.plotNodeUss);
             Add(new Button{
@@ -93,11 +87,10 @@ namespace GalForUnity.Graph.Nodes.Editor{
                     SearchWindow.Open(searchWindowContext, searchTypeProvider);
                 })
             });
-            Debug.Assert(runtimeNode?.config != null,"runtimeNode?.config == null");
+            Debug.Assert(runtimeNode?.config != null, "runtimeNode?.config == null");
             runtimeNode?.config?.ForEach(x => {
-                var nodeEditor = x?.GetType().GetCustomAttribute<NodeEditor>();
-                Debug.Assert(nodeEditor != null,"node editor has not map to config");
-                if (!(Activator.CreateInstance(nodeEditor.Type, this, x) is DraggableBlockEditor galBlock)) return;
+                var type = x?.GetType();
+                if (!(Activator.CreateInstance(NodeEditor.GetEditor(type), this, x) is DraggableBlockEditor galBlock)) return;
                 content.Add(galBlock);
             });
         }

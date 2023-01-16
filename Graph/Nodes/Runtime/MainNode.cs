@@ -7,11 +7,12 @@
 //
 //======================================================================
 
+using System.Threading.Tasks;
 using GalForUnity.Graph.Build;
 using GalForUnity.Graph.SceneGraph;
 
 namespace GalForUnity.Graph.Nodes.Runtime{
     public class MainNode : RuntimeNode{
-        public override GfuNodeAsset Execute(GfuNodeAsset gfuNodeAsset){ return gfuNodeAsset.outputPort[0].connections[0].input.node; }
+        public override Task<GfuNodeAsset> OnNodeEnter(GfuNodeAsset gfuNodeAsset){ return Task.FromResult(gfuNodeAsset.outputPort[0].connections[0].input.node); }
     }
 }

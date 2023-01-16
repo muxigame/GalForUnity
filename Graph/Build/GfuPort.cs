@@ -15,8 +15,11 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Direction = GalForUnity.Graph.SceneGraph.Direction;
+using Orientation = GalForUnity.Graph.SceneGraph.Orientation;
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
+
 #endif
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
@@ -30,12 +33,18 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         public Action<GfuPort> OnConnected;
         public Action OnDisConnected;
 
+
 #if UNITY_EDITOR
-        public GfuPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type, string name) : base(portOrientation, portDirection, portCapacity, type){
+        public GfuPort(SceneGraph.Orientation orientation,
+                       SceneGraph.Direction direction,
+                       SceneGraph.Capacity capacity, Type type, string name) : base(orientation == Orientation.Horizontal ? UnityEditor.Experimental.GraphView.Orientation.Horizontal : UnityEditor.Experimental.GraphView.Orientation.Vertical,
+            direction                                                                           == Direction.Input ? UnityEditor.Experimental.GraphView.Direction.Input : UnityEditor.Experimental.GraphView.Direction.Output,
+            capacity                                                                            == SceneGraph.Capacity.Single ? Capacity.Single : Capacity.Multi, type){
             var connectorListener = new GfuEdgeConnectorListener();
             m_EdgeConnector = new EdgeConnector<Edge>(connectorListener);
             this.AddManipulator(m_EdgeConnector);
             this.name = name;
+            this.portName = name;
         }
 #endif
 
@@ -124,19 +133,25 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         }
 
 
-        public new static GfuPort Create<TEdge>(
+        public static GfuPort Create<TEdge>(
             Orientation orientation,
             Direction direction,
-            Capacity capacity,
-            Type type)
+            SceneGraph.Capacity capacity,
+            Type type,
+            string portName = null)
             where TEdge : Edge, new(){
             var connectorListener = new GfuEdgeConnectorListener();
-            var ele = new GfuPort(orientation, direction, capacity, type,type.Name) {
+            var ele = new GfuPort(
+                orientation,
+                direction,
+                capacity, type, string.IsNullOrEmpty(portName) ? type.Name : portName){
                 m_EdgeConnector = new EdgeConnector<TEdge>(connectorListener)
             };
             ele.AddManipulator(ele.m_EdgeConnector);
             return ele;
         }
+
+        public static GfuPort CreateDefault(){ return Create<Edge>(Orientation.Horizontal, Direction.Input, SceneGraph.Capacity.Multi, typeof(object)); }
 
         private class GfuEdgeConnectorListener : IEdgeConnectorListener{
             private readonly List<Edge> m_EdgesToCreate;

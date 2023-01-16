@@ -13,19 +13,22 @@ using System.Collections.Generic;
 using GalForUnity.Attributes;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Attributes;
+using GalForUnity.Graph.SceneGraph;
 using UnityEditor.Experimental.GraphView;
+using Direction = GalForUnity.Graph.SceneGraph.Direction;
+using Orientation = GalForUnity.Graph.SceneGraph.Orientation;
 
 namespace GalForUnity.Graph.Nodes.Editor{
     [NodeRename(nameof(MainNode), "主节点")]
     [NodeType(NodeCode.MainNode)]
     public class MainNode : GfuNode{
-        public List<GfuPort> Exit = new List<GfuPort> {
-            new GfuPort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(object), nameof(Exit))
-        };
-
         public MainNode(){
             capabilities -= Capabilities.Deletable;
             capabilities -= Capabilities.Copiable;
         }
+
+        public override List<GfuPort> Exit{ get; } = new List<GfuPort>{
+            new GfuPort(Orientation.Horizontal, Direction.Output, Capacity.Multi, typeof(GfuNodeAsset), nameof(Exit))
+        };
     }
 }

@@ -11,8 +11,12 @@ using System;
 using System.Reflection;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Block;
+using GalForUnity.Graph.SceneGraph;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
+using Direction = GalForUnity.Graph.SceneGraph.Direction;
+using Orientation = GalForUnity.Graph.SceneGraph.Orientation;
+
 
 namespace GalForUnity.Graph.AssetGraph.GFUNode{
     public sealed class GfuTogglePort : BindableElement{
@@ -21,9 +25,9 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode{
         
         public GfuTogglePort(FieldInfo fieldInfo,object instance,Action onUIPreUpdate=null,Action onValueChanged=null,Action onDelete=null){
             if (Nullable.GetUnderlyingType(fieldInfo.FieldType) != null){
-                port = GfuPort.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, Nullable.GetUnderlyingType(fieldInfo.FieldType));
+                port = GfuPort.Create<Edge>(Orientation.Horizontal, Direction.Input, Capacity.Single, Nullable.GetUnderlyingType(fieldInfo.FieldType));
             } else{
-                port = GfuPort.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, fieldInfo.FieldType);
+                port = GfuPort.Create<Edge>(Orientation.Horizontal, Direction.Input, Capacity.Single, fieldInfo.FieldType);
             }
             port.portName = fieldInfo.Name;
             port.name = fieldInfo.Name;

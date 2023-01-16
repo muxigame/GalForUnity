@@ -132,7 +132,9 @@ namespace GalForUnity.Graph.Attributes{
         public const ushort SplitNode = 301;
 
 #endregion
-
+        
+        public const ushort CustomNode = 301;
+        
 #endregion
     }
 }

@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/GalForUnity/Core/Scripts/Editor/RoleWizard.uss?fileID=7433441132597879392&amp;guid=2ddf3e2d4fd927d4192619e8435a132e&amp;type=3#RoleWizard" />
+    <ui:VisualElement name="Main" style="flex-direction: row;">
+        <ui:VisualElement name="HeadPortraits" style="background-image: url(&apos;project://database/Assets/nameView.png?fileID=2800000&amp;guid=a0022584ca24bd04fadaafbcb10e0824&amp;type=3#nameView&apos;); width: 100px; height: 100px;" />
+        <ui:VisualElement name="Info" style="flex-grow: 1;">
+            <ui:TextField picking-mode="Ignore" label="Name" value="Alice" text="Alice" name="Name" />
+            <uie:EnumField label="Gender" value="Girl" name="Gender" />
+            <ui:TextField picking-mode="Ignore" label="Age" value="16" text="16" name="Age" style="flex-direction: row;" />
+            <ui:TextField picking-mode="Ignore" label="Height" value="165" text="165" name="Height" />
+            <ui:TextField picking-mode="Ignore" label="Weight" value="165" text="55" name="Weight" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement>
+        <uie:ObjectField label="Prefab" />
+    </ui:VisualElement>
+    <ui:Button text="Create" display-tooltip-when-elided="true" name="Create" style="position: absolute; right: 0; bottom: 0;" />
+</ui:UXML>

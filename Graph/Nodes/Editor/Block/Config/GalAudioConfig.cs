@@ -9,15 +9,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GalForUnity.Attributes;
 using GalForUnity.Core;
+using GalForUnity.Graph.Build;
 using GalForUnity.Graph.SceneGraph;
 using UnityEngine;
 
 namespace GalForUnity.Graph.Block.Config{
     [Serializable]
     [Rename("Audio Config")]
-    [NodeEditor(typeof(PlotAudioBlockEditorUxml))]
     public class GalAudioConfig : GalConfig{
         public AudioClip audioClip;
 
@@ -39,7 +40,8 @@ namespace GalForUnity.Graph.Block.Config{
 
         [Rename("")] public float volume;
 
-        public override void Process(GalCore galCore){
+        public override Task Process(GalCore galCore){
+            if (!audioSource) audioSource = galCore.mainAudioSource;
             if (field.Contains(nameof(audioClip))) audioSource.clip = audioClip;
             if (field.Contains(nameof(loop))) audioSource.loop = loop;
             if (field.Contains(nameof(mute))) audioSource.mute = mute;
@@ -49,6 +51,7 @@ namespace GalForUnity.Graph.Block.Config{
             if (field.Contains(nameof(pitch))) audioSource.pitch = pitch;
             if (field.Contains(nameof(panStereo))) audioSource.panStereo = panStereo;
             if (field.Contains(nameof(spatialBlend))) audioSource.spatialBlend = spatialBlend;
+            return Task.CompletedTask;
         }
     }
 
@@ -57,6 +60,7 @@ namespace GalForUnity.Graph.Block.Config{
         [SerializeReference] [SerializeField] protected List<GfuPortAsset> ports = new List<GfuPortAsset>();
 
         [SerializeField] protected List<string> field = new List<string>();
+        private RuntimeNode _runtimeNode;
 
         public void AddPort(string key){
             ports.Add(new GfuPortAsset{
@@ -77,7 +81,12 @@ namespace GalForUnity.Graph.Block.Config{
 
         public List<string> GetField(){ return field; }
 
-        public abstract void Process(GalCore galCore);
+        RuntimeNode IGalBlock.RuntimeNode{
+            get => _runtimeNode;
+            set => _runtimeNode = value;
+        }
+
+        public abstract Task Process(GalCore galCore);
     }
 
     public interface IGalConfig : IGalBlock{
@@ -90,6 +99,7 @@ namespace GalForUnity.Graph.Block.Config{
     }
 
     public interface IGalBlock{
-        public void Process(GalCore galCore);
+        public RuntimeNode RuntimeNode{ get; internal set; }
+        public Task Process(GalCore galCore);
     }
 }

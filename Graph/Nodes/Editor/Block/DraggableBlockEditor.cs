@@ -45,9 +45,9 @@ namespace GalForUnity.Graph.Block{
             Add(_dragContainer);
         }
 
-        public virtual IEnumerable<(GfuPort, GfuPortAsset)> OnSavePort(GfuNodeAsset gfuNodeAsset){ return default; }
+        public virtual IEnumerable<(GfuPort, GfuPortAsset)> OnSavePort(GfuNodeAsset gfuNodeAsset){ return new (GfuPort, GfuPortAsset)[0]; }
 
-        public virtual IEnumerable<(GfuPortAsset, GfuPort)> OnLoadPort(GfuNodeAsset gfuNodeAsset){ return default; }
+        public virtual IEnumerable<(GfuPortAsset, GfuPort)> OnLoadPort(GfuNodeAsset gfuNodeAsset){ return new (GfuPortAsset,GfuPort)[0]; }
 
         private void Up(MouseUpEvent x){
             _mouseDown = false;

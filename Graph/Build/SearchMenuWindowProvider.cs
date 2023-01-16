@@ -16,10 +16,13 @@ using System.Reflection;
 using GalForUnity.Attributes;
 using GalForUnity.Graph.AssetGraph.Attributes;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
+using GalForUnity.Graph.Build;
 using GalForUnity.Graph.Nodes.Editor;
 using GalForUnity.System;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using MainNode = GalForUnity.Graph.Nodes.Runtime.MainNode;
+
 #if UNITY_EDITOR
 #endif
 
@@ -43,15 +46,22 @@ namespace GalForUnity.Graph.AssetGraph.Tool{
                 // entries.Add(new SearchTreeGroupEntry(new GUIContent("Example")){
                 //     level = 1
                 // }); //添加了一个二级菜单
-                var childTypes = GetChildTypes(typeof(GfuNode));
+                var childTypes = GetChildTypes(typeof(RuntimeNode));
                 // Debug.Log(childTypes);
                 //从程序集中找到GfuNode的所有子类，并且遍历显示到目录当中
                 foreach (var childType in childTypes){
                     if (childType == typeof(MainNode)) continue;
+                    if (childType == typeof(OperationNode)) continue;
                     var nodeRenameAttribute = childType.GetCustomAttribute<NodeRenameAttribute>();
-                    var nodeAttributeUsage = childType.GetCustomAttribute<NodeAttributeUsage>();
-                    if (nodeRenameAttribute == null || nodeAttributeUsage == null) continue;         //过滤没有节点名称的节点
-                    if ((nodeAttributeUsage.nodeAttributeTargets & attributeTargets) == 0) continue; //过滤没有节点作用目标的不是本窗口的节点
+                    // var nodeAttributeUsage = childType.GetCustomAttribute<NodeAttributeUsage>();
+                    if (nodeRenameAttribute == null){
+                        entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(childType.Name).Trim())) {
+                            level = 1,userData = childType
+                        });
+                        continue;
+                    } //没有重命名节点名称的节点直接添加
+
+                    // if ((nodeAttributeUsage.nodeAttributeTargets & attributeTargets) == 0) continue; //过滤没有节点作用目标的不是本窗口的节点
                     if (nodeRenameAttribute.name.Contains("/")){                                     //利用”/“拆分节点名称,然后遍历解析
                         var strings = nodeRenameAttribute.name.Split('/');
                         for (var i = 0; i < strings.Length - 1; i++){
@@ -65,15 +75,14 @@ namespace GalForUnity.Graph.AssetGraph.Tool{
                             level = strings.Length, userData = childType
                         });
                     } else{
-                        entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(nodeRenameAttribute.name).Trim())) {
+                        entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(nodeRenameAttribute.name).Trim())){
                             level = 1, userData = childType
                         });
                     }
                 }
             } catch (Exception e){
-                Debug.Log(e);
+                Debug.LogError(e);
             }
-
             return entries;
         }
 

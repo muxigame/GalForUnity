@@ -1,0 +1,12 @@
+/*.unity-base-file__label {*/
+/*    max-width: 50 !important;*/
+/*    min-width: 0 !important;*/
+/*}*/
+/*.unity-base-file__input {*/
+/*    max-width: 50 !important;*/
+/*    min-width: 0 !important;*/
+/*}*/
+Label {
+    max-width: 50 !important;
+    min-width: 50 !important;
+}

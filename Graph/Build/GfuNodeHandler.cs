@@ -17,50 +17,44 @@ using UnityEngine;
 
 namespace GalForUnity.Graph.SceneGraph{
     [Serializable]
-    public class GfuNodeHandler:ScriptableObject{
+    public class GfuNodeHandler : ScriptableObject{
         public GfuNodeAsset gfuNode;
     }
+
     [Serializable]
     public class GfuNodeAsset{
         public long instanceID;
         public int gfuNodeTypeCode;
+
         public Vector4 position;
+
         // [HideInInspector]
-        [SerializeReference]
-        public List<GfuPortAsset> inputPort;
+        [SerializeReference] public List<GfuPortAsset> inputPort;
+
         // 
-        [SerializeReference]
-        public List<GfuPortAsset> outputPort;
+        [SerializeReference] public List<GfuPortAsset> outputPort;
+
         // [NonSerialized]
-        [SerializeReference]
-        public RuntimeNode runtimeNode;
+        [SerializeReference] public RuntimeNode runtimeNode;
         public Type Type => NodeType.GetTypeByCode(gfuNodeTypeCode);
         public bool HasInputPort => inputPort   != null && inputPort.Count  != 0;
         public bool HasOutputPort => outputPort != null && outputPort.Count != 0;
 
-        public long NextNode(int portIndex, int connectIndex = 0){
-            if (!HasOutputPort) return -1;
+        public GfuNodeAsset NextNode(int portIndex, int connectIndex = 0){
+            if (!HasOutputPort) return null;
             if (outputPort.Count <= portIndex) throw new ArgumentOutOfRangeException($"index: {portIndex} out of range: {outputPort.Count}");
             var connectionts = outputPort[portIndex].connections;
-            if(connectionts==null) throw new NullReferenceException("the port not connected");
-            if(connectionts.Count <=connectIndex) throw new ArgumentOutOfRangeException($"index: {portIndex} out of range: {outputPort.Count}");
-            return connectionts[connectIndex]?.input.node.instanceID??-1;
+            if (connectionts       == null) throw new NullReferenceException("the port not connected");
+            if (connectionts.Count <= connectIndex) throw new ArgumentOutOfRangeException($"index: {portIndex} out of range: {outputPort.Count}");
+            return connectionts[connectIndex]?.input.node ?? null;
         }
     }
 
 
     [Serializable]
     public class GfuConnectionAsset{
-        [SerializeReference]
-        [HideInInspector]
-        public GfuPortAsset input;
-        [SerializeReference]
-        [HideInInspector]
-        public GfuPortAsset output;
+        [SerializeReference] [HideInInspector] public GfuPortAsset input;
+        [SerializeReference] [HideInInspector] public GfuPortAsset output;
     }
-
-    public enum PortType{
-        Input,
-        OutPut
-    }
+    
 }

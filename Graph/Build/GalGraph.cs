@@ -18,19 +18,20 @@ using UnityEngine;
 namespace GalForUnity.Graph.SceneGraph{
     public class GalGraph{
         private readonly GfuGraphAsset _sourceAsset;
-        private readonly GraphProvider _graphProvider;
+        public readonly GraphProvider GraphProvider;
         private readonly GfuNodeAsset _rootNode = null;
 
         public GalGraph(IGalGraph galGraph) : this(galGraph.GraphNode){ }
 
         public GalGraph(GfuGraphAsset gfuGraphAsset) : this(gfuGraphAsset, new GraphProvider{
-            Click = () => Input.GetMouseButtonDown(0)
+            Next = () => Input.GetMouseButtonDown(0)
         }){ }
 
         public GalGraph(GfuGraphAsset gfuGraphAsset, GraphProvider graphProvider){
             _sourceAsset = gfuGraphAsset;
-            _graphProvider = graphProvider;
+            GraphProvider = graphProvider;
             CreateRunTimeNode();
+            Reset();
         }
 
         public GfuNodeAsset CurrentNode{ get; private set; }
@@ -59,53 +60,29 @@ namespace GalForUnity.Graph.SceneGraph{
 
         public void Pause(){ IsPlay = false; }
 
-        private void ExecuteCirculation(GfuNodeAsset gfuNodeAsset){
+        private async void ExecuteCirculation(GfuNodeAsset gfuNodeAsset){
             if (gfuNodeAsset == null){
-                _graphProvider.OnGraphExecuted.Invoke(CurrentNode);
+                IsPlay = false;
+                GraphProvider.OnGraphExecuted?.Invoke(CurrentNode);
                 return;
             }
             CurrentNode = gfuNodeAsset;
-            _graphProvider.OnNodeWillExecuted.Invoke(gfuNodeAsset);
-            var nodeAsset = CurrentNode.runtimeNode.Execute(gfuNodeAsset);
-            _graphProvider.OnNodeExecuted.Invoke(gfuNodeAsset);
+            GraphProvider.OnNodeWillExecuted?.Invoke(gfuNodeAsset);
+            CurrentNode.runtimeNode.GalGraph = this;
+            var nodeAsset = await CurrentNode.runtimeNode.OnNodeEnter(gfuNodeAsset);
+            GraphProvider.OnNodeExecuted?.Invoke(gfuNodeAsset);
             ExecuteCirculation(nodeAsset);
         }
 
         private void CreateRunTimeNode(){
-            if (_sourceAsset?.nodes?.Count == null) return;
+            if (_sourceAsset?.nodes==null||_sourceAsset?.nodes?.Count == 0) return;
             if (RunTimeNode                == null) RunTimeNode = new Dictionary<long, GfuNodeAsset>();
             foreach (var sourceAssetNode in _sourceAsset.nodes) // var instance = Activator.CreateInstance(sourceAssetNode.Type) as GfuNode;
                 // if (sourceAssetNode.gfuNodeTypeCode == NodeCode.MainNode) CurrentNode = _rootNode = instance?.RuntimeNode as MainNode;
                 // if (instance == null) throw new NullReferenceException("node create failed");
                 RunTimeNode.Add(sourceAssetNode.instanceID, sourceAssetNode);
         }
-
-        public struct GraphProvider{
-            /// <summary>
-            ///     每帧执行，该值指定图是否进入下一个Item或Option节点
-            /// </summary>
-            public Func<bool> Click;
-
-            /// <summary>
-            ///     图执行完毕回调，当图被停止（非暂停）同样会触发回调
-            /// </summary>
-            public Action<GfuNodeAsset> OnGraphExecuted;
-
-            /// <summary>
-            ///     节点执行完毕回调
-            /// </summary>
-            public Action<GfuNodeAsset> OnNodeExecuted;
-
-            /// <summary>
-            ///     节点将执行回调
-            /// </summary>
-            public Action<GfuNodeAsset> OnNodeWillExecuted;
-
-            /// <summary>
-            ///     PlotItemNode被执行回调
-            /// </summary>
-            public Action<string, string> OnSpeak;
-        }
+        
 
         public class NodeRuntimeProvider : INodeRuntimeProviderBase{
             private readonly GalGraph _galGraph;
@@ -146,5 +123,31 @@ namespace GalForUnity.Graph.SceneGraph{
 
             public int GetOutputPortConnectionCount(int portIndex){ return _gfuNodeAsset.outputPort[portIndex].connections.Count; }
         }
+    }
+    public class GraphProvider{
+        /// <summary>
+        ///     每帧执行，该值指定图是否进入下一个Item或Option节点
+        /// </summary>
+        public Func<bool> Next;
+
+        /// <summary>
+        ///     图执行完毕回调，当图被停止（非暂停）同样会触发回调
+        /// </summary>
+        public Action<GfuNodeAsset> OnGraphExecuted;
+
+        /// <summary>
+        ///     节点执行完毕回调
+        /// </summary>
+        public Action<GfuNodeAsset> OnNodeExecuted;
+
+        /// <summary>
+        ///     节点将执行回调
+        /// </summary>
+        public Action<GfuNodeAsset> OnNodeWillExecuted;
+
+        /// <summary>
+        ///     PlotItemNode被执行回调
+        /// </summary>
+        public Action<string, string> OnSpeak;
     }
 }

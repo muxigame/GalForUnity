@@ -32,6 +32,7 @@ namespace GalForUnity.Graph.SceneGraph{
             InitEditorView();
             if (gfuGraphAsset == null || gfuGraphAsset.nodes == null || gfuGraphAsset.nodes.Count == 0){
                 var node = Activator.CreateInstance(typeof(MainNode)) as GfuNode;
+                node?.OnInit(new Nodes.Runtime.MainNode());
                 AddElement(node);
                 Nodes.Add(new Guid().GetHashCode(), node);
                 return;
@@ -44,6 +45,7 @@ namespace GalForUnity.Graph.SceneGraph{
                 foreach (var port in InitNode(gfuNodeAsset)){
                     if(!portMap.ContainsKey(port.Item1))portMap.Add(port.Item1,port.Item2);
                 }
+                
                 if (gfuNodeAsset.HasInputPort)
                     foreach (var gfuPortAsset in gfuNodeAsset.inputPort){
                         if (!gfuPortAsset.HasConnection) continue;
@@ -83,7 +85,7 @@ namespace GalForUnity.Graph.SceneGraph{
                 return default;
             }
 
-            node.Init(gfuNodeAsset.runtimeNode);
+            node.OnInit(gfuNodeAsset.runtimeNode);
 
             AddElement(node);
             // if(node is GfuOperationNode gfuOperationNode)gfuOperationNode.GfuInputViews.ForEach(x=>x.);.Init(null);
@@ -126,8 +128,8 @@ namespace GalForUnity.Graph.SceneGraph{
                     port.portType        != typeof(object) &&
                     startAnchor.portType != typeof(object)
                 ){
-                    if (startAnchor.direction == Direction.Input  && !HasImplicitConversion(port.portType, startAnchor.portType)) continue;
-                    if (startAnchor.direction == Direction.Output && !HasImplicitConversion(startAnchor.portType, port.portType)) continue;
+                    if (startAnchor.direction == UnityEditor.Experimental.GraphView.Direction.Input  && !HasImplicitConversion(port.portType, startAnchor.portType)) continue;
+                    if (startAnchor.direction == UnityEditor.Experimental.GraphView.Direction.Output && !HasImplicitConversion(startAnchor.portType, port.portType)) continue;
                 }
 
                 compatiblePorts.Add(port);

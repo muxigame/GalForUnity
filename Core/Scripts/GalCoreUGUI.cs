@@ -7,8 +7,8 @@
 //
 //======================================================================
 
+using System;
 using System.Collections.Generic;
-using GalForUnity.Graph.Block.Config;
 using GalForUnity.Model;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,12 +21,13 @@ namespace GalForUnity.Core{
         public Text nameText;
         public Text sayText;
         public Canvas galCanvas;
-        public AudioSource bgAudioSource;
-
-        public VideoPlayer videoPlayer;
         public Image image;
         public RectTransform roleContent;
         public static GalCoreUGUI Instance => GalInstanceManager<GalCoreUGUI>.GetInstance();
+
+        private void Awake(){
+            ActiveCore = this;
+        }
 
         public override RoleModel GetRole(string roleName){
             return roleModels[roleName];
@@ -51,22 +52,22 @@ namespace GalForUnity.Core{
         }
 
         public override void SetBackground(Sprite sprite){
-            videoPlayer.gameObject.SetActive(false);
+            mainVideoPlayer.gameObject.SetActive(false);
             image.sprite = sprite;
         }
 
         public override void SetBackground(VideoClip videoClip){
-            videoPlayer.gameObject.SetActive(true);
+            mainVideoPlayer.gameObject.SetActive(true);
             // galVideoConfig.Process(videoPlayer);
-            if(!videoPlayer.targetTexture) videoPlayer.targetTexture=new RenderTexture(Screen.width,Screen.height,32);
-            videoPlayer.clip = videoClip;
-            videoPlayer.Play();
+            if(!mainVideoPlayer.targetTexture) mainVideoPlayer.targetTexture=new RenderTexture(Screen.width,Screen.height,32);
+            mainVideoPlayer.clip = videoClip;
+            mainVideoPlayer.Play();
         }
 
         public override void SetAudio(AudioClip audioClip){
             // galAudioConfig.Process(bgAudioSource);
-            bgAudioSource.clip = audioClip;
-            bgAudioSource.Play();
+            mainAudioSource.clip = audioClip;
+            mainAudioSource.Play();
         }
     }
 

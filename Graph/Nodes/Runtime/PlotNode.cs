@@ -7,7 +7,9 @@
 //
 //======================================================================
 
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GalForUnity.Core;
 using GalForUnity.Graph.Block.Config;
 using GalForUnity.Graph.Build;
@@ -22,12 +24,13 @@ namespace GalForUnity.Graph.Nodes.Runtime{
 
         private int _index = 0;
 
-        public override GfuNodeAsset Execute(GfuNodeAsset gfuNodeAsset){
+        public override async Task<GfuNodeAsset> OnNodeEnter(GfuNodeAsset gfuNodeAsset){
             if (_index >= config.Count){
                 _index = 0;
                 return gfuNodeAsset.outputPort[0].connections[0].input.node;
             }
-            config[_index++].Process(GalCore.ActiveCore);
+            config[_index].RuntimeNode = this;
+            await config[_index++].Process(GalCore.ActiveCore);
             return gfuNodeAsset;
         }
     }
