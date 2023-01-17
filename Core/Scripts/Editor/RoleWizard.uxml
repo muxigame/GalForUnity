@@ -10,8 +10,16 @@
             <ui:TextField picking-mode="Ignore" label="Weight" value="165" text="55" name="Weight" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement>
+    <ui:VisualElement name="Poses">
         <uie:ObjectField label="Prefab" />
+        <ui:VisualElement style="flex-direction: row; height: 300px;">
+            <ui:VisualElement name="Preview" style="background-image: none; width: 120px;">
+                <ui:VisualElement />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1;">
+                <ui:Button text="创建Pose" display-tooltip-when-elided="true" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
     <ui:Button text="Create" display-tooltip-when-elided="true" name="Create" style="position: absolute; right: 0; bottom: 0;" />
 </ui:UXML>

@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/GalForUnity/Core/Scripts/Editor/PoseBindingPoint.uss?fileID=7433441132597879392&amp;guid=a23b51f470c8c1c41be5f934c4aae5fb&amp;type=3#PoseBindingPoint" />
+    <ui:VisualElement style="flex-direction: row; height: 466px;">
+        <ui:VisualElement name="pose" style="background-image: url(&apos;project://database/Assets/GalForUnity/Core/Scripts/Editor/poseDefault.png?fileID=2800000&amp;guid=1e537cabe65b5154db3163a00ec2cd20&amp;type=3#poseDefault&apos;); width: 220px; align-items: center; justify-content: center; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(37, 37, 37); border-right-color: rgb(37, 37, 37); border-top-color: rgb(37, 37, 37); border-bottom-color: rgb(37, 37, 37); color: rgb(115, 115, 115);">
+            <ui:Label text="点击更换姿势" display-tooltip-when-elided="true" style="align-items: stretch; font-size: 24px; display: flex; visibility: visible; overflow: visible; opacity: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <GalForUnity.Core.Scripts.Editor.PoseBindingPoint text="绑定点" />
+            <ui:Button text="创建绑定点" display-tooltip-when-elided="true" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

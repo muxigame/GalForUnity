@@ -20,8 +20,10 @@ namespace GalForUnity.Graph.Block{
         public StyleSheet gfuConfigFieldUss;
         public StyleSheet plotNodeUss;
         public StyleSheet plotBlockUss;
+        public StyleSheet dragObjectFieldUss;
         public VisualTreeAsset draggableBlockUxml;
         public VisualTreeAsset plotBlockUxml;
         public VisualTreeAsset galGraphWindowUxml;
+        public VisualTreeAsset poseBindingPointUxml;
     }
 }

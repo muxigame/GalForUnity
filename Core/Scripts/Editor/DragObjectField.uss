@@ -1,0 +1,12 @@
+﻿DragObjectField{
+    width: 130;
+    height: 25;
+    min-width: 130;
+    min-height: 25;
+    background-color: #2F2F2F;
+    border-radius: 2px;
+    border-width: 1px;
+    border-color: #191919;
+    justify-content: center;
+    align-content: center;
+}

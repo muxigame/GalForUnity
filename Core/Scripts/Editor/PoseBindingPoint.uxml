@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Foldout text="绑定点" name="PoseBindingPoint" style="flex-grow: 1;">
+        <ui:ListView focusable="true" style="flex-grow: 1;" />
+    </ui:Foldout>
+</ui:UXML>
