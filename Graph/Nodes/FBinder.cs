@@ -52,14 +52,18 @@ namespace GalForUnity.Graph.Nodes{
             return null;
         }
 
-        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, PropertyInfo propertyInfo, object instance, Action onUIPreUpdate = null, Action onValueChanged = null){
+        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged,
+            PropertyInfo propertyInfo, object instance, Func<TValue, TValue> filter = null, Action onUIPreUpdate = null, Action onValueChanged = null)
+        {
             if (notifyValueChanged is BindableElement bindableElement)
                 return bindableElement.binding = new FBinder<TValue>(bindableElement,
-                    value => {
+                    value =>
+                    {
+                        if (filter != null) value = filter.Invoke(value);
                         propertyInfo.SetValue(instance, value);
                         onValueChanged?.Invoke();
                     },
-                    () => { notifyValueChanged.value = (TValue) propertyInfo.GetValue(instance); },
+                    () => { notifyValueChanged.value = (TValue)propertyInfo.GetValue(instance); },
                     onUIPreUpdate);
             return null;
         }

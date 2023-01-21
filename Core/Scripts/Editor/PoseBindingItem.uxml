@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="PoseBindingItem" style="flex-direction: row; align-items: center;">
+        <ui:Label text="名称" display-tooltip-when-elided="true" name="NameLabel" />
+        <ui:TextField picking-mode="Ignore" value="Name" text="Name" name="NameTextField" style="min-width: 70px;" />
+        <ui:Label text="图片" display-tooltip-when-elided="true" name="SpriteLabel" />
+        <uie:ObjectField name="SpriteField" style="flex-direction: row; flex-shrink: 0.1;" />
+        <ui:Button text="x" display-tooltip-when-elided="true" name="DeleteButton" />
+    </ui:VisualElement>
+</ui:UXML>

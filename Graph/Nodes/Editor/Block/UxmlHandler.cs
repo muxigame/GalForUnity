@@ -25,5 +25,6 @@ namespace GalForUnity.Graph.Block{
         public VisualTreeAsset plotBlockUxml;
         public VisualTreeAsset galGraphWindowUxml;
         public VisualTreeAsset poseBindingPointUxml;
+        public VisualTreeAsset poseBindingItem;
     }
 }
