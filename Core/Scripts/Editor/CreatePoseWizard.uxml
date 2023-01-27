@@ -3,6 +3,7 @@
     <ui:VisualElement style="flex-direction: row; height: 500px;">
         <GalForUnity.Core.Scripts.Editor.PoseView name="PoseView" style="width: 300px; justify-content: center; align-items: center;" />
         <ui:VisualElement name="PoseEditor" style="flex-grow: 1; transform-origin: left;">
+            <ui:TextField picking-mode="Ignore" label="PoseName" value="Stand" text="Stand" name="PoseName" />
             <ui:Button text="创建绑定点" display-tooltip-when-elided="true" name="CreatePoseButton" />
         </ui:VisualElement>
     </ui:VisualElement>

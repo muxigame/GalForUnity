@@ -1,11 +1,13 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using GalForUnity.Graph.Nodes.Editor.Block;
 using UnityEngine;
 using UnityEngine.UIElements;
+using NotImplementedException = System.NotImplementedException;
 
 namespace GalForUnity.Core.Scripts.Editor
 {
-    public class PoseBindingAnchor : Button
+    public class PoseBindingAnchor : Button,INotifyValueChanged<Vector2>
     {
         private Vector2 _value = new(0.5f, 0.5f);
 
@@ -51,9 +53,10 @@ namespace GalForUnity.Core.Scripts.Editor
                 }
             });
         }
-
-        public PoseBindingAnchor() : base(() => { })
+        public PoseBindingAnchor(): base(() => { }){}
+        public PoseBindingAnchor(Vector2 point) : base(() => { })
         {
+            _value = point;
             style.backgroundImage = new StyleBackground(ResourceHandler.instance.poseBindingAnchor);
             style.width = 20;
             style.height = 20;
@@ -68,19 +71,32 @@ namespace GalForUnity.Core.Scripts.Editor
             RegisterCallback<MouseDownEvent>(Down, TrickleDown.TrickleDown);
         }
 
-        public Vector2 Value
+        public void SetValueWithoutNotify(Vector2 newValue)
+        {
+            _value = newValue;
+            style.left = OffsetedWidth * _value.x;
+            style.top = OffsetedHeight * _value.y;
+        }
+
+        public Vector2 value
         {
             get => _value;
             set
             {
+                if (EqualityComparer<Vector2>.Default.Equals(_value, value))
+                    return;
+                if (panel != null)
+                    using (var pooled = ChangeEvent<Vector2>.GetPooled(_value, value))
+                    {
+                        pooled.target = this;
+                        SetValueWithoutNotify(value);
+                        SendEvent(pooled);
+                    }
+                else
+                    SetValueWithoutNotify(value);
                 _init = true;
-                _value = value;
-                style.left = OffsetedWidth * _value.x;
-                style.top = OffsetedHeight * _value.y;
             }
         }
-
-        public PropertyInfo ValueFieldInfo => GetType().GetProperty(nameof(Value));
 
         private void Leave(MouseLeaveEvent evt)
         {
@@ -97,12 +113,12 @@ namespace GalForUnity.Core.Scripts.Editor
             }
 
             _startPoint = new Vector2(evt.mousePosition.x, evt.mousePosition.y);
-            _origin = new Vector2(style.left.value.value, style.top.value.value);
+            _origin = new Vector2(value.x*OffsetedWidth, value.y*OffsetedHeight);
         }
 
         private void Up(MouseUpEvent evt)
         {
-            Value = new Vector2(style.left.value.value / OffsetedWidth,
+            value = new Vector2(style.left.value.value / OffsetedWidth,
                 style.top.value.value / OffsetedHeight);
             _startPoint = null;
         }

@@ -10,23 +10,29 @@ namespace GalForUnity.Core.Scripts.Editor
     public sealed class PoseBindingPoint : Foldout
     {
         public DragObjectField DragObjectField;
-        public List<PoseSpriteItem> PoseSpriteItems;
+        public List<SpritePoseItem> PoseSpriteItems;
         public PoseBindingList PoseBindingList;
-        public Vector2Field Vector2Field;
+        public Vector2Field AnchorVector2Field;
+        public TextField NameTextField;
         public PoseBindingAnchor PoseBindingAnchor;
         public PoseView PoseView;
-        public PoseBindingPoint():this(null,null)
+        public BindingPoint BindingPoint;
+        public PoseBindingPoint():this(null,null,null)
         {
             
         }
-        public PoseBindingPoint(PoseBindingAnchor poseBindingAnchor,PoseView poseView)
+
+        public PoseBindingPoint(PoseBindingAnchor poseBindingAnchor, PoseView poseView, BindingPoint bindingPoint)
         {
+            BindingPoint = bindingPoint;
             PoseView = poseView;
             PoseBindingAnchor = poseBindingAnchor;
+            var type = typeof(BindingPoint);
             var toggle = this.Q<Toggle>();
+            toggle.contentContainer[0].style.maxWidth = 20;
             toggle.contentContainer[0].style.alignItems = Align.Center;
             toggle.contentContainer[0][0].style.marginTop = 4;
-            Vector2Field = new Vector2Field()
+            AnchorVector2Field = new Vector2Field()
             {
                 label = "锚点",
                 labelElement =
@@ -35,29 +41,57 @@ namespace GalForUnity.Core.Scripts.Editor
                 },
                 style = { flexGrow = 2 }
             };
-            toggle.Add(Vector2Field);
+            NameTextField = new TextField()
+            {
+                label = "名称",
+                labelElement =
+                {
+                    style = { minWidth = 0, marginLeft = 0 }
+                },
+                style = { flexGrow = 2 }
+            };
+            toggle.Add(NameTextField);
+            toggle.Add(AnchorVector2Field);
             contentContainer.style.alignItems = Align.Center;
             contentContainer.Add(DragObjectField = new DragObjectField(typeof(Sprite)));
-            contentContainer.Add(PoseBindingList=new PoseBindingList(PoseSpriteItems = new List<PoseSpriteItem>(),this));
+            contentContainer.Add(PoseBindingList =
+                new PoseBindingList(PoseSpriteItems = BindingPoint?.spritePoseItems ?? new List<SpritePoseItem>(),
+                    this));
             DragObjectField.OnAdded += (unityObjects) =>
             {
                 foreach (var unityObject in unityObjects)
                 {
-                    if (PoseSpriteItems.Count==0||PoseSpriteItems.All(item => item.Sprite != unityObject))
-                        PoseSpriteItems.Add(new PoseSpriteItem() { Sprite = (Sprite)unityObject });
+                    if (PoseSpriteItems.Count == 0 || PoseSpriteItems.All(item => item.sprite != unityObject))
+                        PoseSpriteItems.Add(new SpritePoseItem() { sprite = (Sprite)unityObject });
                 }
+
                 PoseBindingList.RefreshItems();
             };
+            NameTextField.CreateBinder(type.GetField("name"), BindingPoint);
             if (poseBindingAnchor != null)
             {
-                Vector2Field.CreateBinder(poseBindingAnchor.ValueFieldInfo, poseBindingAnchor,filter: vector2 =>
+                
+                AnchorVector2Field.CreateBinder(type.GetField("point"), BindingPoint, filter: vector2 =>
                 {
                     vector2.x = Mathf.Clamp01(vector2.x);
                     vector2.y = Mathf.Clamp01(vector2.y);
                     return vector2;
+                }, () =>
+                {
+                    AnchorVector2Field.value = poseBindingAnchor.value;
+                }, () =>
+                {
+                    poseBindingAnchor.SetValueWithoutNotify(bindingPoint.point);
                 });
-                poseBindingAnchor.Value= Vector2Field.value = new Vector2(0.5f, 0.5f);
+                
             }
+        }
+
+        protected override Vector2 DoMeasure(float desiredWidth, MeasureMode widthMode, float desiredHeight, MeasureMode heightMode)
+        {
+            var doMeasure = base.DoMeasure(desiredWidth, widthMode, desiredHeight, heightMode);
+            AnchorVector2Field.value = BindingPoint.point;
+            return doMeasure;
         }
 
         public class PoseBindingPointUxmlFactory : UxmlFactory<PoseBindingPoint, UxmlTraits>

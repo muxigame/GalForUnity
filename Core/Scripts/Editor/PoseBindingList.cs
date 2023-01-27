@@ -8,42 +8,48 @@ using UnityEngine.UIElements;
 
 namespace GalForUnity.Core.Scripts.Editor
 {
-    public class PoseSpriteItem
-    {
-        public string Name;
-        public Sprite Sprite;
-    }
+
     public class PoseBindingList : ListView
     {
         private PoseBindingPoint _poseBindingPoint;
         public PoseBindingList(){}
-        public PoseBindingList(List<PoseSpriteItem> list,PoseBindingPoint poseBindingPoint): this(list,22f,
-            () => UxmlHandler.instance.poseBindingItem.Instantiate(), 
+        public PoseBindingList(List<SpritePoseItem> list,PoseBindingPoint poseBindingPoint): this(list,22f,
+            () =>
+            {
+                VisualElement visualElement = UxmlHandler.instance.poseBindingItem.Instantiate();
+                TextField textField = visualElement.Q<TextField>();
+                ObjectField objectField = visualElement.Q<ObjectField>();
+                objectField.objectType = typeof(Sprite);
+                textField.RegisterValueChangedCallback(changeEvent=>
+                {
+                    if(visualElement.userData is SpritePoseItem spritePoseItem) 
+                        spritePoseItem.name = changeEvent.newValue;
+                });
+                objectField.RegisterValueChangedCallback(changeEvent=>
+                {
+                    if(visualElement.userData is SpritePoseItem spritePoseItem) 
+                        spritePoseItem.sprite = (Sprite)changeEvent.newValue;
+                });
+                visualElement.RegisterCallback<MouseEnterEvent>((_) =>
+                {
+                    if(visualElement.userData is SpritePoseItem spritePoseItem) 
+                        poseBindingPoint.PoseView.ShowAnchor(spritePoseItem.sprite,poseBindingPoint.PoseBindingAnchor);
+                });
+                visualElement.RegisterCallback<MouseLeaveEvent>((_) =>
+                {
+                    poseBindingPoint.PoseView.HideAnchor(poseBindingPoint.PoseBindingAnchor);
+                });
+                return visualElement;
+            }, 
             (x,y) =>
             {
                 TextField textField = x.Q<TextField>();
                 ObjectField objectField = x.Q<ObjectField>();
-                objectField.objectType = typeof(Sprite);
-                textField.RegisterValueChangedCallback(changeEvent=>
-                {
-                    list[y].Name = changeEvent.newValue;
-                });
-                objectField.RegisterValueChangedCallback(changeEvent=>
-                {
-                    list[y].Sprite = (Sprite)changeEvent.newValue;
-                });
-                x.RegisterCallback<MouseEnterEvent>((_) =>
-                {
-                    poseBindingPoint.PoseView.ShowAnchor(list[y].Sprite,poseBindingPoint.PoseBindingAnchor);
-                });
-                x.RegisterCallback<MouseLeaveEvent>((_) =>
-                {
-                    poseBindingPoint.PoseView.HideAnchor(poseBindingPoint.PoseBindingAnchor);
-                });
-                if (list[y].Sprite) objectField.value = list[y].Sprite;
-                if (string.IsNullOrEmpty(list[y].Name)&&list[y].Sprite)
-                    list[y].Name = list[y].Sprite.name;
-                textField.value = list[y].Name;
+                x.userData = list[y];
+                if (list[y].sprite) objectField.value = list[y].sprite;
+                if (string.IsNullOrEmpty(list[y].name)&&list[y].sprite)
+                    list[y].name = list[y].sprite.name;
+                textField.value = list[y].name;
             })
         {
             _poseBindingPoint = poseBindingPoint;
@@ -55,7 +61,7 @@ namespace GalForUnity.Core.Scripts.Editor
             Action<VisualElement, int> bindItem = null)
             : base(itemsSource, itemHeight, makeItem, bindItem)
         {
-
+            
         }
         
         public class PoseBindingListUxmlFactory : UxmlFactory<PoseBindingList, UxmlTraits>{

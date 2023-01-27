@@ -10,22 +10,27 @@
 //======================================================================
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
+using GalForUnity.Graph.Nodes;
 using UnityEditor;
-using UnityEditor.SearchService;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace GalForUnity.Core.Scripts.Editor
 {
     public class CreatePoseWizard : EditorWindow
     {
+        [NonSerialized] public SpritePose SpritePose;
+        private bool binded;
+        private ListView bindingPoints;
+
+        private void Update()
+        {
+            if (SpritePose == null) Close();
+        }
+
         public void CreateGUI()
         {
-            // Each editor window contains a root VisualElement object
             var root = rootVisualElement;
             // Import UXML
             var visualTree =
@@ -33,73 +38,55 @@ namespace GalForUnity.Core.Scripts.Editor
                     "Assets/GalForUnity/Core/Scripts/Editor/CreatePoseWizard.uxml");
             VisualElement labelFromUXML = visualTree.Instantiate();
             root.Add(labelFromUXML);
-            var button = labelFromUXML.Q<Button>("CreatePoseButton");
-            var poseEditor = labelFromUXML.Q<VisualElement>("PoseEditor");
-            var poseView = labelFromUXML.Q<PoseView>("PoseView");
+            var styleSheet =
+                AssetDatabase.LoadAssetAtPath<StyleSheet>(
+                    "Assets/GalForUnity/Core/Scripts/Editor/CreatePoseWizard.uss");
+        }
+
+        private void InitBind()
+        {
+            if (SpritePose == null || binded) return;
+            binded = true;
+            var serializedObject = new SerializedObject(this);
+            var button = rootVisualElement.Q<Button>("CreatePoseButton");
+            var poseName = rootVisualElement.Q<TextField>("PoseName");
+            var poseView = rootVisualElement.Q<PoseView>("PoseView");
+            var type = typeof(SpritePose);
+            var poseEditor = rootVisualElement.Q<VisualElement>("PoseEditor");
+            poseName.TrackSerializedObjectValue(serializedObject);
+            poseName.CreateBinder(type.GetField("name"), SpritePose);
+            poseView.TrackSerializedObjectValue(serializedObject);
+            poseView.CreateBinder(type.GetField("sprite"), SpritePose);
+            poseView.SetValueWithoutNotify(SpritePose.sprite);
+            foreach (var spritePoseBindingPoint in SpritePose.bindingPoints)
+            {
+                var poseBindingAnchor = new PoseBindingAnchor(spritePoseBindingPoint.point);
+                poseView.Add(poseBindingAnchor);
+                poseEditor.Add(new PoseBindingPoint(poseBindingAnchor, poseView, spritePoseBindingPoint));
+            }
             button.clickable = new Clickable(() =>
             {
                 var poseBindingAnchor = new PoseBindingAnchor();
+                var bindingPoint = new BindingPoint();
+                SpritePose.bindingPoints.Add(bindingPoint);
                 poseView.Add(poseBindingAnchor);
-                poseEditor.Add(new PoseBindingPoint(poseBindingAnchor,poseView));
+                poseEditor.Add(new PoseBindingPoint(poseBindingAnchor, poseView, bindingPoint));
             });
-            poseView.RegisterCallback<MouseUpEvent>((x) =>
-            {
-                var type = Type.GetType("UnityEditor.ObjectSelector,UnityEditor");
-                var objectSelector = type.GetProperty("get", BindingFlags.Public | BindingFlags.Static)
-                    .GetValue(null, null);
-                Action<Object> Action = (selectedObject) =>
-                {
-                    if (selectedObject is Sprite sprite)
-                    {
-                        poseView.ShowPose(sprite);
-                    }
-
-                    if (selectedObject == null)
-                    {
-                        poseView.RemovePose();
-                    }
-                };
-                type.GetMethod("Show", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null,
-                        new Type[7]
-                        {
-                            typeof(Object),
-                            typeof(Type[]),
-                            typeof(Object),
-                            typeof(bool),
-                            typeof(List<int>),
-                            typeof(Action<Object>),
-                            typeof(Action<Object>)
-                        }, null)
-                    ?.Invoke(objectSelector,
-                        new object[7]
-                        {
-                            null, new[] { typeof(Sprite) }, null, false, null, Action, null
-                        })
-                    ;
-
-                // ObjectSelectorWindow.Show(new ObjectSelectorSearchContext()
-                // {
-                //     // requiredTypes = new []{typeof(Sprite),typeof(Texture),typeof(Texture2D),},
-                //     visibleObjects = VisibleObjects.Assets
-                // }, (x) =>
-                // {
-                //     
-                // }, (unityObject,y) =>
-                // {
-                //     poseContent.style.backgroundImage = new StyleBackground((Sprite)unityObject);
-                // });
-            });
-            // A stylesheet can be added to a VisualElement.
-            // The style will be applied to the VisualElement and all of its children.
-            var styleSheet =
-                AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GalForUnity/Core/Scripts/Editor/CreatePoseWizard.uss");
         }
-
-        [MenuItem("Window/UI Toolkit/CreatePoseWizard")]
+        [MenuItem("GalForUnity/调试/姿势创建向导")]
         public static void ShowExample()
         {
             var wnd = GetWindow<CreatePoseWizard>();
             wnd.titleContent = new GUIContent("CreatePoseWizard");
+        }
+
+        public static void Show(SpritePose spritePose)
+        {
+            var wnd = CreatePoseWizard.CreateWindow<CreatePoseWizard>();
+            wnd.SpritePose = spritePose;
+            wnd.titleContent = new GUIContent("CreatePoseWizard");
+            wnd.Show();
+            wnd.InitBind();
         }
     }
 }

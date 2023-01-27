@@ -40,14 +40,39 @@ namespace GalForUnity.Graph.Nodes{
     }
 
     public static class Expansion{
-        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, FieldInfo fieldInfo, object instance, Action onUIPreUpdate = null, Action onValueChanged = null){
+        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, FieldInfo fieldInfo, object instance,Func<TValue, TValue> filter = null,  Action onUIPreUpdate = null, Action onValueChanged = null){
             if (notifyValueChanged is BindableElement bindableElement)
                 return bindableElement.binding = new FBinder<TValue>(bindableElement,
                     value => {
+                        if (filter != null) value = filter.Invoke(value);
                         fieldInfo.SetValue(instance, value);
                         onValueChanged?.Invoke();
                     },
                     () => { notifyValueChanged.value = (TValue) fieldInfo.GetValue(instance); },
+                    onUIPreUpdate);
+            return null;
+        }
+        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, Action onUIUpdate = null, Action<TValue> onValueChanged = null,Action onUIPreUpdate = null){
+            if (notifyValueChanged is BindableElement bindableElement)
+                return bindableElement.binding = new FBinder<TValue>(bindableElement,
+                    value => {
+                        onValueChanged?.Invoke(value);
+                    },
+                    () =>
+                    {
+                        onUIUpdate?.Invoke();
+                    },
+                    onUIPreUpdate);
+            return null;
+        }
+        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, FieldInfo fieldInfo, Func<object> instance, Action onUIPreUpdate = null, Action onValueChanged = null){
+            if (notifyValueChanged is BindableElement bindableElement)
+                return bindableElement.binding = new FBinder<TValue>(bindableElement,
+                    value => {
+                        fieldInfo.SetValue(instance.Invoke(), value);
+                        onValueChanged?.Invoke();
+                    },
+                    () => { notifyValueChanged.value = (TValue) fieldInfo.GetValue(instance.Invoke()); },
                     onUIPreUpdate);
             return null;
         }

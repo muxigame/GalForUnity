@@ -7,6 +7,6 @@
 /*    min-width: 0 !important;*/
 /*}*/
 Label {
-    max-width: 50 !important;
+    /*max-width: 50 !important;*/
     min-width: 50 !important;
 }
