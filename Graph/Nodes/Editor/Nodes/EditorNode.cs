@@ -82,6 +82,9 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         public virtual List<GfuPort> Exit{ get; } = new List<GfuPort>();
 
         public RuntimeNode RuntimeNode{ get; internal set; }
+
+        public GalGraphWindow GalGraphWindow;
+        
 #if UNITY_EDITOR
         public sealed override string title{
             get => base.title;
@@ -119,29 +122,32 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         }
 
         internal virtual IEnumerable<(GfuPortAsset gfuPortAsset, GfuPort port)> OnLoadPort(GfuNodeAsset gfuNodeAsset){
-            if (gfuNodeAsset.inputPort.Count != 0){
+            if (gfuNodeAsset != null && gfuNodeAsset.inputPort.Count != 0)
+            {
                 Enter.Clear();
                 Enter.AddRange(gfuNodeAsset.inputPort.Select(x => GfuPort.Create<Edge>(x.Orientation, x.Direction, x.Capacity, x.GetType(), x.portName)));
             }
 
-            if (gfuNodeAsset.outputPort.Count != 0){
+            if (gfuNodeAsset != null && gfuNodeAsset.outputPort.Count != 0)
+            {
                 Exit.Clear();
                 Exit.AddRange(gfuNodeAsset.outputPort.Select(x => GfuPort.Create<Edge>(x.Orientation, x.Direction, x.Capacity, x.GetType(), x.portName)));
             }
+
             PortList<GfuPort> input = null;
             PortList<GfuPort> output = null;
             GetPortOverride();
             if (Enter.Count != 0){
                 input = new PortList<GfuPort>(Enter, Direction.Input);
                 var gfuPorts = input.value;
-                for (var i = 0; i < gfuPorts.Count; i++) yield return (gfuNodeAsset.inputPort[i], gfuPorts[i]);
+                for (var i = 0; i < gfuPorts.Count; i++) yield return (gfuNodeAsset?.inputPort[i], gfuPorts[i]);
                 inputContainer.Add(input);
                 input.CreateBinder(GetType().GetProperty(nameof(Enter)),this);
             }
             if (Exit.Count != 0){
                 output = new PortList<GfuPort>(Exit, Direction.Output);
                 var gfuPorts = output.value;
-                for (var i = 0; i < gfuPorts.Count; i++) yield return (gfuNodeAsset.outputPort[i], gfuPorts[i]);
+                for (var i = 0; i < gfuPorts.Count; i++) yield return (gfuNodeAsset?.outputPort[i], gfuPorts[i]);
                 outputContainer.Add(output);
                 output.CreateBinder(GetType().GetProperty(nameof(Exit)),this);
             }

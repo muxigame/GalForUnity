@@ -14,25 +14,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
+using GalForUnity.Graph.Build;
 using GalForUnity.Graph.Nodes.Editor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using PlotNode = GalForUnity.Graph.Nodes.Runtime.PlotNode;
 
 
 namespace GalForUnity.Graph.SceneGraph{
     public class GfuSceneGraphView : GraphView{
+        public Action OnBlockFocus;
+        
         public Dictionary<long, GfuNode> Nodes = new Dictionary<long, GfuNode>();
 
-        public GfuSceneGraphView() : this(null){ }
+        public GalGraphWindow GalGraphWindow;
+        public GfuSceneGraphView():this(null){}
+        public GfuSceneGraphView(GalGraphWindow galGraphWindow) : this(null,galGraphWindow){ }
 
-        public GfuSceneGraphView(GfuGraphAsset gfuGraphAsset){
+        public GfuSceneGraphView(GfuGraphAsset gfuGraphAsset,GalGraphWindow galGraphWindow)
+        {
+            RegisterCallback<MouseDownEvent>((evt) =>
+            {
+                OnBlockFocus?.Invoke();
+            });
+            
+            GalGraphWindow = galGraphWindow;
             // _sceneGraphEditorWindow = sceneGraphEditorWindow;
             InitEditorView();
             if (gfuGraphAsset == null || gfuGraphAsset.nodes == null || gfuGraphAsset.nodes.Count == 0){
                 var node = Activator.CreateInstance(typeof(MainNode)) as GfuNode;
-                node?.OnInit(new Nodes.Runtime.MainNode());
+                if (node == null) return;
+                node.OnInit(new Nodes.Runtime.MainNode(), this);
+                foreach (var _ in node.OnLoadPort(null)) {}
                 AddElement(node);
                 Nodes.Add(new Guid().GetHashCode(), node);
                 return;
@@ -85,7 +98,7 @@ namespace GalForUnity.Graph.SceneGraph{
                 return default;
             }
 
-            node.OnInit(gfuNodeAsset.runtimeNode);
+            node.OnInit(gfuNodeAsset.runtimeNode, this);
 
             AddElement(node);
             // if(node is GfuOperationNode gfuOperationNode)gfuOperationNode.GfuInputViews.ForEach(x=>x.);.Init(null);

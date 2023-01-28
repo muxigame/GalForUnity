@@ -74,9 +74,13 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         ///     初始化节点系统的方法，应该从此方法初始化节点系统，并调用父类的方法
         /// </summary>
         /// <param name="otherRuntimeNode"></param>
-        public virtual void OnInit(RuntimeNode otherRuntimeNode){
+        /// <param name="graphView1"></param>
+        public virtual void OnInit(RuntimeNode otherRuntimeNode, GfuSceneGraphView graphView){
             RuntimeNode = otherRuntimeNode;
+            GraphView = graphView;
         }
+
+        public GfuSceneGraphView GraphView { get; private set; }
         
         /// <summary>
         ///     需要在此方法中定义节点的操作，并且在节点执行完毕中调用Executed来跳转到下一个端口(不可以在此方法中使用Editor，这会导致节点系统无法使用)

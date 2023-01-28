@@ -53,8 +53,8 @@ namespace GalForUnity.Graph.Nodes.Editor.Nodes{
             new GfuPort(Orientation.Horizontal, Direction.Output, Capacity.Single, typeof(GfuNodeAsset), nameof(Exit))
         };
 
-        public override void OnInit(RuntimeNode otherRuntimeNode){
-            base.OnInit(otherRuntimeNode);
+        public override void OnInit(RuntimeNode otherRuntimeNode, GfuSceneGraphView graphView){
+            base.OnInit(otherRuntimeNode, graphView);
             var type = RuntimeNode.GetType();
             var publicField = type.GetFields(BindingFlags.Instance |BindingFlags.Public);
             var nonPublicField = type.GetFields(BindingFlags.Instance |BindingFlags.NonPublic);

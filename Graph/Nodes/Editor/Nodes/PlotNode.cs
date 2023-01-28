@@ -60,8 +60,8 @@ namespace GalForUnity.Graph.Nodes.Editor{
             }
         }
 
-        public override void OnInit(RuntimeNode otherRuntimeNode){
-            base.OnInit(otherRuntimeNode);
+        public override void OnInit(RuntimeNode otherRuntimeNode, GfuSceneGraphView graphView){
+            base.OnInit(otherRuntimeNode, graphView);
             runtimeNode = (Runtime.PlotNode) otherRuntimeNode;
             styleSheets.Add(UxmlHandler.instance.plotNodeUss);
             Add(new Button{
@@ -80,6 +80,7 @@ namespace GalForUnity.Graph.Nodes.Editor{
                         if (nodeEditor == null) return false;
                         if (!(Activator.CreateInstance(nodeEditor.Type) is IGalBlock block)) return false;
                         if (!(Activator.CreateInstance(blockType, this, block) is DraggableBlockEditor galBlock)) return false;
+                        
                         content.Add(galBlock);
                         runtimeNode.config.Add(galBlock.GalBlock);
                         return true;

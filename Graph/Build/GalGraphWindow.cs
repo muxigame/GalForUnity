@@ -25,7 +25,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Build{
-    public class GalGraphWindow : EditorWindow{
+    public class GalGraphWindow : EditorWindow
+    {
+
         [SerializeField] private int instanceID = -1;
 
         public IGalGraph galGraph;
@@ -79,7 +81,7 @@ namespace GalForUnity.Graph.Build{
         private void InitGraph(GfuGraphAsset graphAsset){
             rootVisualElement.Clear();
             try{
-                GraphView = new GfuSceneGraphView(graphAsset);
+                GraphView = new GfuSceneGraphView(graphAsset,this);
             } catch (Exception e){
                 Debug.LogError(e);
             } finally{
@@ -158,7 +160,7 @@ namespace GalForUnity.Graph.Build{
             var windowMousePosition = windowRoot.ChangeCoordinatesTo(windowRoot.parent, _context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
             editorNode.SetPosition(new Rect(graphMousePosition, Vector2.zero)); //将节点移动到鼠标位置
-            editorNode.OnInit(runtimeNode);
+            editorNode.OnInit(runtimeNode, _graphView);
             editorNode.OnInitPort();
             _graphView.Nodes.Add(GetHashCode(), editorNode);
             return true;

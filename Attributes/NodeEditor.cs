@@ -27,7 +27,6 @@ namespace GalForUnity.Attributes{
             return null;
         }
         public NodeEditor(Type type){
-            Debug.Log(type);
             this.Type = type;
         }
     }

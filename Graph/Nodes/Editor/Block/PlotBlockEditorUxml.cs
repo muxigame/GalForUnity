@@ -30,6 +30,11 @@ namespace GalForUnity.Graph.Block{
             _nameField.dropdownField.CreateBinder(galPlotConfig.GetType().GetField(nameof(galPlotConfig.name)), galBlock);
             _said.CreateBinder(galPlotConfig.GetType().GetField(nameof(galPlotConfig.word)), galBlock);
             content.style.flexDirection = FlexDirection.Column;
+            operationButton.style.display = DisplayStyle.Flex;
+            operationButton.clickable = new Clickable(() =>
+            {
+
+            });
         }
     }
 }

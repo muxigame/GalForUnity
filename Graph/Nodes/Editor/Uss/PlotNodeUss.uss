@@ -46,7 +46,19 @@ PlotAudioBlockUxml{
 #DragContainer{
     border-radius: 4px;
     border-width: 2px;
+    margin-bottom: 3px;
+}
+
+#DragContainer:hover{
+    border-width: 2px;
+    border-color: rgba(68,192,255,1);
+}
+
+.drag-block-selection{
+    border-color: rgba(68,192,255,0.5);
+    border-width: 2px;
+}
+.drag-block{
     border-color: rgba(0,0,0,0.3);
     background-color: rgba(32,32,32,0.7);
-    margin-bottom: 3px;
 }

@@ -32,7 +32,15 @@ namespace GalForUnity.Core.Scripts.Editor
                     var type = Type.GetType("UnityEditor.ObjectSelector,UnityEditor");
                     var objectSelector = type.GetProperty("get", BindingFlags.Public | BindingFlags.Static)
                         .GetValue(null, null);
-                    Action<Object> Action = selectedObject =>
+                    Object selected = _value;
+                    Action<Object> update = selectedObject =>
+                    {
+                        selected = selectedObject;
+                        if (selectedObject is Sprite sprite) ShowPose(sprite);
+
+                        if (selectedObject == null) RemovePose();
+                    };
+                    Action<Object> close = selectedObject =>
                     {
                         if (selectedObject is Sprite sprite) ShowPose(sprite);
 
@@ -53,20 +61,21 @@ namespace GalForUnity.Core.Scripts.Editor
                         ?.Invoke(objectSelector,
                             new object[7]
                             {
-                                null, new[] { typeof(Sprite) }, null, false, null, Action, null
+                                selected, new[] { typeof(Sprite) }, selected, false, null, close , update
                             });
                 });
             }
 
             style.borderBottomWidth =  style.borderLeftWidth =  style.borderRightWidth =  style.borderTopWidth = 2;
             style.borderBottomColor =  style.borderLeftColor =  style.borderRightColor =  style.borderTopColor = new Color(0.14f,0.14f,0.14f,1);
+            style.backgroundImage = new StyleBackground(ResourceHandler.instance.defaultPose);
+            style.width = 300;
+            style.height = 600;
         }
 
         public PoseView() : this(true)
         {
-            style.backgroundImage = new StyleBackground(ResourceHandler.instance.defaultPose);
-            style.width = 300;
-            style.height = 600;
+
         }
 
         private float OffsetedWidth => parent.worldBound.width - ParentBorderOffset;
