@@ -40,8 +40,7 @@ namespace GalForUnity.Graph.Nodes.Editor{
         public override List<GfuPort> Exit { get; }= new List<GfuPort>{
             new GfuPort(Orientation.Horizontal, Direction.Output, Capacity.Multi, typeof(GfuNodeAsset), nameof(Exit))
         };
-
-
+        
         public Runtime.PlotNode runtimeNode;
 
         public PlotNode(){ Add(content = new VisualElement()); }
@@ -94,6 +93,64 @@ namespace GalForUnity.Graph.Nodes.Editor{
                 if (!(Activator.CreateInstance(NodeEditor.GetEditor(type), this, x) is DraggableBlockEditor galBlock)) return;
                 content.Add(galBlock);
             });
+            RegisterCallback<ExecuteCommandEvent>(new EventCallback<ExecuteCommandEvent>(this.OnExecuteCommand));
+        }
+
+        private void OnExecuteCommand(ExecuteCommandEvent evt)
+        {
+            Debug.LogError(evt);
+            if (this.panel.GetCapturingElement(PointerId.mousePointerId) != null)
+                return;
+            if (evt.commandName == "Copy")
+            {
+                this.CopySelectionCallback();
+                evt.StopPropagation();
+            }
+            else if (evt.commandName == "Paste")
+            {
+                this.PasteCallback();
+                evt.StopPropagation();
+            }
+            else if (evt.commandName == "Duplicate")
+            {
+                this.DuplicateSelectionCallback();
+                evt.StopPropagation();
+            }
+            else if (evt.commandName == "Cut")
+            {
+                this.CutSelectionCallback();
+                evt.StopPropagation();
+            }
+            else if (evt.commandName == "Delete")
+            {
+                this.DeleteSelectionCallback(UnityEditor.Experimental.GraphView.GraphView.AskUser.DontAskUser);
+                evt.StopPropagation();
+            }
+        }
+
+        private void DeleteSelectionCallback(GraphView.AskUser dontAskUser)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CutSelectionCallback()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DuplicateSelectionCallback()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PasteCallback()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CopySelectionCallback()
+        {
+            throw new NotImplementedException();
         }
 
         public class PlotNodeUxmlFactory : UxmlFactory<PlotNode, UxmlTraits>{ }

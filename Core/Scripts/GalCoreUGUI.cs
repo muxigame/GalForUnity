@@ -17,7 +17,7 @@ using UnityEngine.Video;
 namespace GalForUnity.Core{
     [RequireComponent(typeof(Canvas))]
     public class GalCoreUGUI : GalCore{
-        public Dictionary<string, RoleModel> roleModels = new Dictionary<string, RoleModel>();
+        public Dictionary<string, RoleUGUI> roleModels = new Dictionary<string, RoleUGUI>();
         public Text nameText;
         public Text sayText;
         public Canvas galCanvas;
@@ -29,7 +29,7 @@ namespace GalForUnity.Core{
             ActiveCore = this;
         }
 
-        public override RoleModel GetRole(string roleName){
+        public override IRoleIO GetRole(string roleName){
             return roleModels[roleName];
         }
 
@@ -41,14 +41,14 @@ namespace GalForUnity.Core{
             sayText.text = roleSaid;
         }
 
-        public override void SetRole(string roleName, RoleModel roleModel){
-            if(roleModels.ContainsKey(roleName)) Destroy(roleModels[roleName]);
-            if (!roleModel&&roleModels.ContainsKey(roleName)){
-                roleModels.Remove(roleName);
-                return;
-            }
-            var instantiate = Instantiate(roleModel, roleContent);
-            roleModels[roleName]=instantiate;
+        public override void SetRole(string roleName, IRoleIO roleModel){
+            // if(roleModels.ContainsKey(roleName)) Destroy(roleModels[roleName]);
+            // if (!roleModel&&roleModels.ContainsKey(roleName)){
+            //     roleModels.Remove(roleName);
+            //     return;
+            // }
+            // var instantiate = Instantiate(roleModel, roleContent);
+            // roleModels[roleName]=instantiate;
         }
 
         public override void SetBackground(Sprite sprite){

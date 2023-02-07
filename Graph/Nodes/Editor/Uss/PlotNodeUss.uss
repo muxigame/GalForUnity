@@ -1,9 +1,18 @@
-Label {
+.gal-label {
     font-size: 14px;
     -unity-font-style: normal;
     color: rgb(68, 138, 255);
-    width: auto;
-    min-width: 50px;
+    width: 50px;
+    min-width: 10px;
+    justify-content: flex-start;
+    align-items: stretch;
+    -unity-text-align: middle-left;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+Label {
+    font-size: 14px;
+    -unity-font-style: normal;
     justify-content: flex-start;
     align-items: stretch;
     -unity-text-align: middle-left;

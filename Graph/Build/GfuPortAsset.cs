@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.Graph.Build;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GalForUnity.Graph.SceneGraph{
     [Serializable]
@@ -22,6 +23,7 @@ namespace GalForUnity.Graph.SceneGraph{
         [HideInInspector] [SerializeReference] public GfuNodeAsset node;
         [SerializeReference] public List<GfuConnectionAsset> connections;
         [SerializeField] public byte[] portAttribute = new byte[3];
+        public PortType portType;
         public Direction Direction{
             get => (Direction) portAttribute[0];
             set => portAttribute[0] = (byte) value;
@@ -76,5 +78,29 @@ namespace GalForUnity.Graph.SceneGraph{
     public enum Capacity:byte{
         Single = 0,
         Multi = 1,
+    }
+
+    [Serializable]
+    public class PortType
+    {
+        [SerializeField]
+        private string stringType;
+
+        public static implicit operator PortType(Type type)
+        {
+            return new PortType() { stringType = string.Concat(type.Namespace, ".", type.Name, ",", type.Assembly.GetName().Name) };
+        }
+        public static implicit operator Type(PortType type)
+        {
+            try
+            {
+                return Type.GetType(type.stringType);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+            return typeof(object);
+        }
     }
 }

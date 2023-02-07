@@ -13,23 +13,30 @@ using UnityEngine.Video;
 
 namespace GalForUnity.Core{
     public interface ICoreIO{
-        public RoleModel GetRole(string roleName);
+        public IRoleIO GetRole(string roleName);
         
         public void SetName(string roleName);
         public void SetSay(string roleSaid);
-        public void SetRole(string roleName, RoleModel roleModel);
+        public void SetRole(string roleName, IRoleIO roleModel);
         public void SetBackground(Sprite sprite);
         public void SetBackground(VideoClip videoClip);
         public void SetAudio(AudioClip audioClip);
     } 
     public interface IRoleIO{
-        public void SetSprite(Sprite sprite);
-        public void SetPosition(Vector3 position);
+        public void SetPose(string poseName, string anchorName, string faceName);
+        public void SetPosition(Unit xUnit, Unit yUnit, Vector2 position);
         public void SetRotate(Vector3 rotate);
         public void SetScale(Vector3 scale);
         public void SetColor(Color color);
         public void SetVoice(AudioClip audioClip);
         public void SetVisible(bool visible);
         public void SetAnimation(AnimationClip animationClip);
+    }
+
+    public enum Unit
+    {
+        Pixel,
+        Percentage,
+        Decimal
     }
 }

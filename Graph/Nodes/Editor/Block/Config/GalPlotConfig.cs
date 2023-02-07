@@ -10,30 +10,98 @@
 //======================================================================
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GalForUnity.Core;
 using GalForUnity.Graph.Block.Config;
 using GalForUnity.Graph.Build;
+using UnityEngine;
 
-namespace GalForUnity.Graph.Nodes.Editor.Block.Config{
+namespace GalForUnity.Graph.Nodes.Editor.Block.Config
+{
     [Serializable]
-    public class GalPlotConfig : IGalBlock{
+    public class GalPlotConfig : IGalBlock
+    {
         public string name;
         public string word;
         private RuntimeNode _runtimeNode;
+        [SerializeReference] public List<ConfigAddition> configAdditions = new List<ConfigAddition>();
 
-        RuntimeNode IGalBlock.RuntimeNode{
+        RuntimeNode IGalBlock.RuntimeNode
+        {
             get => _runtimeNode;
             set => _runtimeNode = value;
         }
 
-        public async Task Process(GalCore galCore){
-            while (!_runtimeNode.GalGraph.GraphProvider.Next.Invoke()){
+        public async Task Process(GalCore galCore)
+        {
+            while (!_runtimeNode.GalGraph.GraphProvider.Next.Invoke())
+            {
                 await Task.Yield();
             }
+
             galCore.SetName(name);
             galCore.SetSay(word);
+            foreach (var configAddition in configAdditions)
+            {
+                configAddition.Process(galCore.GetRole(name), galCore);
+            }
+
             await Task.Yield();
+        }
+    }
+
+    [Serializable]
+    public abstract class ConfigAddition
+    {
+        public abstract void Process(IRoleIO roleIO, ICoreIO coreIO);
+    }
+
+    [Serializable]
+    public class AdditionPose : ConfigAddition
+    {
+        public string poseName;
+        public string anchorName;
+        public string faceName;
+
+        public override void Process(IRoleIO roleIO, ICoreIO coreIO)
+        {
+            roleIO.SetPose(poseName, anchorName, faceName);
+        }
+    }
+
+    [Serializable]
+    public class AdditionPosition : ConfigAddition
+    {
+        public Unit xUnit;
+        public Unit yUnit;
+        public Vector2 position;
+
+        public override void Process(IRoleIO roleIO, ICoreIO coreIO)
+        {
+            roleIO.SetPosition(xUnit, yUnit, position);
+        }
+    }
+
+    [Serializable]
+    public class AdditionAudio : ConfigAddition
+    {
+        public AudioClip audioClip;
+
+        public override void Process(IRoleIO roleIO, ICoreIO coreIO)
+        {
+            coreIO.SetAudio(audioClip);
+        }
+    }
+
+    [Serializable]
+    public class AdditionRoleVoice : ConfigAddition
+    {
+        public AudioClip audioClip;
+
+        public override void Process(IRoleIO roleIO, ICoreIO coreIO)
+        {
+            roleIO.SetVoice(audioClip);
         }
     }
 }

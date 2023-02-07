@@ -13,31 +13,32 @@ using System.Linq;
 using GalForUnity.External;
 using GalForUnity.Graph.AssetGraph.GFUNode.Base;
 using GalForUnity.Graph.Block.Config;
-using GalForUnity.Graph.Build;
 using GalForUnity.Graph.Nodes.Editor;
 using GalForUnity.Graph.SceneGraph;
-using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Block
 {
-    public class DraggableBlockEditor : VisualElement, IGalBlockEditor
+    public class DraggableBlockEditor : GraphElement, IGalBlockEditor, ISelectable
     {
         private readonly VisualElement _dragContainer;
-        private bool _mouseDown;
-        protected Button operationButton;
-        public VisualElement content;
-        public VisualElement additionalContent;
-        public IGalBlock GalBlock;
-        public PlotNode plotNode;
 
-        private GfuSceneGraphView _graphView;
+        private readonly GfuSceneGraphView _graphView;
+        private bool _mouseDown;
+        public VisualElement additionalContent;
+        public VisualElement content;
+        public IGalBlock GalBlock;
+        protected Button operationButton;
+        public PlotNode plotNode;
+        private readonly ClickSelector m_ClickSelector;
+
         public DraggableBlockEditor(PlotNode plotNode, IGalBlock galBlock)
         {
             var templateContainer = UxmlHandler.instance.draggableBlockUxml.Instantiate();
             _graphView = plotNode.GraphView;
-            if(_graphView!=null) _graphView.OnBlockFocus += OnOtherFocus;
+            if (_graphView != null) _graphView.OnBlockFocus += OnOtherFocus;
             _dragContainer = new VisualElement
             {
                 name = "DragContainer"
@@ -50,17 +51,15 @@ namespace GalForUnity.Graph.Block
             operationButton = templateContainer.Q<Button>("operationButton");
             var delete = templateContainer.Q<Button>("deleteDragButton");
             delete.clickable = new Clickable(() => { parent.Remove(this); });
-            RegisterCallback<MouseMoveEvent>(Callback);
-            RegisterCallback<MouseUpEvent>(Up);
-            RegisterCallback<MouseDownEvent>(Down);
+            // RegisterCallback<MouseMoveEvent>(Callback);
+            // RegisterCallback<MouseUpEvent>(Up);
+            // RegisterCallback<MouseDownEvent>(Down);
+            pickingMode = PickingMode.Position;
+            // m_ClickSelector = new ClickSelector();
+            // this.AddManipulator(m_ClickSelector);
+            capabilities |= Capabilities.Selectable;
             Add(_dragContainer);
             _dragContainer.AddToClassList("drag-block");
-        }
-
-        public virtual void OnOtherFocus()
-        {
-            _dragContainer.AddToClassList("drag-block");
-            _dragContainer.RemoveFromClassList("drag-block-selection");
         }
 
         public virtual IEnumerable<(GfuPort, GfuPortAsset)> OnSavePort(GfuNodeAsset gfuNodeAsset)
@@ -72,7 +71,40 @@ namespace GalForUnity.Graph.Block
         {
             return Array.Empty<(GfuPortAsset, GfuPort)>();
         }
-        
+
+        public override bool IsSelectable()
+        {
+            return true;
+        }
+
+        public override bool HitTest(Vector2 localPoint)
+        {
+            return ContainsPoint(localPoint);
+        }
+
+        public override void Select(VisualElement selectionContainer, bool additive)
+        {
+            _dragContainer.RemoveFromClassList("drag-block");
+            _dragContainer.AddToClassList("drag-block-selection");
+        }
+
+        public override void Unselect(VisualElement selectionContainer)
+        {
+            _dragContainer.AddToClassList("drag-block");
+            _dragContainer.RemoveFromClassList("drag-block-selection");
+        }
+
+        public override bool IsSelected(VisualElement selectionContainer)
+        {
+            return _dragContainer.ClassListContains("drag-block-selection");
+        }
+
+        public virtual void OnOtherFocus()
+        {
+            // _dragContainer.AddToClassList("drag-block");
+            // _dragContainer.RemoveFromClassList("drag-block-selection");
+        }
+
         private void Up(MouseUpEvent x)
         {
             _mouseDown = false;
@@ -86,14 +118,14 @@ namespace GalForUnity.Graph.Block
 
         private void Down(MouseDownEvent x)
         {
+            if (x.button != 0) return;
             _mouseDown = true;
             if (!x.ctrlKey && !x.shiftKey)
-            {
-                if(_graphView!=null)_graphView.OnBlockFocus?.Invoke();
-            }
-            
-            _dragContainer.RemoveFromClassList("drag-block");
-            _dragContainer.AddToClassList("drag-block-selection");
+                if (_graphView != null)
+                    _graphView.OnBlockFocus?.Invoke();
+
+            // _dragContainer.RemoveFromClassList("drag-block");
+            // _dragContainer.AddToClassList("drag-block-selection");
             this.CaptureMouse();
             x.StopImmediatePropagation();
         }

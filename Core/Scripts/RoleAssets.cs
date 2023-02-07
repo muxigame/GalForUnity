@@ -6,6 +6,11 @@ namespace GalForUnity.Core
 {
     public class RoleAssets : ScriptableObject
     {
+        private void OnEnable()
+        {
+            if (!RoleDB.Contains(this)) RoleDB.Add(this);
+        }
+
         public new string name = "Alice";
         public Gender gender = Gender.Girl;
         public string age = "16";

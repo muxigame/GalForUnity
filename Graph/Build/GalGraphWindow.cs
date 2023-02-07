@@ -95,8 +95,21 @@ namespace GalForUnity.Graph.Build{
                         SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), menuWindowProvider);
                         menuWindowProvider.OnSelectEntryHandler = new SearchProvider(GraphView, this, context).OnMenuSelectEntry;
                     };
-                    rootVisualElement.Add(new Button(() => { new GalGraph(galGraph).Play(); }) {
+                    rootVisualElement.Add(new Button(() =>
+                    {
+                        EditorApplication.isPlaying = true;
+                        new GalGraph(galGraph).Play();
+                    }) {
                         text = GfuLanguage.GfuLanguageInstance.EXECUTE.Value + "(experimental)",
+                        style = {
+                            width = 200, height = 20, right = 0, position = Position.Absolute
+                        }
+                    });
+                    rootVisualElement.Add(new Button(() =>
+                    {
+                        Debug.Log(GraphView.Save());
+                    }) {
+                        text =  "(save2)",
                         style = {
                             width = 200, height = 20, right = 0, position = Position.Absolute
                         }

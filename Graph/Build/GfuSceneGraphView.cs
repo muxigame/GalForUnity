@@ -83,6 +83,18 @@ namespace GalForUnity.Graph.SceneGraph{
             gridBackground.name = "GridBackground";
             Insert(0, gridBackground);
             SetupZoom(0.25f, 2.0f);
+            deleteSelection += (x, y) =>
+            {
+                foreach (var selectable in selection)
+                {
+                    if (selectable is GfuNode gfuNode)
+                    {
+                        Nodes.Remove(gfuNode.instanceID);
+                    }
+                }
+                DeleteSelection();
+              
+            };
             this.StretchToParentSize();
             this.StretchToParentSize();
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
@@ -130,7 +142,8 @@ namespace GalForUnity.Graph.SceneGraph{
         /// <param name="startAnchor"></param>
         /// <param name="nodeAdapter"></param>
         /// <returns></returns>
-        public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter){
+        public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter)
+        {
             var compatiblePorts = new List<Port>();
             foreach (var port in ports.ToList()){
                 if (!port.enabledSelf) continue;
@@ -151,6 +164,10 @@ namespace GalForUnity.Graph.SceneGraph{
             return compatiblePorts;
         }
 
+        public string Save()
+        {
+            return  this.SerializeGraphElements(nodes);
+        }
         /// <summary>
         ///     判断某类型是否可以隐式转换为某类型
         /// </summary>

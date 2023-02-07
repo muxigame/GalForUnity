@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="ConfigAddtion" style="flex-direction: row; width: 100%; align-items: stretch; flex-grow: 0;">
+        <ui:VisualElement name="Space" style="height: auto; width: 5px; flex-shrink: 0;" />
+        <ui:VisualElement name="Content" style="flex-grow: 1; flex-direction: column; flex-shrink: 0;" />
+        <ui:Button text="=" display-tooltip-when-elided="true" name="OperationButton" style="width: 20px; display: none;" />
+        <ui:Button text="x" display-tooltip-when-elided="true" name="DeleteButton" style="width: 20px;" />
+        <ui:VisualElement name="Space" style="height: auto; width: 5px; flex-shrink: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

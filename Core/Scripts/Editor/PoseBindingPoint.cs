@@ -79,7 +79,7 @@ namespace GalForUnity.Core.Scripts.Editor
                 }, () =>
                 {
                     AnchorVector2Field.value = poseBindingAnchor.value;
-                }, () =>
+                }, (x) =>
                 {
                     poseBindingAnchor.SetValueWithoutNotify(bindingPoint.point);
                 });

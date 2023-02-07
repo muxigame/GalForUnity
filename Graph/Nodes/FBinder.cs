@@ -40,13 +40,13 @@ namespace GalForUnity.Graph.Nodes{
     }
 
     public static class Expansion{
-        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, FieldInfo fieldInfo, object instance,Func<TValue, TValue> filter = null,  Action onUIPreUpdate = null, Action onValueChanged = null){
+        public static IBinding CreateBinder<TValue>(this INotifyValueChanged<TValue> notifyValueChanged, FieldInfo fieldInfo, object instance,Func<TValue, TValue> filter = null,  Action onUIPreUpdate = null, Action<TValue> onValueChanged = null){
             if (notifyValueChanged is BindableElement bindableElement)
                 return bindableElement.binding = new FBinder<TValue>(bindableElement,
                     value => {
                         if (filter != null) value = filter.Invoke(value);
                         fieldInfo.SetValue(instance, value);
-                        onValueChanged?.Invoke();
+                        onValueChanged?.Invoke(value);
                     },
                     () => { notifyValueChanged.value = (TValue) fieldInfo.GetValue(instance); },
                     onUIPreUpdate);

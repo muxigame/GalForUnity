@@ -23,3 +23,4 @@ MonoBehaviour:
   galGraphWindowUxml: {fileID: 9197481963319205126, guid: 79ed1f510f4d4cd40a2f08aea91cb623, type: 3}
   poseBindingPointUxml: {fileID: 9197481963319205126, guid: 520065867320ca24a93286e36068f7ec, type: 3}
   poseBindingItem: {fileID: 9197481963319205126, guid: 0a462ff451b88274a9d28a08c3df67ba, type: 3}
+  configAddition: {fileID: 9197481963319205126, guid: 5206e3ade208b1e43a020f7b2aa450c7, type: 3}

@@ -91,8 +91,9 @@ namespace GalForUnity.Graph.SceneGraph{
         internal static IEnumerable<RuntimeNode> Save(this GfuGraphAsset assetGraph, GfuSceneGraphView graphView){
             if (assetGraph.instanceID == -1) assetGraph.instanceID = assetGraph.CreateInstanceID();
             var portMap = new Dictionary<Port, GfuPortAsset>();
+            if (assetGraph.nodes == null) assetGraph.nodes = new List<GfuNodeAsset>();
+            assetGraph.nodes.RemoveAll(x => !graphView.Nodes.ContainsKey(x.instanceID));
             foreach (var graphViewNode in graphView.Nodes){
-                if (assetGraph.nodes == null) assetGraph.nodes = new List<GfuNodeAsset>();
                 var nodeByInstanceID = assetGraph.GetNodeByInstanceID(graphViewNode.Key);
                 GfuNodeAsset gfuNodeAsset;
                 if (nodeByInstanceID != null){
@@ -118,8 +119,32 @@ namespace GalForUnity.Graph.SceneGraph{
             gfuPortAsset.portName = gfuPort.name;
             if (gfuPort.direction == UnityEditor.Experimental.GraphView.Direction.Input)
                 gfuPortAsset.Direction = Direction.Input;
-            else if (gfuPort.direction == UnityEditor.Experimental.GraphView.Direction.Output) gfuPortAsset.Direction = Direction.Output;
+            else if (gfuPort.direction == UnityEditor.Experimental.GraphView.Direction.Output) 
+                gfuPortAsset.Direction = Direction.Output;
             gfuPortAsset.node = gfuNodeAsset;
+            gfuPortAsset.portType = gfuPort.portType;
+            switch (gfuPort.capacity)
+            {
+                case Port.Capacity.Single:
+                    gfuPortAsset.Capacity = Capacity.Single;
+                    break;
+                case Port.Capacity.Multi:
+                    gfuPortAsset.Capacity = Capacity.Multi;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            switch (gfuPort.orientation)
+            {
+                case UnityEditor.Experimental.GraphView.Orientation.Horizontal:
+                    gfuPortAsset.Orientation = Orientation.Horizontal;
+                    break;
+                case UnityEditor.Experimental.GraphView.Orientation.Vertical:
+                    gfuPortAsset.Orientation = Orientation.Vertical;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         internal static GfuConnectionAsset Save(this GfuConnectionAsset gfuConnectionAsset, GfuPortAsset input, GfuPortAsset output){

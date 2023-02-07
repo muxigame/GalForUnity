@@ -125,15 +125,14 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
             if (gfuNodeAsset != null && gfuNodeAsset.inputPort.Count != 0)
             {
                 Enter.Clear();
-                Enter.AddRange(gfuNodeAsset.inputPort.Select(x => GfuPort.Create<Edge>(x.Orientation, x.Direction, x.Capacity, x.GetType(), x.portName)));
+                Enter.AddRange(gfuNodeAsset.inputPort.Select(x => GfuPort.Create<Edge>(x.Orientation, x.Direction, x.Capacity, x.portType, x.portName)));
             }
 
             if (gfuNodeAsset != null && gfuNodeAsset.outputPort.Count != 0)
             {
                 Exit.Clear();
-                Exit.AddRange(gfuNodeAsset.outputPort.Select(x => GfuPort.Create<Edge>(x.Orientation, x.Direction, x.Capacity, x.GetType(), x.portName)));
+                Exit.AddRange(gfuNodeAsset.outputPort.Select(x => GfuPort.Create<Edge>(x.Orientation, x.Direction, x.Capacity, x.portType, x.portName)));
             }
-
             PortList<GfuPort> input = null;
             PortList<GfuPort> output = null;
             GetPortOverride();
@@ -186,6 +185,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         /// <returns>端口列表</returns>
         internal virtual List<GfuPort> GetGfuOutPut(){
             var output = new List<GfuPort>();
+            if (outputContainer.childCount == 0) return output;
 #if UNITY_EDITOR
             for (var i = 0; i < outputContainer[0].childCount; i++) output.Add((GfuPort) outputContainer[0].ElementAt(i));
 #endif
@@ -199,6 +199,7 @@ namespace GalForUnity.Graph.AssetGraph.GFUNode.Base{
         /// <returns>端口列表</returns>
         internal virtual List<GfuPort> GetGfuInput(){
             var input = new List<GfuPort>();
+            if (inputContainer.childCount == 0) return input;
 #if UNITY_EDITOR
             for (var i = 0; i < inputContainer[0].childCount; i++) input.Add((GfuPort) inputContainer[0].ElementAt(i));
 #endif
