@@ -1,13 +1,4 @@
-// //======================================================================
-// //
-// //       CopyRight 2019-2021 © MUXI Game Studio 
-// //       . All Rights Reserved 
-// //
-// //        FileName :  OptionController.cs
-// //
-// //        Created by 半世癫(Roc) at 2021-11-17 16:49:02
-// //
-// //======================================================================
+
 //
 // using GalForUnity.Attributes;
 // using GalForUnity.Model;

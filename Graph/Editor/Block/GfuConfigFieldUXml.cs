@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuConfigFieldUXml.cs Created at 2022-09-27 22:53:31
-//
-//======================================================================
+
 
 using System;
 using System.Reflection;

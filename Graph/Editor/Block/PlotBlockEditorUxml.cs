@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  PlotBlock.cs Created at 2022-09-30 19:54:38
-//
-//======================================================================
+
 
 using System;
 using GalForUnity.Core;

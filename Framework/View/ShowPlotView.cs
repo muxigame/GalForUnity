@@ -1,13 +1,4 @@
-// //======================================================================
-// //
-// //       CopyRight 2019-2020 © MUXI Game Studio 
-// //       . All Rights Reserved 
-// //
-// //        FileName :  ShowPlotView.cs
-// //
-// //        Created by 半世癫(Roc) at 2021-01-02 09:32:16
-// //
-// //======================================================================
+
 //
 // using GalForUnity.Attributes;
 // using GalForUnity.Controller;

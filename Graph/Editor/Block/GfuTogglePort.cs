@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuTogglePort.cs Created  at 2022-09-27 00:08:03
-//
-//======================================================================
+
 
 using System;
 using System.Reflection;

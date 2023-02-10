@@ -1,13 +1,4 @@
-﻿//======================================================================
-//
-//       CopyRight 2019-2021 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  DefaultValueAttribute.cs
-//
-//        Created by 半世癫(Roc) at 2021-02-04 16:18:24
-//
-//======================================================================
+
 
 using System;
 

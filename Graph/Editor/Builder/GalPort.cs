@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2021 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuPort.cs
-//
-//        Created by 半世癫(Roc) at 2021-01-12 21:34:16
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

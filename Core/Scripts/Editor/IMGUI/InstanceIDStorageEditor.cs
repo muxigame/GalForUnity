@@ -1,13 +1,4 @@
-// //======================================================================
-// //
-// //       CopyRight 2019-2021 © MUXI Game Studio 
-// //       . All Rights Reserved 
-// //
-// //        FileName :  InstanceIDStorageEditor.cs
-// //
-// //        Created by 半世癫(Roc) at 2021-11-21 23:10:54
-// //
-// //======================================================================
+
 //
 //
 // using GalForUnity.External;

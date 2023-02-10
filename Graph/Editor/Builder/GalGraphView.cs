@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuSceneGraphView.cs
-//
-//        Created by 半世癫(Roc) at 2022-04-14 22:56:54
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

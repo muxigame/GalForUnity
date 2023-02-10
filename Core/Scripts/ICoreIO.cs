@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  ICoreOutput.cs 2022-09-22 00:07:10
-//
-//======================================================================
+
 
 using UnityEngine;
 using UnityEngine.Video;

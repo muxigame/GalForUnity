@@ -1,13 +1,4 @@
-﻿//======================================================================
-//
-//       CopyRight 2019-2021 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  NodeFieldTypeAttribute.cs
-//
-//        Created by 半世癫(Roc)
-//
-//======================================================================
+
 
 using System;
 using GalForUnity.Framework;

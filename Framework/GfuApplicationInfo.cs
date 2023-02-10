@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuApplicationInfo.cs
-//
-//        Created by 半世癫(Roc) at 2022-04-16 17:41:36
-//
-//======================================================================
+
 
 namespace GalForUnity.Framework{
     public class GfuApplicationInfo{

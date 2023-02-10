@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  SceneGraph.cs Created at 2022-04-13 23:22:10
-//
-//======================================================================
+
 
 
 using GalForUnity.Graph.Editor.Builder;

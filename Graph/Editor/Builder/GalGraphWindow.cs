@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GalGraphWindow.cs Created at 2022-09-26 21:47:59
-//
-//======================================================================
+
 
 using System;
 using System.Linq;

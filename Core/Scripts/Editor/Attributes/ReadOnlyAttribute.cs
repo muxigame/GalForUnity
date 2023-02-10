@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  ReadAttribute.cs
-//
-//        Created by 半世癫(Roc) at 2022-05-20 01:31:05
-//
-//======================================================================
+
 
 using UnityEditor;
 using UnityEngine;

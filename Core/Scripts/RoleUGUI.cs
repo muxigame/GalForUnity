@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  Role.cs at 2022-09-22 23:51:22
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

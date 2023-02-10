@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2021 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuNode.cs
-//
-//        Created by 半世癫(Roc) at 2021-01-09 21:59:17
-//
-//======================================================================
+
 
 using System;
 using System.Reflection;

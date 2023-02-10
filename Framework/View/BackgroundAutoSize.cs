@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2020 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  BackgroundAutoSize.cs
-//
-//        Created by 半世癫(Roc) at 2021-01-02 11:46:56
-//
-//======================================================================
+
 
 using GalForUnity.Core.Editor.Attributes;
 using UnityEngine;

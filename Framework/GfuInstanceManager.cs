@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2021 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuInstanceManager.cs
-//
-//        Created by 半世癫(Roc) at 2021-11-24 22:30:41
-//
-//======================================================================
+
 
 using System;
 using UnityEditor;

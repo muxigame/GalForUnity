@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  DraggableBlock.cs Created at 2022-10-09 22:36:40
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

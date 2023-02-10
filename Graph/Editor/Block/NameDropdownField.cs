@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  NameDropdownField.cs at 2022-10-10 00:22:24
-//
-//======================================================================
+
 
 using GalForUnity.Core;
 using UnityEngine.UIElements;

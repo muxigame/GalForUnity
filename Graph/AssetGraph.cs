@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GfuGraphAsset.cs
-//
-//        Created by 半世癫(Roc) at 2022-04-14 00:42:08
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

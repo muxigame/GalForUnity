@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GalCore.cs at 2022-09-21 23:39:58
-//
-//======================================================================
+
 
 using System.Collections.Generic;
 using UnityEngine;

@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  BlockContentUxml.cs Created at 2022-09-28 21:04:15
-//
-//======================================================================
+
 
 using System;
 using UnityEngine.UIElements;

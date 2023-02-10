@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GalAudioConfig.cs Created at 2022-09-27 23:33:34
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

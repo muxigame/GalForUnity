@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  PlotNode.cs Created at 2022-09-26 22:16:45
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

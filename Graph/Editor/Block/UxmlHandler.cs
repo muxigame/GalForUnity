@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  UxmlHandler.cs 2022-10-10 22:48:44
-//
-//======================================================================
+
 
 using UnityEditor;
 using UnityEngine;

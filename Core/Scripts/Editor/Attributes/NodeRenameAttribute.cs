@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2020 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  NodeRenameAttribute.cs
-//
-//        Created by 半世癫(Roc) at 2021-01-08 21:23:10
-//
-//======================================================================
+
 
 using System;
 using GalForUnity.Graph.Editor.Builder;

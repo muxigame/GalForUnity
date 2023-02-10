@@ -1,13 +1,4 @@
-﻿//======================================================================
-//
-//       CopyRight 2019-2020 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  SpeakTransition.cs
-//
-//        Created by 半世癫(Roc) at 2021-02-04 21:41:56
-//
-//======================================================================
+
 
 using System;
 using System.Collections;

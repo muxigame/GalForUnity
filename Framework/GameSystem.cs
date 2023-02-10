@@ -1,13 +1,4 @@
-﻿// //======================================================================
-// //
-// //       CopyRight 2019-2020 © MUXI Game Studio 
-// //       . All Rights Reserved 
-// //
-// //        Filename :  GameSystem.cs 
-// //
-// //        Created by 半世癫(Roc)
-// //
-// //======================================================================
+
 //
 // using System;
 // using GalForUnity.Attributes;

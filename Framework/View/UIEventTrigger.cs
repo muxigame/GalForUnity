@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2021 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  UIEvent.cs
-//
-//        Created by 半世癫(Roc) at 2021-01-07 17:41:14
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

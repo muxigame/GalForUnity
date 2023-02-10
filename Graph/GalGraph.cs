@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  GalForUnityGraph.cs
-//
-//        Created by 半世癫(Roc) at 2022-04-16 00:18:12
-//
-//======================================================================
+
 
 using System;
 using System.Collections.Generic;

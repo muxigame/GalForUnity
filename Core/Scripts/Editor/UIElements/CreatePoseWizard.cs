@@ -1,13 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2023 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  CreatePoseWizard.cs
-//
-//        Created by 半世癫(Roc) at 2023-01-18 00:53:17
-//
-//======================================================================
+
 
 using System;
 using GalForUnity.Graph.Editor;

@@ -1,11 +1,4 @@
-//======================================================================
-//
-//       CopyRight 2019-2022 © MUXI Game Studio 
-//       . All Rights Reserved 
-//
-//        FileName :  BlockPortUxml.cs  at 2022-10-11 23:35:04
-//
-//======================================================================
+
 
 using System;
 using UnityEngine.UIElements;
