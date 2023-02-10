@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -23,7 +24,9 @@ namespace GalForUnity.Core.Editor.UIElements{
                     _galSetting = (GalSetting) GlobalObjectId.GlobalObjectIdentifierToObjectSlow(id);
                 } else if (GalPrefs.instance.globalID == null){
                     var instance = ScriptableObject.CreateInstance<GalSetting>();
-                    AssetDatabase.CreateAsset(instance, "Assets/GalSetting.asset");
+                    var resourcesPath = Path.Combine(Application.dataPath, "Resources/");
+                    if (!Directory.Exists(resourcesPath)) Directory.CreateDirectory(resourcesPath);
+                    AssetDatabase.CreateAsset(instance, "Assets/Resources/GalSetting.asset");
                     _galSetting = instance;
                     GalPrefs.instance.globalID = GlobalObjectId.GetGlobalObjectIdSlow(instance).ToString();
                     GalPrefs.instance.Save();
