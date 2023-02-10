@@ -87,7 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 641721599945154128}
   m_Layer: 5
-  m_Name: RoleContent
+  m_Name: InteractionLayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ GameObject:
   m_Component:
   - component: {fileID: 641721600649263625}
   m_Layer: 5
-  m_Name: Console
+  m_Name: UILayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 641721600933326909}
   - component: {fileID: 641721600933326906}
   - component: {fileID: 641721600933326849}
-  - component: {fileID: 2263992869573096959}
+  - component: {fileID: 4170797381828596052}
   m_Layer: 5
   m_Name: GalCoreUGUI
   m_TagString: Untagged
@@ -352,7 +352,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2263992869573096959
+--- !u!114 &4170797381828596052
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -361,7 +361,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 641721600933326907}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d6a7ab9e9a40b5408b2e386e1774b49, type: 3}
+  m_Script: {fileID: 11500000, guid: bfaae99bd12240f4a8cf1c241d3946f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mainVideoPlayer: {fileID: 2677270343092651329}
@@ -370,7 +370,9 @@ MonoBehaviour:
   sayText: {fileID: 641721601133528424}
   galCanvas: {fileID: 641721600933326911}
   image: {fileID: 2454174171658138009}
-  roleContent: {fileID: 641721599945154128}
+  interactionLayer: {fileID: 641721599945154128}
+  backgroundLayer: {fileID: 641721601214532450}
+  uiLayer: {fileID: 641721600649263625}
 --- !u!1 &641721600953945936
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,7 +540,7 @@ GameObject:
   m_Component:
   - component: {fileID: 641721601214532450}
   m_Layer: 5
-  m_Name: BackgroundContent
+  m_Name: BackgroundLayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

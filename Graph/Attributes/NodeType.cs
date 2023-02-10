@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using GalForUnity.Graph.AssetGraph.GFUNode.Base;
+using GalForUnity.Graph.Editor.Nodes;
 using UnityEngine;
 
 namespace GalForUnity.Graph.Attributes{

@@ -7,9 +7,7 @@
 //
 //======================================================================
 
-using System;
 using System.Collections.Generic;
-using GalForUnity.Model;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -22,7 +20,9 @@ namespace GalForUnity.Core{
         public Text sayText;
         public Canvas galCanvas;
         public Image image;
-        public RectTransform roleContent;
+        public RectTransform interactionLayer;
+        public RectTransform backgroundLayer;
+        public RectTransform uiLayer;
         public static GalCoreUGUI Instance => GalInstanceManager<GalCoreUGUI>.GetInstance();
 
         private void Awake(){
@@ -30,6 +30,7 @@ namespace GalForUnity.Core{
         }
 
         public override IRoleIO GetRole(string roleName){
+            if (!roleModels.ContainsKey(roleName)) return RoleUGUI.Create(RoleDB.Instance[roleName]);
             return roleModels[roleName];
         }
 

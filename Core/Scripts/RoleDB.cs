@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 #if UNITY_EDITOR
+using System.IO;
 using UnityEditor;
 #endif
 using UnityEngine;
@@ -23,6 +24,8 @@ namespace GalForUnity.Core
                 if (!_instance)
                 {
                     _instance = CreateInstance<RoleDB>();
+                    var resourcesPath = Path.Combine(Application.dataPath, "Resources/");
+                    if (!Directory.Exists(resourcesPath)) Directory.CreateDirectory(resourcesPath);
                     AssetDatabase.CreateAsset(_instance, "Assets/Resources/RoleDB.asset");
                     AssetDatabase.Refresh();
                 }
@@ -43,7 +46,7 @@ namespace GalForUnity.Core
                 DB.Clear();
                 foreach (var roleAssets in resources)
                 {
-                    DB[roleAssets.name] = roleAssets;
+                    DB[roleAssets.roleName] = roleAssets;
                 }
             }
         }
@@ -69,7 +72,7 @@ namespace GalForUnity.Core
 
         public static void Add(RoleAssets roleAssets)
         {
-            Instance.DB[roleAssets.name] = roleAssets;
+            Instance.DB[roleAssets.roleName] = roleAssets;
             Instance.resources.Add(roleAssets);
         }
         public static List<string> Keys()
@@ -82,11 +85,11 @@ namespace GalForUnity.Core
         }
         public static bool Contains(RoleAssets roleAssets)
         {
-            return Instance.DB.ContainsKey(roleAssets.name);
+            return Instance.DB.ContainsKey(roleAssets.roleName);
         }
         public void Remove(RoleAssets roleAssets)
         {
-            Instance.DB.Remove(roleAssets.name);
+            Instance.DB.Remove(roleAssets.roleName);
             Instance.resources.Remove(roleAssets);
         }
 

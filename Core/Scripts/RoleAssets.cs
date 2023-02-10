@@ -8,10 +8,13 @@ namespace GalForUnity.Core
     {
         private void OnEnable()
         {
-            if (!RoleDB.Contains(this)) RoleDB.Add(this);
+            if (!RoleDB.Contains(this))
+#if UNITY_EDITOR
+                if(UnityEditor.AssetDatabase.Contains(this))
+#endif
+                    RoleDB.Add(this);
         }
-
-        public new string name = "Alice";
+        public string roleName = "Alice";
         public Gender gender = Gender.Girl;
         public string age = "16";
         public string height = "165";

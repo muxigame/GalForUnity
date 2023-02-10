@@ -7,7 +7,6 @@
 //
 //======================================================================
 
-using GalForUnity.Model;
 using UnityEngine;
 using UnityEngine.Video;
 

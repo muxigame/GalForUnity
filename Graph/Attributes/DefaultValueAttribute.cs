@@ -11,7 +11,7 @@
 
 using System;
 
-namespace GalForUnity.Graph.AssetGraph.Attributes{
+namespace GalForUnity.Graph.Attributes{
     /// <summary>
     /// 指示一个默认值
     /// </summary>

@@ -10,10 +10,10 @@
 //======================================================================
 
 using System;
-using GalForUnity.System;
+using GalForUnity.Framework;
 using UnityEngine;
 
-namespace GalForUnity.Graph.AssetGraph.Attributes{
+namespace GalForUnity.Graph.Attributes{
     /// <summary>
     /// 为Node字段提供命名功能和类型支持，记录着一个名称和类型，改类型会在后期由用户自行使用，如给ObjectField提供一个类型，如果不指定类型，默认类型为MonoBehaviour
     /// </summary>
