@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +5,11 @@ using GalForUnity.Core.External;
 using GalForUnity.Graph.Editor.Builder;
 using GalForUnity.Graph.Editor.Nodes;
 using GalForUnity.Graph.Nodes;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-
-#if UNITY_EDITOR
-
-#endif
 
 namespace GalForUnity.Graph{
     public interface IGalGraph{
@@ -44,7 +40,7 @@ namespace GalForUnity.Graph{
         }
 
         internal static void Save(this AssetGraph assetGraph, GalGraphView graphView){
-            var save = assetGraph.GraphNode.Save(graphView);
+            var save = assetGraph.GraphNode.Save(graphView).ToList();
             AssetDatabase.SetMainObject(assetGraph, AssetDatabase.GetAssetPath(assetGraph));
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -64,10 +60,12 @@ namespace GalForUnity.Graph{
                     galNodeAsset = new GalNodeAsset();
                     assetGraph.nodes.Add(galNodeAsset);
                 }
+
                 galNodeAsset.Save(graphViewNode.Value, portMap);
                 yield return galNodeAsset.runtimeNode = graphViewNode.Value.RuntimeNode;
                 galNodeAsset.instanceID = graphViewNode.Key;
             }
+
             graphView.edges.ForEach(x => {
                 if (portMap.ContainsKey(x.input) && portMap.ContainsKey(x.output)) new GfuConnectionAsset().Save(portMap[x.input], portMap[x.output]);
             });
@@ -81,12 +79,10 @@ namespace GalForUnity.Graph{
             galPortAsset.portName = galPort.name;
             if (galPort.direction == UnityEditor.Experimental.GraphView.Direction.Input)
                 galPortAsset.Direction = Direction.Input;
-            else if (galPort.direction == UnityEditor.Experimental.GraphView.Direction.Output) 
-                galPortAsset.Direction = Direction.Output;
+            else if (galPort.direction == UnityEditor.Experimental.GraphView.Direction.Output) galPortAsset.Direction = Direction.Output;
             galPortAsset.node = galNodeAsset;
             galPortAsset.portType = galPort.portType;
-            switch (galPort.capacity)
-            {
+            switch (galPort.capacity){
                 case Port.Capacity.Single:
                     galPortAsset.Capacity = Capacity.Single;
                     break;
@@ -96,8 +92,8 @@ namespace GalForUnity.Graph{
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            switch (galPort.orientation)
-            {
+
+            switch (galPort.orientation){
                 case UnityEditor.Experimental.GraphView.Orientation.Horizontal:
                     galPortAsset.Orientation = Orientation.Horizontal;
                     break;

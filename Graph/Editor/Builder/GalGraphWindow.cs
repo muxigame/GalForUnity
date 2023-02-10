@@ -125,7 +125,12 @@ namespace GalForUnity.Graph.Editor.Builder{
                 Undo.RecordObject(sceneGraph,"");
                 sceneGraph.Save(GraphView);
             }
-            if (galGraph is AssetGraph assetGraph) assetGraph.Save(GraphView);
+
+            if (galGraph is AssetGraph assetGraph){
+                Undo.RecordObject(assetGraph,"");
+                assetGraph.Save(GraphView);
+            }
+               
         }
     }
 
