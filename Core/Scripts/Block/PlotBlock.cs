@@ -24,19 +24,19 @@ namespace GalForUnity.Core.Block
 
         public async Task Process(GalCore galCore)
         {
-            while (!_runtimeNode.GalGraph.GraphProvider.Next.Invoke())
-            {
-                await Task.Yield();
-            }
-
+           
             galCore.SetName(name);
             galCore.SetSay(word);
+            
             foreach (var configAddition in configAdditions)
             {
                 configAddition.Process(galCore.GetRole(name), galCore);
             }
 
-            await Task.Yield();
+            do{
+                if(!Application.isPlaying) return;
+                await Task.Yield();
+            } while (!_runtimeNode.GalGraph.GraphProvider.Next.Invoke());
         }
     }
 

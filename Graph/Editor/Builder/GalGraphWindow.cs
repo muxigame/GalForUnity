@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using GalForUnity.Core.Editor.Attributes;
 using GalForUnity.Framework;
 using GalForUnity.Graph.Attributes;
@@ -85,9 +86,12 @@ namespace GalForUnity.Graph.Editor.Builder{
                         SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), menuWindowProvider);
                         menuWindowProvider.OnSelectEntryHandler = new SearchProvider(GraphView, this, context).OnMenuSelectEntry;
                     };
-                    rootVisualElement.Add(new Button(() =>
+                    rootVisualElement.Add(new Button(async () =>
                     {
                         EditorApplication.isPlaying = true;
+                        while (!Application.isPlaying){
+                            await Task.Yield();
+                        }
                         new GalGraph(galGraph).Play();
                     }) {
                         text = GfuLanguage.GfuLanguageInstance.EXECUTE.Value + "(experimental)",

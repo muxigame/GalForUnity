@@ -15,6 +15,7 @@ namespace GalForUnity.Graph.Nodes{
         private int _index = 0;
 
         public override async Task<GalNodeAsset> OnNodeEnter(GalNodeAsset galNodeAsset){
+            if(!Application.isPlaying) return null;
             if (_index >= config.Count){
                 _index = 0;
                 return galNodeAsset.outputPort[0].connections[0].input.node;
