@@ -6,6 +6,12 @@ var core = {
     },
     log: function log(message, context) {
         CSCore.Log(message, context)
+    },
+    setBackground: function setBackground(sprite) {
+        CSCore.SetBackground(sprite)
+    },
+    loadResource: function LoadResource(path) {
+        return  CSCore.LoadResource(path)
     }
 }
 

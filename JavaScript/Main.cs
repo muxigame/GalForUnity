@@ -1,22 +1,16 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Esprima;
+using GalForUnity.Core;
 using Jint;
-// using Jint.CommonJS;
 using Jint.Native;
-using Jint.Native.Error;
 using Jint.Runtime;
-using Jint.Runtime.CallStack;
-using Jint.Runtime.Debugger;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+// using Jint.CommonJS;
 
 public class Main : MonoBehaviour
 {
@@ -24,85 +18,132 @@ public class Main : MonoBehaviour
     public TextAsset moduleCode;
 
     public Text console;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-    
         // try
         // {
+        var dataPath = Application.dataPath;
+        SynchronizationContext synchronizationContext=SynchronizationContext.Current;
+        new Thread(() =>
+        {
             var engine = new Engine(cfg =>
-                {
-                    cfg.DebugMode();
-                    // cfg.AllowDebuggerStatement();
-                    cfg.EnableModules(@"C:\Users\Roc\GalForUnityCreator\Assets\GalForUnity\JavaScript\Resources\");
-                    cfg.CatchClrExceptions();
-                    cfg.AllowClr().AllowClr(typeof(Debug).Assembly);
-                }).SetValue("log", new Action<object>(x => console.text = x.ToString()));
-            // engine.
-            // engine.Execute(moduleCode.text);
-            //
-            // engine.Step += (object sender, DebugInformation e) =>
-            // {
-            //     JintCallStack callStack = engine.GetType().GetField("CallStack", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(engine)  as JintCallStack;
-            //     Debug.Log("callStack count"+callStack.Count());
-            //     var javaScriptException = new JavaScriptException(ErrorConstructor.CreateErrorConstructor(engine,"test")).SetCallstack(engine);
-            //     Debug.Log(javaScriptException.CallStack);
-            //     Debug.Log(javaScriptException.LineNumber);
-            //     return StepMode.Into;
-            // };
-            var core = new CSCore()
+            {
+                cfg.DebugMode();
+                // cfg.AllowDebuggerStatement();
+                cfg.EnableModules(@"C:\Users\VRcollab\WorkSpace\Android Test\Assets\GalForUnity\JavaScript\Resources\");
+                // cfg.CatchClrExceptions();
+                cfg.AllowClr().AllowClr(typeof(Debug).Assembly);
+            }).SetValue("log", new Action<object>(x => console.text = x.ToString()));
+            var core = new CSCore
                 {
                     TextMeshProUGUI = console,
-                    Engine = engine
+                    Engine = engine,
+                    SynchronizationContext = synchronizationContext,
+                    dataPath = dataPath
                 }
-            ;
+                ;
             engine.AddModule("CSCore", builder => builder
                 .ExportType<CSCore>()
             );
-            // engine.Execute()
-            engine.ImportModule( @".\JavaScript\main.js");
-            //     .RegisterInternalModule("CSCore", typeof(Core))
-            //     .RegisterInternalModule("console", typeof(Debug))
-            //     .RunMain("JavaScript/main.js");
-            // engine.Evaluate("function hello() {};var text=1;hello();");
-        // }
-        // catch (Exception e)
-        // {
-        //     console.text=e.ToString();
-        //     throw;
-        // }
+            engine.AddModule("UnityEngine", builder => builder
+                .ExportType<Resources>()
+                .ExportType<GameObject>()
+                .ExportType<Transform>()
+                .ExportType<Object>()
+                .ExportType<Vector4>()
+                .ExportType<Vector3>()
+                .ExportType<Vector2>()
+            );
+            engine.ImportModule(@".\JavaScript\main.js");
+        }).Start();
+       
     }
+
     public class CSCore
     {
-        public Text TextMeshProUGUI;
-        public Engine Engine;
-
-        public CSCore() => Instance = this;
         public static CSCore Instance;
-
-        public static void ShowName(string name) => Instance.TextMeshProUGUI.text = name;
-        public static void Log(string message, Object context)
+        public Engine Engine;
+        public Text TextMeshProUGUI;
+        public string dataPath;
+        public SynchronizationContext SynchronizationContext;
+        public CSCore()
         {
-            var javaScriptException = new JavaScriptException(JsValue.Undefined).SetJavaScriptCallstack(Instance.Engine, (Location)Instance.Engine.DebugHandler.CurrentLocation);
-            var javaScriptStackTrace = javaScriptException.JavaScriptStackTrace;
+            Instance = this;
+        }
+        public static object LoadResource(string path)
+        {
+            return RunInMainThread(() => Resources.Load(path));
+        }
 
-            if (string.IsNullOrEmpty(javaScriptStackTrace))
-            {
-                Debug.Log(message,context);
-                return;
-            }
-            string patternFile = @"(?:\s*at\s.*\s)(?<path>([a-zA-Z]:\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+)";
-            string patternLine = @"(?<path>(Assets\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+):(?<line>\d*):(?<col>\d*)";
+        public static void SetBackground(Sprite sprite)
+        {
+            RunInMainThread(() => GalCore.ActiveCore.SetBackground(sprite));
+        }
 
-            foreach (Match match in Regex.Matches(javaScriptStackTrace, patternFile))
+        public static void SetBackground(Texture2D texture)
+        {
+            RunInMainThread(() => GalCore.ActiveCore.SetBackground(Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f))));
+       
+        }
+        
+        public static void ShowName(object name)
+        {
+            RunInMainThread(() => Instance.TextMeshProUGUI.text = name.ToString());
+        }
+
+        public static void Log(object message, Object context)
+        {
+            RunInMainThread(() =>
             {
-                var path = match.Result("${path}${name}");
-                var locationSource = Path.Combine("Assets",Path.GetRelativePath(Application.dataPath, path));
-                javaScriptStackTrace = javaScriptStackTrace.Replace(path, locationSource);
-            }
-            string replacement = "(at <a href=\"${path}${name}\" line=\"${line}\">${path}${name}:${line}:${col}</a>)";
-            Debug.Log(string.Concat(message,"\n",Regex.Replace(javaScriptStackTrace, patternLine, replacement),context));
+                var javaScriptException = new JavaScriptException(JsValue.Undefined).SetJavaScriptCallstack(Instance.Engine, (Location)Instance.Engine.DebugHandler.CurrentLocation);
+                var javaScriptStackTrace = javaScriptException.JavaScriptStackTrace;
+
+                if (string.IsNullOrEmpty(javaScriptStackTrace))
+                {
+                    Debug.Log(message, context);
+                    return;
+                }
+
+                var patternFile = @"(?:\s*at\s.*\s)(?<path>([a-zA-Z]:\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+)";
+                var patternLine = @"(?<path>(Assets\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+):(?<line>\d*):(?<col>\d*)";
+
+                foreach (Match match in Regex.Matches(javaScriptStackTrace, patternFile))
+                {
+                    var path = match.Result("${path}${name}");
+                    var locationSource = Path.Combine("Assets", Path.GetRelativePath(Instance.dataPath, path));
+                    javaScriptStackTrace = javaScriptStackTrace.Replace(path, locationSource);
+                }
+
+                var replacement = "(at <a href=\"${path}${name}\" line=\"${line}\">${path}${name}:${line}:${col}</a>)";
+                Debug.Log(string.Concat(message, "\n", Regex.Replace(javaScriptStackTrace, patternLine, replacement), context));
+            });
+        }
+
+        private static void RunInMainThread(Action callback)
+        { 
+            var eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+            Instance.SynchronizationContext.Send((x)=>
+            {
+                EventWaitHandle mainThreadEventWaitHandle = (EventWaitHandle)x;
+                callback.Invoke();
+                mainThreadEventWaitHandle.Set();
+            },eventWaitHandle);
+            eventWaitHandle.WaitOne();
+        }
+        private static T RunInMainThread<T>(Func<T> callback)
+        { 
+            var eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+            T value = default;
+            Instance.SynchronizationContext.Send((x)=>
+            {
+                EventWaitHandle mainThreadEventWaitHandle = (EventWaitHandle)x;
+                value = callback.Invoke();
+                mainThreadEventWaitHandle.Set();
+            },eventWaitHandle);
+            eventWaitHandle.WaitOne();
+            return value;
         }
     }
-    
 }
