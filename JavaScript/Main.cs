@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Esprima;
 using GalForUnity.Core;
 using Jint;
@@ -10,6 +11,7 @@ using Jint.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+
 // using Jint.CommonJS;
 
 public class Main : MonoBehaviour
@@ -25,17 +27,21 @@ public class Main : MonoBehaviour
         // try
         // {
         var dataPath = Application.dataPath;
-        SynchronizationContext synchronizationContext=SynchronizationContext.Current;
+        var synchronizationContext = SynchronizationContext.Current;
         new Thread(() =>
         {
             var engine = new Engine(cfg =>
             {
                 cfg.DebugMode();
-                // cfg.AllowDebuggerStatement();
                 cfg.EnableModules(@"C:\Users\VRcollab\WorkSpace\Android Test\Assets\GalForUnity\JavaScript\Resources\");
-                // cfg.CatchClrExceptions();
                 cfg.AllowClr().AllowClr(typeof(Debug).Assembly);
-            }).SetValue("log", new Action<object>(x => console.text = x.ToString()));
+            }).SetValue("log", new Action<object>(x => Debug.Log(x)));
+            engine.SetValue("setTimeout", new Action<JsValue, double>(async (x, y) =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(y));
+                x.Call();
+            }));
+
             var core = new CSCore
                 {
                     TextMeshProUGUI = console,
@@ -56,25 +62,39 @@ public class Main : MonoBehaviour
                 .ExportType<Vector3>()
                 .ExportType<Vector2>()
             );
-            engine.ImportModule(@".\JavaScript\main.js");
+            try
+            {
+                engine.ImportModule(@".\JavaScript\main.js");
+            }
+            catch (UnityException e)
+            {
+                Debug.LogError(e);
+            }
+          
         }).Start();
-       
     }
 
     public class CSCore
     {
         public static CSCore Instance;
-        public Engine Engine;
-        public Text TextMeshProUGUI;
         public string dataPath;
+        public Engine Engine;
         public SynchronizationContext SynchronizationContext;
+        public Text TextMeshProUGUI;
+
         public CSCore()
         {
             Instance = this;
         }
+
+        public static object Mono(JsValue jsValue)
+        {
+            return RunInMainThread(jsValue.Call);
+        }
+
         public static object LoadResource(string path)
         {
-            return RunInMainThread(() => Resources.Load(path));
+            return Resources.Load(path);
         }
 
         public static void SetBackground(Sprite sprite)
@@ -85,9 +105,8 @@ public class Main : MonoBehaviour
         public static void SetBackground(Texture2D texture)
         {
             RunInMainThread(() => GalCore.ActiveCore.SetBackground(Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f))));
-       
         }
-        
+
         public static void ShowName(object name)
         {
             RunInMainThread(() => Instance.TextMeshProUGUI.text = name.ToString());
@@ -95,53 +114,57 @@ public class Main : MonoBehaviour
 
         public static void Log(object message, Object context)
         {
-            RunInMainThread(() =>
-            {
-                var javaScriptException = new JavaScriptException(JsValue.Undefined).SetJavaScriptCallstack(Instance.Engine, (Location)Instance.Engine.DebugHandler.CurrentLocation);
-                var javaScriptStackTrace = javaScriptException.JavaScriptStackTrace;
-
-                if (string.IsNullOrEmpty(javaScriptStackTrace))
+            if (Instance.Engine.DebugHandler.CurrentLocation == null)
+                RunInMainThread(() => Debug.Log(message, context));
+            else
+                RunInMainThread(() =>
                 {
-                    Debug.Log(message, context);
-                    return;
-                }
+                    var javaScriptException = new JavaScriptException(JsValue.Undefined).SetJavaScriptCallstack(Instance.Engine, (Location)Instance.Engine.DebugHandler.CurrentLocation);
+                    var javaScriptStackTrace = javaScriptException.JavaScriptStackTrace;
 
-                var patternFile = @"(?:\s*at\s.*\s)(?<path>([a-zA-Z]:\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+)";
-                var patternLine = @"(?<path>(Assets\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+):(?<line>\d*):(?<col>\d*)";
+                    if (string.IsNullOrEmpty(javaScriptStackTrace))
+                    {
+                        Debug.Log(message, context);
+                        return;
+                    }
 
-                foreach (Match match in Regex.Matches(javaScriptStackTrace, patternFile))
-                {
-                    var path = match.Result("${path}${name}");
-                    var locationSource = Path.Combine("Assets", Path.GetRelativePath(Instance.dataPath, path));
-                    javaScriptStackTrace = javaScriptStackTrace.Replace(path, locationSource);
-                }
+                    var patternFile = @"(?:\s*at\s.*\s)(?<path>([a-zA-Z]:\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+)";
+                    var patternLine = @"(?<path>(Assets\\)([\s\.\-\w]+\\)*)(?<name>[\w]+.[\w]+):(?<line>\d*):(?<col>\d*)";
 
-                var replacement = "(at <a href=\"${path}${name}\" line=\"${line}\">${path}${name}:${line}:${col}</a>)";
-                Debug.Log(string.Concat(message, "\n", Regex.Replace(javaScriptStackTrace, patternLine, replacement), context));
-            });
+                    foreach (Match match in Regex.Matches(javaScriptStackTrace, patternFile))
+                    {
+                        var path = match.Result("${path}${name}");
+                        var locationSource = Path.Combine("Assets", Path.GetRelativePath(Instance.dataPath, path));
+                        javaScriptStackTrace = javaScriptStackTrace.Replace(path, locationSource);
+                    }
+
+                    var replacement = "(at <a href=\"${path}${name}\" line=\"${line}\" col=\"${col}\">${path}${name}:${line}:${col}</a>)";
+                    Debug.Log(string.Concat(message, "\n", Regex.Replace(javaScriptStackTrace, patternLine, replacement), context));
+                });
         }
 
         private static void RunInMainThread(Action callback)
-        { 
+        {
             var eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
-            Instance.SynchronizationContext.Send((x)=>
+            Instance.SynchronizationContext.Send(x =>
             {
-                EventWaitHandle mainThreadEventWaitHandle = (EventWaitHandle)x;
+                var mainThreadEventWaitHandle = (EventWaitHandle)x;
                 callback.Invoke();
                 mainThreadEventWaitHandle.Set();
-            },eventWaitHandle);
+            }, eventWaitHandle);
             eventWaitHandle.WaitOne();
         }
+
         private static T RunInMainThread<T>(Func<T> callback)
-        { 
+        {
             var eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
             T value = default;
-            Instance.SynchronizationContext.Send((x)=>
+            Instance.SynchronizationContext.Send(x =>
             {
-                EventWaitHandle mainThreadEventWaitHandle = (EventWaitHandle)x;
+                var mainThreadEventWaitHandle = (EventWaitHandle)x;
                 value = callback.Invoke();
                 mainThreadEventWaitHandle.Set();
-            },eventWaitHandle);
+            }, eventWaitHandle);
             eventWaitHandle.WaitOne();
             return value;
         }

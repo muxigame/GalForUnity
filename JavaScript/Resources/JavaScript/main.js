@@ -5,23 +5,18 @@ import { GameObject, Resources } from "UnityEngine"
 function hello() {
     // const error = Error()
     // throw error
-    const sprite = core.loadResource("Textures/poseDefault")
+    var sprite=null;
+    core.mono(()=>{
+         sprite = core.loadResource("Textures/poseDefault")
+      
+    })
     sprite.name="test"
     core.log(sprite)
-    core.showName("name")
     core.setBackground(sprite)
+    core.showName("name")
     core.log("hello world!")
-    // core.log(error.stack)
-    // core.log(error.name)
-    // core.log(error.message)
 }
 // [
-
-
-
-
-
-
 
 
 hello();

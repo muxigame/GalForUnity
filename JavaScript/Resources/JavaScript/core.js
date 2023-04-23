@@ -4,6 +4,9 @@ var core = {
     showName: function showName(name) {
         CSCore.ShowName(name)
     },
+    mono: function mono(func) {
+        CSCore.Mono(func)
+    },
     log: function log(message, context) {
         CSCore.Log(message, context)
     },
