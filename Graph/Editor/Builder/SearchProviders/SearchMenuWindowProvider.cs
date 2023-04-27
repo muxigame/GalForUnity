@@ -32,17 +32,11 @@ namespace GalForUnity.Graph.Editor.Builder{
             var entries = new List<SearchTreeEntry>();
             try{
                 entries.Add(new SearchTreeGroupEntry(new GUIContent("Create Node"))); //添加了一个一级菜单
-                // entries.Add(new SearchTreeGroupEntry(new GUIContent("Example")){
-                //     level = 1
-                // }); //添加了一个二级菜单
                 var childTypes = GetChildTypes(typeof(RuntimeNode));
-                // Debug.Log(childTypes);
-                //从程序集中找到GfuNode的所有子类，并且遍历显示到目录当中
                 foreach (var childType in childTypes){
                     if (childType == typeof(MainNode)) continue;
                     if (childType == typeof(OperationNode)) continue;
                     var nodeRenameAttribute = childType.GetCustomAttribute<NodeRenameAttribute>();
-                    // var nodeAttributeUsage = childType.GetCustomAttribute<NodeAttributeUsage>();
                     if (nodeRenameAttribute == null){
                         entries.Add(new SearchTreeEntry(new GUIContent(GfuLanguage.Parse(childType.Name).Trim())) {
                             level = 1,userData = childType

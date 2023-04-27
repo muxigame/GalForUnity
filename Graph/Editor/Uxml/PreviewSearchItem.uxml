@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="PreviewSearchItem" style="flex-direction: row; height: 22px; align-items: center;">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="ItemLabel" style="flex-grow: 1; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 10px;" />
+        <ui:Label text="&gt;" display-tooltip-when-elided="true" name="ItemArrow" style="padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-top: -1px; margin-right: 5px;" />
+    </ui:VisualElement>
+</ui:UXML>

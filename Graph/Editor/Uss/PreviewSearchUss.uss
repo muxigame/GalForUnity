@@ -1,0 +1,3 @@
+#PreviewSearchItem:hover {
+    background-color: steelblue;
+}

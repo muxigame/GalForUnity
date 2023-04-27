@@ -18,9 +18,12 @@ MonoBehaviour:
   plotNodeUss: {fileID: 7433441132597879392, guid: 7a3bbcddcf5d7a645ad22d201f71d2ab, type: 3}
   plotBlockUss: {fileID: 7433441132597879392, guid: ad4d536de581cfa4e8a0be0fa7250acf, type: 3}
   dragObjectFieldUss: {fileID: 7433441132597879392, guid: ab1a561777f00d846a209848d9d4920d, type: 3}
+  previewSearchWindowUss: {fileID: 7433441132597879392, guid: 71736988b82ed2c46be942197238d421, type: 3}
   draggableBlockUxml: {fileID: 9197481963319205126, guid: a823fff3e49cac440b23e6a9d4f133ed, type: 3}
   plotBlockUxml: {fileID: 9197481963319205126, guid: 5235956f52f6f5944bbf1fc363c36522, type: 3}
   galGraphWindowUxml: {fileID: 9197481963319205126, guid: 79ed1f510f4d4cd40a2f08aea91cb623, type: 3}
   poseBindingPointUxml: {fileID: 9197481963319205126, guid: 520065867320ca24a93286e36068f7ec, type: 3}
   poseBindingItem: {fileID: 9197481963319205126, guid: 0a462ff451b88274a9d28a08c3df67ba, type: 3}
   configAddition: {fileID: 9197481963319205126, guid: 5206e3ade208b1e43a020f7b2aa450c7, type: 3}
+  previewSearchWindow: {fileID: 9197481963319205126, guid: 03fd7201b1f733e4eafdeda1d4e5b10a, type: 3}
+  searchProviderItem: {fileID: 9197481963319205126, guid: 5da177e294ec572438b8d6be6788c37d, type: 3}

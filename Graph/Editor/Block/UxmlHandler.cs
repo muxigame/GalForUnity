@@ -14,11 +14,14 @@ namespace GalForUnity.Graph.Editor.Block{
         public StyleSheet plotNodeUss;
         public StyleSheet plotBlockUss;
         public StyleSheet dragObjectFieldUss;
+        public StyleSheet previewSearchWindowUss;
         public VisualTreeAsset draggableBlockUxml;
         public VisualTreeAsset plotBlockUxml;
         public VisualTreeAsset galGraphWindowUxml;
         public VisualTreeAsset poseBindingPointUxml;
         public VisualTreeAsset poseBindingItem;
         public VisualTreeAsset configAddition;
+        public VisualTreeAsset previewSearchWindow;
+        public VisualTreeAsset searchProviderItem;
     }
 }

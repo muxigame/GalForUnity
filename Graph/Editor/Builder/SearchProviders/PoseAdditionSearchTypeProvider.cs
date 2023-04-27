@@ -25,9 +25,7 @@ namespace GalForUnity.Graph.Editor.Builder
             var entries = new List<SearchTreeEntry>();
             try
             {
-                entries.Add(
-                    new SearchTreeGroupEntry(new GUIContent(GfuLanguage.GfuLanguageInstance.CHANGETYPE
-                        .Value))); //添加了一个一级菜单
+                entries.Add(new SearchTreeGroupEntry(new GUIContent(GfuLanguage.GfuLanguageInstance.CHANGETYPE.Value))); //添加了一个一级菜单
                 //从程序集中找到GfuNode的所有子类，并且遍历显示到目录当中
                 foreach (var pose in roleAssets.pose)
                 {
@@ -45,7 +43,7 @@ namespace GalForUnity.Graph.Editor.Builder
                             foreach (var spritePoseItem in spritePoseBindingPoint.spritePoseItems)
                                 entries.Add(new SearchTreeEntry(new GUIContent(spritePoseItem.name))
                                 {
-                                    level = 3, userData = string.Concat(pose.name,"/",spritePoseBindingPoint.name,"/",spritePoseItem.name) 
+                                    level = 3, userData = string.Concat(pose.name, "/", spritePoseBindingPoint.name, "/", spritePoseItem.name)
                                 });
                         }
                 }

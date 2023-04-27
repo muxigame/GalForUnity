@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="SearchBorder" style="border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-left-color: rgba(255, 255, 255, 0.24); border-right-color: rgba(255, 255, 255, 0.24); border-top-color: rgba(255, 255, 255, 0.24); border-bottom-color: rgba(255, 255, 255, 0.24); flex-grow: 1;">
+        <ui:VisualElement name="SearchFieldContainer" style="height: 30px; justify-content: center;">
+            <uie:ToolbarSearchField focusable="true" name="SearchField" style="width: auto; margin-right: 10px; margin-left: 10px;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="LabelContainer" style="height: 35px; border-top-color: rgba(0, 0, 0, 0.69); border-bottom-color: rgba(0, 0, 0, 0.38); border-top-width: 0.5px; border-bottom-width: 0.2px; justify-content: center; align-items: center; background-color: rgb(59, 59, 59);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="SearchLabel" style="font-size: 20px;" />
+        </ui:VisualElement>
+        <ui:ListView focusable="true" name="Content" style="flex-grow: 1; background-color: rgb(51, 51, 51);" />
+    </ui:VisualElement>
+</ui:UXML>

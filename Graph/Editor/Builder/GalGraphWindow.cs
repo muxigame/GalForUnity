@@ -83,7 +83,7 @@ namespace GalForUnity.Graph.Editor.Builder{
                     var menuWindowProvider = CreateInstance<SearchMenuWindowProvider>();
                     menuWindowProvider.attributeTargets = NodeAttributeTargets.All;
                     GraphView.nodeCreationRequest += context => {
-                        SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), menuWindowProvider);
+                        PreviewSearchWindow.Open(new SearchWindowContext(context.screenMousePosition), menuWindowProvider);
                         menuWindowProvider.OnSelectEntryHandler = new SearchProvider(GraphView, this, context).OnMenuSelectEntry;
                     };
                     rootVisualElement.Add(new Button(async () =>
