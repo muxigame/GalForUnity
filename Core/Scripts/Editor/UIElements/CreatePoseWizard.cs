@@ -26,12 +26,12 @@ namespace GalForUnity.Core.Editor.UIElements
             // Import UXML
             var visualTree =
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-                    "Assets/GalForUnity/Core/Scripts/Editor/CreatePoseWizard.uxml");
+                    "Assets/GalForUnity/Core/Scripts/Editor/UIElements/CreatePoseWizard.uxml");
             VisualElement labelFromUXML = visualTree.Instantiate();
             root.Add(labelFromUXML);
             var styleSheet =
                 AssetDatabase.LoadAssetAtPath<StyleSheet>(
-                    "Assets/GalForUnity/Core/Scripts/Editor/CreatePoseWizard.uss");
+                    "Assets/GalForUnity/Core/Scripts/Editor/UIElements/CreatePoseWizard.uss");
         }
 
         private void InitBind()

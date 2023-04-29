@@ -46,7 +46,7 @@ namespace GalForUnity.Graph.Editor.ConfigAdditions
                     additionPose.faceName = strings[2];
                     return true;
                 };
-                SearchWindow.Open(searchWindowContext, poseAdditionSearchTypeProvider);
+                PreviewSearchWindow.Open(searchWindowContext, poseAdditionSearchTypeProvider);
             });
             
             var fieldContainer = new FieldContainer()

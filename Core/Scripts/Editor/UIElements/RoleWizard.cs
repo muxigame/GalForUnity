@@ -26,7 +26,7 @@ namespace GalForUnity.Core.Editor.UIElements{
         {
             var root = rootVisualElement;
             var visualTree =
-                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/GalForUnity/Core/Scripts/Editor/RoleWizard.uxml");
+                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/GalForUnity/Core/Scripts/Editor/UIElements/RoleWizard.uxml");
             VisualElement labelFromUXML = visualTree.Instantiate();
             root.Add(labelFromUXML);
             Debug.Log(roleAssets);
@@ -60,7 +60,7 @@ namespace GalForUnity.Core.Editor.UIElements{
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
             var styleSheet =
-                AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GalForUnity/Core/Scripts/Editor/RoleWizard.uss");
+                AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GalForUnity/Core/Scripts/Editor/UIElements/RoleWizard.uss");
             root.styleSheets.Add(styleSheet);
 
             InitBind();

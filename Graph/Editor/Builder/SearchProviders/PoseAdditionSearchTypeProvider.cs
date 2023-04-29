@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using GalForUnity.Core;
 using GalForUnity.Framework;
+using GalForUnity.Graph.Editor.Builder.SearchProviders;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace GalForUnity.Graph.Editor.Builder
 {
-    public class PoseAdditionSearchTypeProvider : ScriptableObject, ISearchWindowProvider
+    public class PoseAdditionSearchTypeProvider : ScriptableObject, IPreviewSearchWindowProvider
     {
         public delegate bool SearchMenuWindowOnSelectEntryDelegate(SearchTreeEntry searchTreeEntry,
             SearchWindowContext context);
@@ -60,6 +61,11 @@ namespace GalForUnity.Graph.Editor.Builder
         {
             if (OnSelectEntryHandler == null) return false;
             return OnSelectEntryHandler(searchTreeEntry, context);
+        }
+
+        public void OnMouseEnter(SearchTreeEntry enter)
+        {
+            Debug.Log(enter);
         }
 
         public static PoseAdditionSearchTypeProvider Create(RoleAssets roleAssets)

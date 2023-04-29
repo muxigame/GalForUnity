@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.Graph.Editor.Block;
+using GalForUnity.Graph.Editor.Builder.SearchProviders;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -120,7 +121,7 @@ namespace GalForUnity.Graph.Editor
             }
         }
 
-        public static bool Open<T>(SearchWindowContext context, T provider) where T : ScriptableObject, ISearchWindowProvider
+        public static bool Open<T>(SearchWindowContext context, T provider) where T : ScriptableObject, IPreviewSearchWindowProvider
         {
             var objectsOfTypeAll = Resources.FindObjectsOfTypeAll(typeof(SearchWindow));
             if (objectsOfTypeAll.Length != 0)
