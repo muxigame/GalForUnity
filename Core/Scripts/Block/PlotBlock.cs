@@ -47,6 +47,14 @@ namespace GalForUnity.Core.Block
     }
 
     [Serializable]
+    public struct PoseLocation
+    {
+        public string roleName;
+        public string poseName;
+        public string anchorName;
+        public string faceName;
+    }
+    [Serializable]
     public class AdditionPose : ConfigAddition
     {
         public string poseName;

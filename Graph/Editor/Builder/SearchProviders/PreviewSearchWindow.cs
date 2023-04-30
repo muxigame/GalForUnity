@@ -23,11 +23,11 @@ namespace GalForUnity.Graph.Editor
         private ToolbarSearchField _searchField;
         private SearchWindowContext _searchWindowContext;
 
-        private ISearchWindowProvider _searchWindowProvider;
+        private IPreviewSearchWindowProvider _searchWindowProvider;
         private VisualTreeAsset _templateContainer;
         private TreeWrapper _top;
 
-        private void Init(SearchWindowContext context, ISearchWindowProvider provider)
+        private void Init(SearchWindowContext context, IPreviewSearchWindowProvider provider)
         {
             var vector2 = new Vector2(Math.Max(context.requestedWidth, 300), Math.Max(420, context.requestedHeight));
             var buttonRect = new Rect(context.screenMousePosition.x - vector2.x / 2f, context.screenMousePosition.y - 16f, vector2.x, 1f);
@@ -75,7 +75,6 @@ namespace GalForUnity.Graph.Editor
             }
             while (parents.Count != 0) _currentEntry = parents.Pop();
             
-            
             _templateContainer = UxmlHandler.instance.searchProviderItem;
             _previewSearchWindow = UxmlHandler.instance.previewSearchWindow;
             var previewWindowElement = _previewSearchWindow.Instantiate();
@@ -106,8 +105,8 @@ namespace GalForUnity.Graph.Editor
                 _listView.hierarchy.Add(templateContainer);
                 templateContainer.Q<Label>("ItemLabel").text = treeWrapper.Entry.content.text;
                 templateContainer.Q<Label>("ItemArrow").visible = treeWrapper.Child != null;
-                var visualElement = templateContainer.Q<VisualElement>("PreviewSearchItem");
-                visualElement.AddManipulator(new Clickable(() =>
+                var previewSearchItem = templateContainer.Q<VisualElement>("PreviewSearchItem");
+                previewSearchItem.AddManipulator(new Clickable(() =>
                 {
                     if (treeWrapper.Child == null)
                     {
@@ -118,6 +117,8 @@ namespace GalForUnity.Graph.Editor
                     _currentEntry = treeWrapper;
                     BuildUI();
                 }));
+                previewSearchItem.RegisterCallback<MouseEnterEvent>(evt => _searchWindowProvider.OnMouseEnter(treeWrapper.Entry,position,evt));
+                previewSearchItem.RegisterCallback<MouseLeaveEvent>(evt => _searchWindowProvider.OnMouseLeave(treeWrapper.Entry,position,evt));
             }
         }
 

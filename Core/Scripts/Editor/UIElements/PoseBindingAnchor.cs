@@ -25,7 +25,7 @@ namespace GalForUnity.Core.Editor.UIElements
         public void ShowAnchor()
         {
             style.unityBackgroundImageTintColor = new StyleColor(Color.white);
-            style.backgroundColor = new StyleColor(new Color(0.34f,0.34f,0.34f,1));
+            style.backgroundColor = Color.clear;
         }
         public void HidePreview()
         {
@@ -56,11 +56,13 @@ namespace GalForUnity.Core.Editor.UIElements
         {
             _value = point;
             style.backgroundImage = new StyleBackground(ResourceHandler.instance.poseBindingAnchor);
+
             style.width = 20;
             style.height = 20;
             style.marginTop = style.marginLeft = style.marginRight = style.marginBottom = 0;
             style.overflow = Overflow.Visible;
             style.paddingTop = style.paddingLeft = style.paddingRight = style.paddingBottom = 0;
+            style.borderBottomWidth = style.borderRightWidth = style.borderLeftWidth = style.borderTopWidth = 0;
             style.translate = new StyleTranslate(new Translate(new Length(-11), new Length(11), 0));
             style.position = Position.Absolute;
             RegisterCallback<MouseMoveEvent>(Callback, TrickleDown.TrickleDown);

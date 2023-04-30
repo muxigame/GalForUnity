@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using GalForUnity.Core;
+using GalForUnity.Core.Block;
 using GalForUnity.Framework;
 using GalForUnity.Graph.Editor.Builder.SearchProviders;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace GalForUnity.Graph.Editor.Builder
 {
@@ -16,6 +18,8 @@ namespace GalForUnity.Graph.Editor.Builder
         public SearchMenuWindowOnSelectEntryDelegate OnSelectEntryHandler;
 
         private RoleAssets roleAssets;
+        private Texture2D _combinedTexture;
+        private Sprite _combinedSprite;
 
         private PoseAdditionSearchTypeProvider()
         {
@@ -44,7 +48,19 @@ namespace GalForUnity.Graph.Editor.Builder
                             foreach (var spritePoseItem in spritePoseBindingPoint.spritePoseItems)
                                 entries.Add(new SearchTreeEntry(new GUIContent(spritePoseItem.name))
                                 {
-                                    level = 3, userData = string.Concat(pose.name, "/", spritePoseBindingPoint.name, "/", spritePoseItem.name)
+                                    level = 3, userData = new PreviewData()
+                                    {
+                                        bindingPoint = spritePoseBindingPoint,
+                                        pose = pose,
+                                        spritePoseItem = spritePoseItem,
+                                        poseLocation = new PoseLocation
+                                        {
+                                            roleName = roleAssets.roleName,
+                                            poseName = pose.name,
+                                            anchorName = spritePoseItem.name,
+                                            faceName = spritePoseBindingPoint.name
+                                        }
+                                    }
                                 });
                         }
                 }
@@ -63,9 +79,21 @@ namespace GalForUnity.Graph.Editor.Builder
             return OnSelectEntryHandler(searchTreeEntry, context);
         }
 
-        public void OnMouseEnter(SearchTreeEntry enter)
+        public void OnMouseEnter(SearchTreeEntry enter, Rect windowPosition, MouseEnterEvent mouseEnterEvent)
         {
-            Debug.Log(enter);
+            if (enter.userData == null) return;
+            var previewData = (PreviewData)enter.userData;
+            var poseSprite = ((SpritePose)previewData.pose).sprite;
+
+            if (PreviewWindow.IsOpen()) PreviewWindow.SetPreview(poseSprite);
+            else PreviewWindow.Show(poseSprite, windowPosition.position + new Vector2(windowPosition.width, 0));
+            PreviewWindow.AddBindPointImage(previewData);
+        }
+
+        public void OnMouseLeave(SearchTreeEntry enter, Rect windowPosition, MouseLeaveEvent mouseEnterEvent)
+        {
+            if(_combinedSprite) Destroy(_combinedSprite);
+            if(_combinedTexture) Destroy(_combinedSprite);
         }
 
         public static PoseAdditionSearchTypeProvider Create(RoleAssets roleAssets)

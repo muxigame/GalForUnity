@@ -20,7 +20,7 @@ namespace GalForUnity.Core{
 
         public static RoleDB Instance{
             get{
-                if (!m_Instance) m_Instance = Resources.Load<RoleDB>("RoleDB.asset");
+                if (!m_Instance) m_Instance = Resources.Load<RoleDB>("RoleDB");
                 if (!m_Instance) m_Instance = Resources.FindObjectsOfTypeAll<RoleDB>().FirstOrDefault();
 #if UNITY_EDITOR
                 if (!m_Instance){
