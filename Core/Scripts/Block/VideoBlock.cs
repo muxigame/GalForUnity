@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using UnityEngine.Video;
 
 namespace GalForUnity.Core.Block{

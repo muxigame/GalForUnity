@@ -5,29 +5,29 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GalForUnity.Core.Editor.UIElements
+namespace GalForUnity.Core.Editor
 {
-    public sealed class PoseBindingPoint : Foldout
+    public sealed class AnchorFoldout : Foldout
     {
         public DragObjectField DragObjectField;
-        public List<SpritePoseItem> PoseSpriteItems;
-        public PoseBindingList PoseBindingList;
+        public List<AnchorSprite> PoseSpriteItems;
+        public AnchorListView AnchorListView;
         public Vector2Field AnchorVector2Field;
         public TextField NameTextField;
-        public PoseBindingAnchor PoseBindingAnchor;
+        public AnchorElement AnchorElement;
         public PoseView PoseView;
-        public BindingPoint BindingPoint;
-        public PoseBindingPoint():this(null,null,null)
+        public Anchor Anchor;
+        public AnchorFoldout():this(null,null,null)
         {
             
         }
 
-        public PoseBindingPoint(PoseBindingAnchor poseBindingAnchor, PoseView poseView, BindingPoint bindingPoint)
+        public AnchorFoldout(AnchorElement anchorElement, PoseView poseView, Anchor anchor)
         {
-            BindingPoint = bindingPoint;
+            Anchor = anchor;
             PoseView = poseView;
-            PoseBindingAnchor = poseBindingAnchor;
-            var type = typeof(BindingPoint);
+            AnchorElement = anchorElement;
+            var type = typeof(Anchor);
             var toggle = this.Q<Toggle>();
             toggle.contentContainer[0].style.maxWidth = 20;
             toggle.contentContainer[0].style.alignItems = Align.Center;
@@ -54,34 +54,33 @@ namespace GalForUnity.Core.Editor.UIElements
             toggle.Add(AnchorVector2Field);
             contentContainer.style.alignItems = Align.Center;
             contentContainer.Add(DragObjectField = new DragObjectField(typeof(Sprite)));
-            contentContainer.Add(PoseBindingList =
-                new PoseBindingList(PoseSpriteItems = BindingPoint?.spritePoseItems ?? new List<SpritePoseItem>(),
+            contentContainer.Add(AnchorListView =
+                new AnchorListView(PoseSpriteItems = Anchor?.sprites ?? new List<AnchorSprite>(),
                     this));
             DragObjectField.OnAdded += (unityObjects) =>
             {
                 foreach (var unityObject in unityObjects)
                 {
                     if (PoseSpriteItems.Count == 0 || PoseSpriteItems.All(item => item.sprite != unityObject))
-                        PoseSpriteItems.Add(new SpritePoseItem() { sprite = (Sprite)unityObject });
+                        PoseSpriteItems.Add(new AnchorSprite() { sprite = (Sprite)unityObject });
                 }
 
-                PoseBindingList.RefreshItems();
+                AnchorListView.RefreshItems();
             };
-            NameTextField.CreateBinder(type.GetField("name"), BindingPoint);
-            if (poseBindingAnchor != null)
+            NameTextField.CreateBinder(type.GetField(nameof(Anchor.name)), Anchor);
+            if (anchorElement != null)
             {
-                
-                AnchorVector2Field.CreateBinder(type.GetField("point"), BindingPoint, filter: vector2 =>
+                AnchorVector2Field.CreateBinder(type.GetField(nameof(anchor.pivot)), Anchor, filter: vector2 =>
                 {
                     vector2.x = Mathf.Clamp01(vector2.x);
                     vector2.y = Mathf.Clamp01(vector2.y);
                     return vector2;
                 }, () =>
                 {
-                    AnchorVector2Field.value = poseBindingAnchor.value;
+                    AnchorVector2Field.value = anchorElement.value;
                 }, (x) =>
                 {
-                    poseBindingAnchor.SetValueWithoutNotify(bindingPoint.point);
+                    anchorElement.SetValueWithoutNotify(anchor.pivot);
                 });
                 
             }
@@ -90,11 +89,11 @@ namespace GalForUnity.Core.Editor.UIElements
         protected override Vector2 DoMeasure(float desiredWidth, MeasureMode widthMode, float desiredHeight, MeasureMode heightMode)
         {
             var doMeasure = base.DoMeasure(desiredWidth, widthMode, desiredHeight, heightMode);
-            AnchorVector2Field.value = BindingPoint.point;
+            AnchorVector2Field.value = Anchor.pivot;
             return doMeasure;
         }
 
-        public class PoseBindingPointUxmlFactory : UxmlFactory<PoseBindingPoint, UxmlTraits>
+        public class PoseBindingPointUxmlFactory : UxmlFactory<AnchorFoldout, UxmlTraits>
         {
             public override VisualElement Create(IUxmlAttributes bag, CreationContext cc)
             {

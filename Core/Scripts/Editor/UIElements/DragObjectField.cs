@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace GalForUnity.Core.Editor.UIElements
+namespace GalForUnity.Core.Editor
 {
     public sealed class DragObjectField : VisualElement
     {

@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GalForUnity.Core
 {
-    public class RoleAssets : ScriptableObject
+    public class GalObject : ScriptableObject
     {
         private void OnEnable()
         {
             if (!RoleDB.Contains(this))
 #if UNITY_EDITOR
-                if(UnityEditor.AssetDatabase.Contains(this))
+                if (UnityEditor.AssetDatabase.Contains(this))
 #endif
                     RoleDB.Add(this);
         }
-        public string roleName = "Alice";
+
+        public string objectName = "Alice";
         public Gender gender = Gender.Girl;
         public string age = "16";
         public string height = "165";
@@ -27,24 +29,27 @@ namespace GalForUnity.Core
     {
         public string name;
     }
+
     [Serializable]
-    public class SpritePose:Pose
+    public class SpritePose : Pose
     {
         public Sprite sprite;
-        public List<BindingPoint> bindingPoints=new List<BindingPoint>();
+        public List<Anchor> anchors = new List<Anchor>();
     }
+
     [Serializable]
-    public class SpritePoseItem
+    public class AnchorSprite
     {
         public string name;
         public Vector2 offset;
         public Sprite sprite;
     }
+
     [Serializable]
-    public class BindingPoint
+    public class Anchor
     {
         public string name;
-        public Vector2 point;
-        public List<SpritePoseItem> spritePoseItems=new List<SpritePoseItem>();
+        public Vector2 pivot;
+        public List<AnchorSprite> sprites = new List<AnchorSprite>();
     }
 }

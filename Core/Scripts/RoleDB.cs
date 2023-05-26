@@ -11,12 +11,12 @@ using UnityEditor;
 
 namespace GalForUnity.Core{
     [Serializable]
-    public class RoleDB : ScriptableObject, IEnumerable<RoleAssets>{
+    public class RoleDB : ScriptableObject, IEnumerable<GalObject>{
         private static volatile RoleDB m_Instance;
 
-        [SerializeField] private List<RoleAssets> resources = new List<RoleAssets>();
+        [SerializeField] private List<GalObject> resources = new List<GalObject>();
 
-        private Dictionary<string, RoleAssets> m_DB = new Dictionary<string, RoleAssets>();
+        private Dictionary<string, GalObject> m_DB = new Dictionary<string, GalObject>();
 
         public static RoleDB Instance{
             get{
@@ -37,7 +37,7 @@ namespace GalForUnity.Core{
             }
         }
 
-        public RoleAssets this[string roleName]{
+        public GalObject this[string roleName]{
             get{
                 InitDBifNeed();
                 return m_DB[roleName];
@@ -54,15 +54,15 @@ namespace GalForUnity.Core{
             }
         }
 
-        public IEnumerator<RoleAssets> GetEnumerator(){ return new RoleDBEnumerator(resources); }
+        public IEnumerator<GalObject> GetEnumerator(){ return new RoleDBEnumerator(resources); }
 
         IEnumerator IEnumerable.GetEnumerator(){ return GetEnumerator(); }
 
         private void InitDBifNeed(){
-            if (m_DB == null) m_DB = new Dictionary<string, RoleAssets>();
+            if (m_DB == null) m_DB = new Dictionary<string, GalObject>();
             if (m_DB.Count != resources.Count){
                 m_DB.Clear();
-                foreach (var roleAssets in resources) m_DB[roleAssets.roleName] = roleAssets;
+                foreach (var roleAssets in resources) m_DB[roleAssets.objectName] = roleAssets;
             }
         }
 
@@ -74,39 +74,39 @@ namespace GalForUnity.Core{
 #endif
         }
 
-        public static void Add(RoleAssets roleAssets){
-            Instance.m_DB[roleAssets.roleName] = roleAssets;
-            Instance.resources.Add(roleAssets);
+        public static void Add(GalObject galObject){
+            Instance.m_DB[galObject.objectName] = galObject;
+            Instance.resources.Add(galObject);
             Save();
         }
 
         public static List<string> Keys(){ return Instance.m_DB.Keys.ToList(); }
 
-        public static List<RoleAssets> Values(){ return Instance.m_DB.Values.ToList(); }
+        public static List<GalObject> Values(){ return Instance.m_DB.Values.ToList(); }
 
-        public static bool Contains(RoleAssets roleAssets){ return Instance.m_DB.ContainsKey(roleAssets.roleName); }
+        public static bool Contains(GalObject galObject){ return Instance.m_DB.ContainsKey(galObject.objectName); }
 
-        public void Remove(RoleAssets roleAssets){
-            Instance.m_DB.Remove(roleAssets.roleName);
-            Instance.resources.Remove(roleAssets);
+        public void Remove(GalObject galObject){
+            Instance.m_DB.Remove(galObject.objectName);
+            Instance.resources.Remove(galObject);
             Save();
         }
 
-        public static void ForEach(Action<RoleAssets> items){
+        public static void ForEach(Action<GalObject> items){
             foreach (var roleAssets in Instance) items.Invoke(roleAssets);
         }
 
-        private class RoleDBEnumerator : IEnumerator<RoleAssets>{
-            private readonly List<RoleAssets> m_RoleAssetsList;
+        private class RoleDBEnumerator : IEnumerator<GalObject>{
+            private readonly List<GalObject> m_RoleAssetsList;
             private int m_Index = -1;
 
-            public RoleDBEnumerator(List<RoleAssets> roleAssetsList){ m_RoleAssetsList = roleAssetsList; }
+            public RoleDBEnumerator(List<GalObject> roleAssetsList){ m_RoleAssetsList = roleAssetsList; }
 
             public bool MoveNext(){ return ++m_Index < m_RoleAssetsList.Count; }
 
             public void Reset(){ m_Index = -1; }
 
-            public RoleAssets Current => m_RoleAssetsList[m_Index];
+            public GalObject Current => m_RoleAssetsList[m_Index];
 
             object IEnumerator.Current => Current;
 

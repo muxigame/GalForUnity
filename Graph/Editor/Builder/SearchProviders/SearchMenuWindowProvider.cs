@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Framework;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Nodes;

@@ -13,7 +13,7 @@ namespace GalForUnity.Core.External{
     public class InstanceIDUtil{
         public static long CreateInstanceID(){ return BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0); }
     }
-
+    
     public struct SelectCap<T1, T2> : IComparable<SelectCap<T1, T2>> where T1 : struct, IComparable where T2 : class{
         public T1 Value;
         public T2 Obj;
@@ -27,6 +27,18 @@ namespace GalForUnity.Core.External{
     }
 
     public static partial class Extension{
+        public static Sprite GetDefaultSprite(this GalObject galObject)
+        {
+            if (galObject.pose == null || galObject.pose.Count == 0)
+                return null;
+        
+            if (galObject.pose[0] is SpritePose spritePose)
+            {
+                return spritePose.sprite;
+            }
+
+            return null;
+        }
         public static List<T> AddAll<T>(this List<T> array, List<T> array1){
             if (array == null) array = new List<T>();
 

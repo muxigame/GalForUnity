@@ -6,7 +6,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 #endif
 
-namespace GalForUnity.Core.Editor.Attributes{
+namespace GalForUnity.Core.Editor{
     public class LogicAttribute : PropertyAttribute{
         public string obj;
         public string name;
@@ -61,7 +61,7 @@ namespace GalForUnity.Core.Editor.Attributes{
 
         public static bool CanShow(SerializedProperty property, Attribute attribute){
             // Debug.Log(property);
-            SerializedProperty serializedProperty = property.GetParentProp();
+            SerializedProperty serializedProperty = Extension.GetParentProp(property);
             // Debug.Log(serializedProperty);
             LogicAttribute hideByAttribute = null;
             if (attribute is LogicAttribute){
@@ -187,7 +187,7 @@ namespace GalForUnity.Core.Editor.Attributes{
             return true;
         }
         public static bool CanShow(SerializedProperty property){
-            var attributes = property.GetAttributes<LogicAttribute>();
+            var attributes = Extension.GetAttributes<LogicAttribute>(property);
             foreach (LogicAttribute o in attributes){
                 if (!CanShow(property, o)) return false;
             }

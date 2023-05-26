@@ -17,7 +17,7 @@ namespace GalForUnity.Graph.Editor.Builder
 
         public SearchMenuWindowOnSelectEntryDelegate OnSelectEntryHandler;
 
-        private RoleAssets roleAssets;
+        private GalObject _galObject;
         private Texture2D _combinedTexture;
         private Sprite _combinedSprite;
 
@@ -32,30 +32,30 @@ namespace GalForUnity.Graph.Editor.Builder
             {
                 entries.Add(new SearchTreeGroupEntry(new GUIContent(GfuLanguage.GfuLanguageInstance.CHANGETYPE.Value))); //添加了一个一级菜单
                 //从程序集中找到GfuNode的所有子类，并且遍历显示到目录当中
-                foreach (var pose in roleAssets.pose)
+                foreach (var pose in _galObject.pose)
                 {
                     entries.Add(new SearchTreeGroupEntry(new GUIContent(pose.name))
                     {
                         level = 1
                     });
                     if (pose is SpritePose spritePose)
-                        foreach (var spritePoseBindingPoint in spritePose.bindingPoints)
+                        foreach (var spritePoseBindingPoint in spritePose.anchors)
                         {
                             entries.Add(new SearchTreeGroupEntry(new GUIContent(spritePoseBindingPoint.name))
                             {
                                 level = 2
                             });
-                            foreach (var spritePoseItem in spritePoseBindingPoint.spritePoseItems)
+                            foreach (var spritePoseItem in spritePoseBindingPoint.sprites)
                                 entries.Add(new SearchTreeEntry(new GUIContent(spritePoseItem.name))
                                 {
                                     level = 3, userData = new PreviewData()
                                     {
-                                        bindingPoint = spritePoseBindingPoint,
+                                        Anchor = spritePoseBindingPoint,
                                         pose = pose,
-                                        spritePoseItem = spritePoseItem,
+                                        AnchorSprite = spritePoseItem,
                                         poseLocation = new PoseLocation
                                         {
-                                            roleName = roleAssets.roleName,
+                                            roleName = _galObject.objectName,
                                             poseName = pose.name,
                                             anchorName = spritePoseItem.name,
                                             faceName = spritePoseBindingPoint.name
@@ -84,7 +84,7 @@ namespace GalForUnity.Graph.Editor.Builder
             if (enter.userData == null) return;
             var previewData = (PreviewData)enter.userData;
             var poseSprite = ((SpritePose)previewData.pose).sprite;
-
+            
             if (PreviewWindow.IsOpen()) PreviewWindow.SetPreview(poseSprite);
             else PreviewWindow.Show(poseSprite, windowPosition.position + new Vector2(windowPosition.width, 0));
             PreviewWindow.AddBindPointImage(previewData);
@@ -96,10 +96,10 @@ namespace GalForUnity.Graph.Editor.Builder
             if(_combinedTexture) Destroy(_combinedSprite);
         }
 
-        public static PoseAdditionSearchTypeProvider Create(RoleAssets roleAssets)
+        public static PoseAdditionSearchTypeProvider Create(GalObject galObject)
         {
             var audioConfigSearchTypeProvider = CreateInstance<PoseAdditionSearchTypeProvider>();
-            audioConfigSearchTypeProvider.roleAssets = roleAssets;
+            audioConfigSearchTypeProvider._galObject = galObject;
             return audioConfigSearchTypeProvider;
         }
     }

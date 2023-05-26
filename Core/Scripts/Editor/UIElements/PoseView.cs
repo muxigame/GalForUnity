@@ -6,20 +6,20 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace GalForUnity.Core.Editor.UIElements
+namespace GalForUnity.Core.Editor
 {
     public sealed class PoseView : BindableElement, INotifyValueChanged<Sprite>
     {
         private static readonly float ParentBorderOffset = 2f;
-        private readonly Label _label;
-        private Sprite _value;
+        private readonly Label m_Label;
+        private Sprite m_Value;
         public float ScaleRadio;
 
         public PoseView(bool canEditor)
         {
             if (canEditor)
             {
-                contentContainer.Add(_label = new Label("点击更换姿势")
+                contentContainer.Add(m_Label = new Label("点击更换姿势")
                 {
                     style =
                     {
@@ -32,7 +32,7 @@ namespace GalForUnity.Core.Editor.UIElements
                     var type = Type.GetType("UnityEditor.ObjectSelector,UnityEditor");
                     var objectSelector = type.GetProperty("get", BindingFlags.Public | BindingFlags.Static)
                         .GetValue(null, null);
-                    Object selected = _value;
+                    Object selected = m_Value;
                     Action<Object> update = selectedObject =>
                     {
                         selected = selectedObject;
@@ -83,28 +83,28 @@ namespace GalForUnity.Core.Editor.UIElements
 
         public void SetValueWithoutNotify(Sprite newValue)
         {
-            _value = newValue;
-            if (_value == null)
+            m_Value = newValue;
+            if (m_Value == null)
             {
                 style.backgroundImage = new StyleBackground(ResourceHandler.instance.defaultPose);
                 ScaleRadio = ResourceHandler.instance.defaultPose.texture.width / 300f;
                 style.height = ResourceHandler.instance.defaultPose.texture.height / ScaleRadio;
                 return;
             }
-            style.backgroundImage = new StyleBackground(_value);
-            ScaleRadio = _value.texture.width / 300f;
-            style.height = _value.texture.height / ScaleRadio;
+            style.backgroundImage = new StyleBackground(m_Value);
+            ScaleRadio = m_Value.texture.width / 300f;
+            style.height = m_Value.texture.height / ScaleRadio;
         }
 
         public Sprite value
         {
-            get => _value;
+            get => m_Value;
             set
             {
-                if (EqualityComparer<Sprite>.Default.Equals(_value, value))
+                if (EqualityComparer<Sprite>.Default.Equals(m_Value, value))
                     return;
                 if (panel != null)
-                    using (var pooled = ChangeEvent<Sprite>.GetPooled(_value, value))
+                    using (var pooled = ChangeEvent<Sprite>.GetPooled(m_Value, value))
                     {
                         pooled.target = this;
                         SetValueWithoutNotify(value);
@@ -123,27 +123,27 @@ namespace GalForUnity.Core.Editor.UIElements
                 return;
             }
             value = sprite;
-            if (_label != null) _label.visible = false;
+            if (m_Label != null) m_Label.visible = false;
         }
 
         public void RemovePose()
         {
-            if (_label != null) _label.visible = true;
+            if (m_Label != null) m_Label.visible = true;
             style.backgroundImage = new StyleBackground(ResourceHandler.instance.defaultPose);
             value = null;
             ScaleRadio = ResourceHandler.instance.defaultPose.texture.width / 300f;
             style.height = ResourceHandler.instance.defaultPose.texture.height / ScaleRadio;
         }
 
-        public void ShowAnchor(Sprite sprite, PoseBindingAnchor poseBindingAnchor)
+        public void ShowAnchor(Sprite sprite, AnchorElement anchorElement)
         {
-            poseBindingAnchor.ShowPreview(sprite,
+            anchorElement.ShowPreview(sprite,
                 new Vector2(sprite.texture.width / ScaleRadio, sprite.texture.height / ScaleRadio));
         }
 
-        public void HideAnchor(PoseBindingAnchor poseBindingAnchor)
+        public void HideAnchor(AnchorElement anchorElement)
         {
-            poseBindingAnchor.HidePreview();
+            anchorElement.HidePreview();
         }
 
         public class PoseViewUxmlFactory : UxmlFactory<PoseView, UxmlTraits>

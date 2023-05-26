@@ -7,7 +7,7 @@ namespace GalForUnity.Graph.Editor.ConfigAdditions
 {
     public class ConfigAdditionUxml<T>:VisualElement where T:ConfigAddition
     {
-        public ConfigAdditionUxml(RoleAssets roleAssets, T additionPose,PlotBlock plotBlock)
+        public ConfigAdditionUxml(GalObject galObject, T additionPose,PlotBlock plotBlock)
         {
             var templateContainer = UxmlHandler.instance.configAddition.Instantiate();
             // templateContainer.style.flexGrow = 1;

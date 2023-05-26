@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using GalForUnity.Core.Editor.Attributes;
 using GalForUnity.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace GalForUnity.Core.Editor.IMGUI{
+namespace GalForUnity.Core.Editor{
    
     /// <summary>
 /// 重命名 编辑器

@@ -6,14 +6,14 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GalForUnity.Core.Editor.UIElements
+namespace GalForUnity.Core.Editor
 {
 
-    public class PoseBindingList : ListView
+    public class AnchorListView : ListView
     {
-        private PoseBindingPoint _poseBindingPoint;
-        public PoseBindingList(){}
-        public PoseBindingList(List<SpritePoseItem> list,PoseBindingPoint poseBindingPoint): this(list,22f,
+        private AnchorFoldout m_AnchorFoldout;
+        public AnchorListView(){}
+        public AnchorListView(List<AnchorSprite> list,AnchorFoldout anchorFoldout): this(list,22f,
             () =>
             {
                 VisualElement visualElement = UxmlHandler.instance.poseBindingItem.Instantiate();
@@ -22,22 +22,22 @@ namespace GalForUnity.Core.Editor.UIElements
                 objectField.objectType = typeof(Sprite);
                 textField.RegisterValueChangedCallback(changeEvent=>
                 {
-                    if(visualElement.userData is SpritePoseItem spritePoseItem) 
+                    if(visualElement.userData is AnchorSprite spritePoseItem) 
                         spritePoseItem.name = changeEvent.newValue;
                 });
                 objectField.RegisterValueChangedCallback(changeEvent=>
                 {
-                    if(visualElement.userData is SpritePoseItem spritePoseItem) 
+                    if(visualElement.userData is AnchorSprite spritePoseItem) 
                         spritePoseItem.sprite = (Sprite)changeEvent.newValue;
                 });
                 visualElement.RegisterCallback<MouseEnterEvent>((_) =>
                 {
-                    if(visualElement.userData is SpritePoseItem spritePoseItem) 
-                        poseBindingPoint.PoseView.ShowAnchor(spritePoseItem.sprite,poseBindingPoint.PoseBindingAnchor);
+                    if(visualElement.userData is AnchorSprite spritePoseItem) 
+                        anchorFoldout.PoseView.ShowAnchor(spritePoseItem.sprite,anchorFoldout.AnchorElement);
                 });
                 visualElement.RegisterCallback<MouseLeaveEvent>((_) =>
                 {
-                    poseBindingPoint.PoseView.HideAnchor(poseBindingPoint.PoseBindingAnchor);
+                    anchorFoldout.PoseView.HideAnchor(anchorFoldout.AnchorElement);
                 });
                 return visualElement;
             }, 
@@ -52,9 +52,9 @@ namespace GalForUnity.Core.Editor.UIElements
                 textField.value = list[y].name;
             })
         {
-            _poseBindingPoint = poseBindingPoint;
+            m_AnchorFoldout = anchorFoldout;
         }
-        public PoseBindingList(
+        public AnchorListView(
             IList itemsSource,
             float itemHeight = -1f,
             Func<VisualElement> makeItem = null,
@@ -64,7 +64,7 @@ namespace GalForUnity.Core.Editor.UIElements
             
         }
         
-        public class PoseBindingListUxmlFactory : UxmlFactory<PoseBindingList, UxmlTraits>{
+        public class PoseBindingListUxmlFactory : UxmlFactory<AnchorListView, UxmlTraits>{
         }
     }
 }

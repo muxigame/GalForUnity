@@ -21,6 +21,7 @@ namespace GalForUnity.Graph.Editor
         private ListView _listView;
         private VisualTreeAsset _previewSearchWindow;
         private ToolbarSearchField _searchField;
+        private Button _backButton;
         private SearchWindowContext _searchWindowContext;
 
         private IPreviewSearchWindowProvider _searchWindowProvider;
@@ -83,6 +84,12 @@ namespace GalForUnity.Graph.Editor
             previewWindowElement.styleSheets.Add(UxmlHandler.instance.previewSearchWindowUss);
             _listView = previewWindowElement.Q<ListView>("Content");
             _searchField = previewWindowElement.Q<ToolbarSearchField>("SearchField");
+            _backButton = previewWindowElement.Q<Button>("BackButton");
+            _backButton.clickable=new Clickable(() =>
+            {
+                _currentEntry = _currentEntry.Parent;
+                BuildUI();
+            });
             _searchField.RegisterValueChangedCallback(_ => { BuildUI(); });
             BuildUI();
             
@@ -93,33 +100,60 @@ namespace GalForUnity.Graph.Editor
 
         private void BuildUI()
         {
-            _listView.hierarchy.Clear();
+            _listView.itemsSource?.Clear();
+            _listView.fixedItemHeight = 22;
             IEnumerable<TreeWrapper> treeWrappers = null;
             if (!string.IsNullOrEmpty(_searchField.value))
                 treeWrappers = _list.Where(x => x.Entry.content.text.IndexOf(_searchField.value, StringComparison.OrdinalIgnoreCase) != -1);
             else
                 treeWrappers = _currentEntry.Child;
-            foreach (var treeWrapper in treeWrappers)
+            if (_currentEntry != _top)
             {
-                var templateContainer = _templateContainer.Instantiate();
-                _listView.hierarchy.Add(templateContainer);
-                templateContainer.Q<Label>("ItemLabel").text = treeWrapper.Entry.content.text;
-                templateContainer.Q<Label>("ItemArrow").visible = treeWrapper.Child != null;
-                var previewSearchItem = templateContainer.Q<VisualElement>("PreviewSearchItem");
+                _backButton.visible = true;
+            }
+            else
+            {
+                _backButton.visible = false;
+            }
+            _listView.itemsSource = treeWrappers.ToList();
+            _listView.makeItem = () =>
+            {
+                var visualElement = _templateContainer.Instantiate();
+                var previewSearchItem = visualElement.Q<VisualElement>("PreviewSearchItem");
+      
                 previewSearchItem.AddManipulator(new Clickable(() =>
                 {
+                    var treeWrapper = (TreeWrapper)visualElement.userData;
                     if (treeWrapper.Child == null)
                     {
                         _searchWindowProvider.OnSelectEntry(treeWrapper.Entry, _searchWindowContext);
                         Close();
                         return;
                     }
+
                     _currentEntry = treeWrapper;
                     BuildUI();
                 }));
-                previewSearchItem.RegisterCallback<MouseEnterEvent>(evt => _searchWindowProvider.OnMouseEnter(treeWrapper.Entry,position,evt));
-                previewSearchItem.RegisterCallback<MouseLeaveEvent>(evt => _searchWindowProvider.OnMouseLeave(treeWrapper.Entry,position,evt));
-            }
+                previewSearchItem.RegisterCallback<MouseEnterEvent>(evt =>
+                {
+                    var treeWrapper = (TreeWrapper)visualElement.userData;
+                    _searchWindowProvider.OnMouseEnter(treeWrapper.Entry, position, evt);
+                });
+                previewSearchItem.RegisterCallback<MouseLeaveEvent>(evt =>
+                {
+                    var treeWrapper = (TreeWrapper)visualElement.userData;
+                    _searchWindowProvider.OnMouseLeave(treeWrapper.Entry, position, evt);
+                });
+                return visualElement;
+            };
+            _listView.bindItem = (visualElement, index) =>
+            {
+                var treeWrapper = (TreeWrapper)_listView.itemsSource[index];
+                visualElement.Q<Label>("ItemLabel").text = treeWrapper.Entry.content.text;
+                visualElement.Q<Label>("ItemArrow").visible = treeWrapper.Child != null;
+                visualElement.userData = treeWrapper;
+            };
+            _listView.RefreshItems();
         }
 
         public static bool Open<T>(SearchWindowContext context, T provider) where T : ScriptableObject, IPreviewSearchWindowProvider
@@ -131,8 +165,9 @@ namespace GalForUnity.Graph.Editor
                     ((EditorWindow)objectsOfTypeAll[0]).Close();
                     return false;
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
+                    Debug.LogError(e);
                     _instance = null;
                 }
 

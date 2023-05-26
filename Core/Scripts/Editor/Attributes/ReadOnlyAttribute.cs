@@ -1,9 +1,7 @@
-
-
 using UnityEditor;
 using UnityEngine;
 
-namespace GalForUnity.Core.Editor.Attributes{
+namespace GalForUnity.Core.Editor{
     public class ReadOnlyAttribute : PropertyAttribute
     {
 

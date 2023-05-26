@@ -1,7 +1,8 @@
 ﻿using GalForUnity.Core;
 using GalForUnity.Core.Block;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Graph.Editor.Builder;
+using GalForUnity.Graph.Editor.Builder.SearchProviders;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace GalForUnity.Graph.Editor.ConfigAdditions
         // private DropdownField _pose;
         // private DropdownField _anchor;
         // private DropdownField _face;
-        public AdditionPoseUxml(RoleAssets roleAssets, AdditionPose additionPose,PlotBlock plotBlock):base(roleAssets,additionPose,plotBlock)
+        public AdditionPoseUxml(GalObject galObject, AdditionPose additionPose,PlotBlock plotBlock):base(galObject,additionPose,plotBlock)
         {
             var type = typeof(AdditionPose);
             var label = new Label("表情");
@@ -36,14 +37,14 @@ namespace GalForUnity.Graph.Editor.ConfigAdditions
             button.RegisterCallback<ClickEvent>(evt =>
             {
                 var searchWindowContext = new SearchWindowContext(EditorWindow.focusedWindow.position.position + (Vector2)evt.position);
-                var poseAdditionSearchTypeProvider = PoseAdditionSearchTypeProvider.Create(roleAssets);
+                var poseAdditionSearchTypeProvider = PoseAdditionSearchTypeProvider.Create(galObject);
                 poseAdditionSearchTypeProvider.OnSelectEntryHandler += (x, y) =>
                 {
-                    value.text = x.userData.ToString();
-                    var strings = value.text.Split("/");
-                    additionPose.poseName = strings[0];
-                    additionPose.anchorName = strings[1];
-                    additionPose.faceName = strings[2];
+                    var xUserData = (PreviewData)x.userData;
+                    additionPose.poseName = xUserData.pose.name;
+                    additionPose.anchorName = xUserData.Anchor.name;
+                    additionPose.faceName = xUserData.AnchorSprite.name;
+                    value.text = $"{xUserData.poseLocation.roleName}/{additionPose.poseName}/{additionPose.anchorName}/{additionPose.faceName}";
                     return true;
                 };
                 PreviewSearchWindow.Open(searchWindowContext, poseAdditionSearchTypeProvider);

@@ -1,7 +1,7 @@
 
 
 using System.Collections.Generic;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Editor.Builder;
 using UnityEditor.Experimental.GraphView;

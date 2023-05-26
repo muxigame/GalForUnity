@@ -1,6 +1,7 @@
 
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -20,10 +21,12 @@ namespace GalForUnity.Core{
 
         private void Awake(){
             ActiveCore = this;
+
         }
 
+ 
         public override IRoleIO GetRole(string roleName){
-            if (!roleModels.ContainsKey(roleName)) return RoleUGUI.Create(RoleDB.Instance[roleName]);
+            if (!roleModels.ContainsKey(roleName)) return roleModels[roleName] = RoleUGUI.Create(RoleDB.Instance[roleName]);
             return roleModels[roleName];
         }
 

@@ -2,7 +2,7 @@
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace GalForUnity.Core.Editor.IMGUI{
+namespace GalForUnity.Core.Editor{
     public class BaseEditor : UnityEditor.Editor{ // ReSharper disable all MemberCanBePrivate.Global
         private Object monoScript;
 

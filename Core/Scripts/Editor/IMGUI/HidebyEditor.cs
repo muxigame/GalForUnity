@@ -1,3 +1,3 @@
-﻿namespace GalForUnity.Core.Editor.IMGUI{
+﻿namespace GalForUnity.Core.Editor{
 
 }

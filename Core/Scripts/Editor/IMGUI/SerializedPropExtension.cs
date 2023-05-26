@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 
-namespace GalForUnity.Core.Editor.IMGUI
+namespace GalForUnity.Core.Editor
 {
     public static class SerializedPropExtension
     {

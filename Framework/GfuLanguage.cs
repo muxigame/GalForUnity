@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 
 // ReSharper disable all InconsistentNaming
 namespace GalForUnity.Framework{

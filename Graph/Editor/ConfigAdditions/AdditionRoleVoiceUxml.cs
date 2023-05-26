@@ -1,6 +1,6 @@
 ﻿using GalForUnity.Core;
 using GalForUnity.Core.Block;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using UnityEditor.UIElements;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ namespace GalForUnity.Graph.Editor.ConfigAdditions
     {
         private readonly ObjectField _objectField;
 
-        public AdditionRoleVoiceUxml(RoleAssets roleAssets, AdditionRoleVoice additionRoleVoice, PlotBlock plotBlock) : base(roleAssets, additionRoleVoice, plotBlock)
+        public AdditionRoleVoiceUxml(GalObject galObject, AdditionRoleVoice additionRoleVoice, PlotBlock plotBlock) : base(galObject, additionRoleVoice, plotBlock)
         {
             _objectField = new ObjectField()
             {

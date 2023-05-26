@@ -1,6 +1,4 @@
-
-
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using UnityEngine;
 using UnityEngine.Events;
 

@@ -3,7 +3,7 @@
 using System;
 using GalForUnity.Core;
 using GalForUnity.Core.Block;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Graph.Editor.ConfigAdditions;
 using GalForUnity.Graph.Editor.Nodes;
 using UnityEngine.UIElements;

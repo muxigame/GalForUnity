@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Graph;
 using GalForUnity.Graph.Nodes;
 using UnityEngine;

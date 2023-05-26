@@ -8,7 +8,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 #endif
 
-namespace GalForUnity.Core.Editor.Attributes{
+namespace GalForUnity.Core.Editor{
 #if UNITY_EDITOR
     [AttributeUsage(AttributeTargets.Field|AttributeTargets.Class)]
 #endif

@@ -1,23 +1,25 @@
 using System.IO;
+using GalForUnity.Core.External;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
-namespace GalForUnity.Core.Editor.UIElements{
+namespace GalForUnity.Core.Editor{
     public class RoleWizard : EditorWindow
     {
-        [SerializeField] private RoleAssets roleAssets;
+        [FormerlySerializedAs("roleAssets")] [SerializeField] private GalObject galObject;
 
         private PoseList _poseList;
 
-        public RoleAssets RoleAssets
+        public GalObject GalObject
         {
-            get => roleAssets;
+            get => galObject;
             set
             {
-                roleAssets = value;
+                galObject = value;
                 InitBind();
             }
         }
@@ -29,7 +31,7 @@ namespace GalForUnity.Core.Editor.UIElements{
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/GalForUnity/Core/Scripts/Editor/UIElements/RoleWizard.uxml");
             VisualElement labelFromUXML = visualTree.Instantiate();
             root.Add(labelFromUXML);
-            Debug.Log(roleAssets);
+            Debug.Log(galObject);
             var name = root.Q<TextField>("Name");
             var enumField = root.Q<EnumField>("Gender");
             var button = root.Q<Button>("CreatePoseButton");
@@ -40,22 +42,32 @@ namespace GalForUnity.Core.Editor.UIElements{
             button.clickable = new Clickable(() =>
             {
                 var spritePose = new SpritePose();
-                roleAssets.pose.Add(spritePose);
+                galObject.pose.Add(spritePose);
                 _poseList.RefreshItems();
                 CreatePoseWizard.Show(spritePose);
             });
 
             save.clickable = new Clickable(() =>
             {
-                if (!AssetDatabase.IsMainAsset(roleAssets))
+                if (!AssetDatabase.IsMainAsset(galObject))
                 {
-                    AssetDatabase.CreateAsset(roleAssets, Path.Combine("Assets", name.value) + ".asset");
-                    EditorGUIUtility.PingObject(roleAssets);
+                    AssetDatabase.CreateAsset(galObject, Path.Combine("Assets", name.value) + ".asset");
+                    EditorGUIUtility.PingObject(galObject);
                 }
                 else
                 {
-                    AssetDatabase.SaveAssetIfDirty(roleAssets);
+                    AssetDatabase.SaveAssetIfDirty(galObject);
                 }
+                
+                var defaultSprite = galObject.GetDefaultSprite();
+                if (defaultSprite)
+                {
+                    EditorGUIUtility.SetIconForObject(galObject,defaultSprite.texture);
+                    AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(galObject)).SaveAndReimport();
+                }
+         
+
+              
             });
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
@@ -73,8 +85,8 @@ namespace GalForUnity.Core.Editor.UIElements{
             if (path.EndsWith(".asset"))
             {
                 var loadAssetAtPath = AssetDatabase.GetMainAssetTypeAtPath(path);
-                if (loadAssetAtPath == null || loadAssetAtPath != typeof(RoleAssets)) return false;
-                Show(AssetDatabase.LoadAssetAtPath<RoleAssets>(path));
+                if (loadAssetAtPath == null || loadAssetAtPath != typeof(GalObject)) return false;
+                Show(AssetDatabase.LoadAssetAtPath<GalObject>(path));
                 return true;
             }
 
@@ -83,8 +95,8 @@ namespace GalForUnity.Core.Editor.UIElements{
 
         private void InitBind()
         {
-            if (!roleAssets) return;
-            var serializedObject = new SerializedObject(roleAssets);
+            if (!galObject) return;
+            var serializedObject = new SerializedObject(galObject);
             var name = rootVisualElement.Q<TextField>("Name");
 
             var enumField = rootVisualElement.Q<EnumField>("Gender");
@@ -93,33 +105,33 @@ namespace GalForUnity.Core.Editor.UIElements{
             var weight = rootVisualElement.Q<TextField>("Weight");
 
             enumField.BindProperty(serializedObject.FindProperty("gender"));
-            name.BindProperty(serializedObject.FindProperty("roleName"));
+            name.BindProperty(serializedObject.FindProperty("objectName"));
             age.BindProperty(serializedObject.FindProperty("age"));
             height.BindProperty(serializedObject.FindProperty("height"));
             weight.BindProperty(serializedObject.FindProperty("weight"));
-            if (rootVisualElement.Q<PoseList>() == null && roleAssets)
+            if (rootVisualElement.Q<PoseList>() == null && galObject)
             {
                 var postContent = rootVisualElement.Q<VisualElement>("PostContent");
                 var preview = rootVisualElement.Q<VisualElement>("Preview");
                 var poseView = new PoseView(false);
                 preview.Add(poseView);
-                postContent.Add(_poseList = new PoseList(roleAssets.pose, poseView, item =>
+                postContent.Add(_poseList = new PoseList(galObject.pose, poseView, item =>
                 {
                     var deleteButton = item.Q<Button>("DeleteButton");
                     deleteButton.clickable = new Clickable(() =>
                     {
-                        roleAssets.pose.Remove((Pose)item.userData);
+                        galObject.pose.Remove((Pose)item.userData);
                         _poseList.RefreshItems();
                     });
                 }));
             }
         }
 
-        public static void Show(RoleAssets roleAssets)
+        public static void Show(GalObject galObject)
         {
             var wnd = GetWindow<RoleWizard>();
             wnd.titleContent = new GUIContent("RoleWizard");
-            wnd.RoleAssets = roleAssets;
+            wnd.GalObject = galObject;
         }
 
         [MenuItem("GalForUnity/角色创建向导")]
@@ -127,7 +139,7 @@ namespace GalForUnity.Core.Editor.UIElements{
         {
             var wnd = GetWindow<RoleWizard>();
             wnd.titleContent = new GUIContent("RoleWizard");
-            wnd.RoleAssets = CreateInstance<RoleAssets>();
+            wnd.GalObject = CreateInstance<GalObject>();
         }
     }
 }

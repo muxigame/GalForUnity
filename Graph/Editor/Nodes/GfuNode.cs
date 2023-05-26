@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Graph.Editor.Builder;
 using GalForUnity.Graph.Nodes;
 

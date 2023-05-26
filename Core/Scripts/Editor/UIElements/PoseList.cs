@@ -7,7 +7,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GalForUnity.Core.Editor.UIElements
+namespace GalForUnity.Core.Editor
 {
     public class PoseList : ListView
     {

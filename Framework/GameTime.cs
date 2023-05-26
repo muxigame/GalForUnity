@@ -1,7 +1,7 @@
 
 
 using System;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using UnityEngine;
 
 namespace GalForUnity.Framework {

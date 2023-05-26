@@ -1,10 +1,8 @@
-
-
 using System;
 using GalForUnity.Graph.Editor.Builder;
 using UnityEngine;
 
-namespace GalForUnity.Core.Editor.Attributes{
+namespace GalForUnity.Core.Editor{
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field)]
     public class NodeRenameAttribute : PropertyAttribute{
         

@@ -1,6 +1,6 @@
 ﻿using GalForUnity.Core;
 using GalForUnity.Core.Block;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
@@ -9,7 +9,7 @@ namespace GalForUnity.Graph.Editor.ConfigAdditions
     [NodeEditor(typeof(AdditionPosition))]
     public class AdditionPositionUxml : ConfigAdditionUxml<AdditionPosition>
     {
-        public AdditionPositionUxml(RoleAssets roleAssets, AdditionPosition additionPose, PlotBlock plotBlock) : base(roleAssets, additionPose, plotBlock)
+        public AdditionPositionUxml(GalObject galObject, AdditionPosition additionPose, PlotBlock plotBlock) : base(galObject, additionPose, plotBlock)
         {
             var type = typeof(AdditionPosition);
             var vector2Field = new Vector2Field()

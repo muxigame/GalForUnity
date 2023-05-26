@@ -1,5 +1,3 @@
-
-
 using System;
 using GalForUnity.Graph.Editor;
 using UnityEditor;
@@ -7,7 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GalForUnity.Core.Editor.UIElements
+namespace GalForUnity.Core.Editor
 {
     public class CreatePoseWizard : EditorWindow
     {
@@ -45,23 +43,23 @@ namespace GalForUnity.Core.Editor.UIElements
             var type = typeof(SpritePose);
             var poseEditor = rootVisualElement.Q<VisualElement>("PoseEditor");
             poseName.TrackSerializedObjectValue(serializedObject);
-            poseName.CreateBinder(type.GetField("name"), SpritePose);
+            poseName.CreateBinder(type.GetField(nameof(SpritePose.name)), SpritePose);
             poseView.TrackSerializedObjectValue(serializedObject);
-            poseView.CreateBinder(type.GetField("sprite"), SpritePose);
+            poseView.CreateBinder(type.GetField(nameof(SpritePose.sprite)), SpritePose);
             poseView.SetValueWithoutNotify(SpritePose.sprite);
-            foreach (var spritePoseBindingPoint in SpritePose.bindingPoints)
+            foreach (var spritePoseBindingPoint in SpritePose.anchors)
             {
-                var poseBindingAnchor = new PoseBindingAnchor(spritePoseBindingPoint.point);
+                var poseBindingAnchor = new AnchorElement(spritePoseBindingPoint.pivot);
                 poseView.Add(poseBindingAnchor);
-                poseEditor.Add(new PoseBindingPoint(poseBindingAnchor, poseView, spritePoseBindingPoint));
+                poseEditor.Add(new AnchorFoldout(poseBindingAnchor, poseView, spritePoseBindingPoint));
             }
             button.clickable = new Clickable(() =>
             {
-                var poseBindingAnchor = new PoseBindingAnchor();
-                var bindingPoint = new BindingPoint();
-                SpritePose.bindingPoints.Add(bindingPoint);
+                var poseBindingAnchor = new AnchorElement();
+                var bindingPoint = new Anchor();
+                SpritePose.anchors.Add(bindingPoint);
                 poseView.Add(poseBindingAnchor);
-                poseEditor.Add(new PoseBindingPoint(poseBindingAnchor, poseView, bindingPoint));
+                poseEditor.Add(new AnchorFoldout(poseBindingAnchor, poseView, bindingPoint));
             });
         }
         [MenuItem("GalForUnity/调试/姿势创建向导")]

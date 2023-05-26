@@ -1,16 +1,16 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using GalForUnity.Core.External;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace GalForUnity.Core{
     public class RoleUGUI : MonoBehaviour, IRoleIO{
         
-        public RoleAssets roleAssets;
+        [FormerlySerializedAs("roleAssets")] public GalObject galObject;
         public Image poseImage;
         private Image[] _faceImage;
         public AudioSource audioSource;
@@ -28,35 +28,40 @@ namespace GalForUnity.Core{
             component.transform.SetParent(transform);
         }
 
-        public static RoleUGUI Create(RoleAssets roleAssets){
+        public static RoleUGUI Create(GalObject galObject){
+            Debug.Log("Create");
             var galCoreUGUI = GalCore.ActiveCore as GalCoreUGUI;
             if (galCoreUGUI == null){
                 return null;
             }
-            var roleGameObject = new GameObject(roleAssets.roleName);
+            var roleGameObject = new GameObject(galObject.objectName);
             var roleUGUI = roleGameObject.AddComponent<RoleUGUI>();
-            roleUGUI.roleAssets = roleAssets;
-            roleUGUI._faceImage = new Image[roleAssets.pose.Where(x => x is SpritePose).Cast<SpritePose>().Max(x => x.bindingPoints.Count)];
+            roleUGUI.galObject = galObject;
+            roleUGUI._faceImage = new Image[galObject.pose.Where(x => x is SpritePose).Cast<SpritePose>().Max(x => x.anchors.Count)];
             roleUGUI.poseImage = roleGameObject.AddComponent<Image>();
             roleGameObject.transform.SetParent(galCoreUGUI.interactionLayer);
             roleGameObject.transform.localPosition=new Vector3(0,0);
             return roleUGUI;
         }
 
-        private void ShowFace(SpritePoseItem spritePoseItem,int index,Vector2 position){
-            if (_faceImage[index] == null){
-                var o = new GameObject(string.Concat("Anchor:",index));
+        private void ShowFace(AnchorSprite anchorSprite, Anchor anchor, int index)
+        {
+            var position = anchor.pivot;
+            if (_faceImage[index] == null)
+            {
+                var o = new GameObject(string.Concat("Anchor:", anchor.name));
                 o.AddComponent<RectTransform>();
                 _faceImage[index] = o.AddComponent<Image>();
                 o.transform.SetParent(transform);
             }
+
             var transformLocalPosition = _faceImage[index].rectTransform.anchoredPosition;
             _faceImage[index].rectTransform.SetAnchor(AnchorPresets.BottomLeft);
             var rect = poseImage.rectTransform.rect;
             transformLocalPosition.x = rect.width * position.x;
             transformLocalPosition.y = rect.height * position.y;
             _faceImage[index].rectTransform.anchoredPosition = transformLocalPosition;
-            _faceImage[index].sprite = spritePoseItem.sprite;
+            _faceImage[index].sprite = anchorSprite.sprite;
             _faceImage[index].SetNativeSize();
         }
 
@@ -68,16 +73,16 @@ namespace GalForUnity.Core{
         
         public void SetPose(string poseName, string anchorName, string faceName)
         {
-            var pose = roleAssets.pose.FirstOrDefault(x => x.name == poseName);
+            var pose = galObject.pose.FirstOrDefault(x => x.name == poseName);
             if (pose == null) return;
             if (!(pose is SpritePose spritePose)) return;
             if (spritePose.sprite != poseImage.sprite) ClearFace();
-            var bindingPoint = spritePose.bindingPoints.FirstOrDefault(x => x.name == anchorName);
+            var bindingPoint = spritePose.anchors.FirstOrDefault(x => x.name == anchorName);
             if (bindingPoint == null) return;
-            var face = bindingPoint.spritePoseItems.FirstOrDefault(x => x.name == faceName);
+            var face = bindingPoint.sprites.FirstOrDefault(x => x.name == faceName);
             poseImage.sprite = spritePose.sprite;
             poseImage.SetNativeSize();
-            ShowFace(face, spritePose.bindingPoints.IndexOf(bindingPoint), bindingPoint.point);
+            ShowFace(face, bindingPoint,spritePose.anchors.IndexOf(bindingPoint));
         }
 
         public void SetPosition(Unit xUnit, Unit yUnit, Vector2 position){

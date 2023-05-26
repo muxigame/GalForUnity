@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using GalForUnity.Core;
 using GalForUnity.Core.Block;
+using GalForUnity.Core.External;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using Pose = GalForUnity.Core.Pose;
 
@@ -11,9 +13,9 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
 {
     public class PreviewData
     {
-        public BindingPoint bindingPoint;
+        public Anchor Anchor;
         public Pose pose;
-        public SpritePoseItem spritePoseItem;
+        public AnchorSprite AnchorSprite;
         public PoseLocation poseLocation;
     }
 
@@ -33,7 +35,7 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
         private Rect _previewRect;
         private static float _realRatio;
 
-        private void OnEnable()
+        private void CreateGUI()
         {
             _isOpened = true;
         }
@@ -46,6 +48,7 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
         [MenuItem("PreviewWindow/test")]
         public static void Test()
         {
+            Sprite alice = (Sprite)Resources.Load("Alice");
             Show(Resources.Load<Sprite>("Textures/poseDefault"), new Vector2(500, 500));
         }
 
@@ -159,10 +162,11 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
             if (objectsOfTypeAll.Length != 0)
                 try
                 {
-                    ((EditorWindow)objectsOfTypeAll[0]).Close();
+                    ((EditorWindow)objectsOfTypeAll[0])?.Close();
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
+                    Debug.LogError(e);
                     _instance = null;
                 }
 
@@ -212,28 +216,27 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
             var realImage = CopyTexture2D(_sprite.texture);
             foreach (var previewData in _instance._previewData)
             {
-                var bindingPoint = previewData.bindingPoint;
-                var faceSprite = CopySprite(previewData.spritePoseItem.sprite);
+                var bindingPoint = previewData.Anchor;
+                var faceSprite = CopySprite(previewData.AnchorSprite.sprite);
                 var poseSprite = ((SpritePose)previewData.pose).sprite;
-                var startX = (int)(bindingPoint.point.x * poseSprite.rect.width);
-                var startY = (int)(bindingPoint.point.y * poseSprite.rect.height);
+                var startX = (int)(bindingPoint.pivot.x * poseSprite.rect.width - faceSprite.pivot.x);
+                var startY = (int)(bindingPoint.pivot.y * poseSprite.rect.height - faceSprite.pivot.y);
                 for (var x = (int)faceSprite.rect.x; x < faceSprite.rect.width; x++)
                 {
                     for (var y = (int)faceSprite.rect.y; y < faceSprite.rect.height; y++)
                     {
-                        realImage.SetPixel(startX+x,startY+y,faceSprite.texture.GetPixel(x, y));
+                        realImage.SetPixel(startX + x, startY + y, faceSprite.texture.GetPixel(x, y));
                     }
                 }
             }
+
             realImage.Apply();
             var copySprite = CopySprite(_sprite, realImage);
-
             return copySprite;
         }
 
         private Texture2D CopyTexture2D(Texture2D texture2D)
         {
-            // 创建一张和texture大小相等的临时RenderTexture
             RenderTexture tmp = RenderTexture.GetTemporary( 
                 texture2D.width,
                 texture2D.height,
@@ -242,34 +245,49 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
                 RenderTextureReadWrite.Linear);
             
             Graphics.Blit(texture2D, tmp);
-            RenderTexture previous = RenderTexture.active;
-            RenderTexture.active = tmp;
+
             var tempTexture = new Texture2D(texture2D.width, texture2D.height)
             {
                 filterMode = FilterMode.Point
             };
-            tempTexture.ReadPixels(new Rect(0, 0, texture2D.width, texture2D.height), 0, 0);
-            tempTexture.Apply();
-            RenderTexture.active = previous;
+            
+            RenderTexture previous = RenderTexture.active;
+            try
+            {
+                RenderTexture.active = tmp;
+                tempTexture.ReadPixels(new Rect(0, 0, texture2D.width, texture2D.height), 0, 0);
+                tempTexture.Apply();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+            finally
+            {
+                RenderTexture.active = previous;
+            }
+            
             return tempTexture;
         }
         private Sprite CopySprite(Sprite sprite, Texture2D requestTexture = null)
         {
+            
             if (requestTexture)
             {
-                return Sprite.Create(requestTexture, sprite.rect, sprite.pivot, sprite.pixelsPerUnit);
+                return Sprite.Create(requestTexture, sprite.rect, sprite.GetPointPivot(), sprite.pixelsPerUnit);
             }
-            return Sprite.Create(CopyTexture2D(sprite.texture), sprite.rect, sprite.pivot, sprite.pixelsPerUnit);
+            return Sprite.Create(CopyTexture2D(sprite.texture), sprite.rect, sprite.GetPointPivot(), sprite.pixelsPerUnit);
         }
+
         public static void AddBindPointImage(PreviewData previewData)
         {
             if (_instance && _instance._image != null)
             {
-                var sprite = previewData.spritePoseItem.sprite;
-                var bindingPoint = previewData.bindingPoint;
+                var sprite = previewData.AnchorSprite.sprite;
+                var bindingPoint = previewData.Anchor;
                 var poseSprite = ((SpritePose)previewData.pose).sprite;
-                var startX = (int)(bindingPoint.point.x * poseSprite.rect.width);
-                var startY = (int)(bindingPoint.point.y * poseSprite.rect.height);
+                var startX = (int)(bindingPoint.pivot.x * poseSprite.rect.width);
+                var startY = (int)((1 - bindingPoint.pivot.y) * poseSprite.rect.height);
                 _instance._previewData.Add(previewData);
                 _instance._image.Add(new VisualElement
                 {
@@ -320,10 +338,12 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
             if (objectsOfTypeAll.Length != 0)
                 try
                 {
-                    ((EditorWindow)objectsOfTypeAll[0]).Close();
+                    var editorWindow = ((EditorWindow)objectsOfTypeAll[0]);
+                    if(editorWindow) editorWindow.Close();
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
+                    Debug.LogError(e);
                     _instance = null;
                 }
 
@@ -376,11 +396,11 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
         private bool _isOpened;
         private Sprite _sprite;
 
-        private void OnEnable()
+        private void CreateGUI()
         {
             _isOpened = true;
         }
-
+        
         private void OnDisable()
         {
             _isOpened = false;
@@ -396,19 +416,28 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
             return HasInstance() && _instance._isOpened;
         }
 
-        public static bool Show(Sprite sprite,Vector2 position, Vector2 size, Rect rect)
+        public static bool Show(Sprite sprite, Vector2 position, Vector2 size, Rect rect)
         {
-   
-            var objectsOfTypeAll = Resources.FindObjectsOfTypeAll(typeof(ElementScalePreviewWindow));
-            if (objectsOfTypeAll.Length != 0)
-                try
+            if (HasOpenInstances<ElementScalePreviewWindow>())
+            {
+                if (_instance) _instance.Close();
+                else
                 {
-                    ((EditorWindow)objectsOfTypeAll[0]).Close();
+                    var objectsOfTypeAll = Resources.FindObjectsOfTypeAll<ElementScalePreviewWindow>();
+                    if (objectsOfTypeAll.Length != 0)
+                        try
+                        {
+                            var editorWindow = ((ElementScalePreviewWindow)objectsOfTypeAll[0]);
+                            if (editorWindow && editorWindow._isOpened) editorWindow.Close();
+                        }
+                        catch (Exception e)
+                        {
+                            _instance = null;
+                            Debug.LogError(e);
+                        }
                 }
-                catch (Exception ex)
-                {
-                    _instance = null;
-                }
+            }
+
 
             if (_instance == null)
             {
@@ -452,7 +481,7 @@ namespace GalForUnity.Graph.Editor.Builder.SearchProviders
         {
             if (_instance && _image != null)
             {
-                var sprite = Sprite.Create(_instance._sprite.texture, rect, new Vector2(0,0), _instance._sprite.pixelsPerUnit);
+                var sprite = Sprite.Create(_instance._sprite.texture, rect,  _instance._sprite.GetPointPivot(), _instance._sprite.pixelsPerUnit);
                 _image.style.backgroundImage = new StyleBackground(sprite);
             }
         }

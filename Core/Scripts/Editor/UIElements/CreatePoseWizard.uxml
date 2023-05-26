@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/GalForUnity/Core/Scripts/Editor/UIElements/PoseBindingPoint.uss?fileID=7433441132597879392&amp;guid=e9c3c225c09bb4043bfc5acae2047ebe&amp;type=3#PoseBindingPoint" />
     <ui:VisualElement style="flex-direction: row; height: 500px;">
-        <GalForUnity.Core.Editor.UIElements.PoseView name="PoseView" style="align-items: center; justify-content: center;" />
+        <GalForUnity.Core.Editor.PoseView name="PoseView" style="justify-content: center; align-items: center;" />
         <ui:VisualElement name="PoseEditor" style="flex-grow: 1; transform-origin: left;">
             <ui:TextField picking-mode="Ignore" label="PoseName" value="Stand" text="Stand" name="PoseName" />
             <ui:Button text="创建绑定点" display-tooltip-when-elided="true" name="CreatePoseButton" />

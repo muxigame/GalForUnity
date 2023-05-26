@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Framework;
 using GalForUnity.Graph.Editor.Block;
 using UnityEditor.Experimental.GraphView;

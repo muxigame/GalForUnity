@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using GalForUnity.Core.Editor.Attributes;
+using GalForUnity.Core.Editor;
 using GalForUnity.Framework;
 using GalForUnity.Graph.Attributes;
 using GalForUnity.Graph.Editor.Block;
@@ -88,11 +88,15 @@ namespace GalForUnity.Graph.Editor.Builder{
                     };
                     rootVisualElement.Add(new Button(async () =>
                     {
+                        
                         EditorApplication.isPlaying = true;
                         while (!Application.isPlaying){
                             await Task.Yield();
+                            Debug.Log("2");
                         }
                         new GalGraph(galGraph).Play();
+                        Debug.Log("!");
+                        
                     }) {
                         text = GfuLanguage.GfuLanguageInstance.EXECUTE.Value + "(experimental)",
                         style = {
@@ -116,7 +120,7 @@ namespace GalForUnity.Graph.Editor.Builder{
             }
 
         }
-
+        
         [MenuItem("Test/OpenGalWindows")]
         private static void CreateGUI(){
             var galGraphWindow = GetWindow<GalGraphWindow>();

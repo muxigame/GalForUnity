@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace GalForUnity.Core.Editor.Attributes{
+namespace GalForUnity.Core.Editor{
     [AttributeUsage(AttributeTargets.Class)]
     public class NodeEditor:Attribute{
         public static Dictionary<Type,Type> Types=new Dictionary<Type, Type>();

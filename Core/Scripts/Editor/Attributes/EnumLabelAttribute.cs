@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace GalForUnity.Core.Editor.Attributes {
+namespace GalForUnity.Core.Editor {
 
 
 #if UNITY_EDITOR

@@ -4,7 +4,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 #endif
 
-namespace GalForUnity.Core.Editor.Attributes {
+namespace GalForUnity.Core.Editor {
     [AttributeUsage(AttributeTargets.All)]
     public class ButtonAttribute : PropertyAttribute{
         public string method;
