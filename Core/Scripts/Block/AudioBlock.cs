@@ -61,6 +61,15 @@ namespace GalForUnity.Core.Block{
         }
 
         public void AddPort(GalPortAsset port){ ports.Add(port); }
+        public void RemovePort(string key)
+        {
+            ports.RemoveAll(x => x.portName == key);
+        }
+
+        public void RemovePort(GalPortAsset port)
+        {
+            ports.Remove(port);
+        }
 
         public void AddField(string key){ field.Add(key); }
 
@@ -84,6 +93,10 @@ namespace GalForUnity.Core.Block{
     public interface IGalConfig : IGalBlock{
         void AddPort(string key);
         void AddPort(GalPortAsset port);
+        
+        void RemovePort(string key);
+        
+        void RemovePort(GalPortAsset port);
         void AddField(string key);
         void Clear();
         List<GalPortAsset> GetPort();

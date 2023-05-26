@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GalForUnity.Graph.Editor.Nodes;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -124,6 +125,13 @@ namespace GalForUnity.Graph.Editor.Builder{
             AddElement(connectTo);
         }
 
+        public void Record(string message="Undo")
+        {
+            if (GalGraphWindow.galGraph is AssetGraph assetGraph)
+            {
+                Undo.RecordObject(assetGraph,message);
+            }
+        }
 
         /// <summary>
         ///     节点间连接判断的方法，不允许节点自身相连，同时也不允许不同类型的节点相连

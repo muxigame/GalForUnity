@@ -8,9 +8,6 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-#if UNITY_EDITOR
-
-#endif
 
 namespace GalForUnity.Graph.Editor.Builder{
     public class GalPort : Port
@@ -139,6 +136,7 @@ namespace GalForUnity.Graph.Editor.Builder{
         }
 
         public static GalPort CreateDefault(){ return Create<Edge>(Orientation.Horizontal, Direction.Input, Graph.Capacity.Multi, typeof(object)); }
+        public static GalPort CreateDefault<T>(){ return Create<Edge>(Orientation.Horizontal, Direction.Input, Graph.Capacity.Multi, typeof(T)); }
 
         private class GfuEdgeConnectorListener : IEdgeConnectorListener{
             private readonly List<Edge> m_EdgesToCreate;
